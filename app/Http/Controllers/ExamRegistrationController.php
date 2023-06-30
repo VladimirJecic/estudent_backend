@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ExamRegistration;
 use Illuminate\Http\Request;
 
-class ExamRegistrationController extends Controller
+class ExamRegistrationController extends BaseController
 {
     /**
      * Display a listing of the resource.

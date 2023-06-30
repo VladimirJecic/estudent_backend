@@ -15,4 +15,9 @@ class ExamPeriod extends Model
         return $this->hasMany(CourseExam::class, 'exam_period_id');
     }
 
+    protected $fillable = [
+        'name',
+        'dateStart',
+        'dateEnd',
+    ];
 }

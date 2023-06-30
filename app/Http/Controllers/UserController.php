@@ -9,6 +9,7 @@ use App\Http\Resources\CourseResource;
 use App\Http\Resources\ExamRegistrationResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends BaseController
 {
@@ -38,92 +39,49 @@ class UserController extends BaseController
         if(is_null($user)){
             return $this->sendError('user not found.');
         }
-        return $this->sendResponse(new UserResource($user),'user retrieved successfully');
+        return $this->sendResponse(new UserResource($user,courses:$user->courses(),examRegistrations:$user->examRegistrations(),signedRegistrations: $user->signedRegistrations()),'user retrieved successfully');
     
     }
 
-    /**
-     * Get all courses for a specific user.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getUserCourses($id)
+
+
+    public function update(Request $request, User $user)
     {
+        $urlSegments = explode('/', $request->getPathInfo());
+        $id = end($urlSegments);
+        
         $user = User::find($id);
-        if(is_null($user)){
-            return $this->sendError('user not found.');
+        if (is_null($user)) {
+            return $this->sendError('User not found.');
         }
-        $courses = $user->courses();
-        return $this->sendResponse(CourseResource::collection($courses),'Courses retrieved successfully');
-    }
 
-    /**
-     * Get all exam registrations for a specific user.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getUserExamRegistrations($id)
-    {
-        $user = User::find($id);
-        if(is_null($user)){
-            return $this->sendError('user not found.');
+        // Update the fillable fields
+        $fillableFields = ['indexNum', 'name','password','email'];
+        foreach ($fillableFields as $field) {
+            if ($request->has($field)) {
+                if($field==="password"){
+                    $user->$field = Hash::make($request->$field);
+                }else{
+                $user->$field = $request->$field;
+                }
+            }
         }
-        $examRegistrations = $user->examRegistrations();
-        return $this->sendResponse(ExamRegistrationResource::collection($examRegistrations),'Exam Registrations retrieved successfully');
-    }
-
-    /**
-     * Get all signed registrations for a specific user.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getUserSignedRegistrations($id)
-    {
-        $user = User::find($id);
-        if(is_null($user)){
-            return $this->sendError('user not found.');
-        }
-        $examRegistrations = $user->signedRegistrations();
-        return $this->sendResponse(ExamRegistrationResource::collection($examRegistrations),'Signed exam registrations retrieved successfully');
-    }
-
-
-    public function update(Request $request,User $user){
-        $input= $request->all();
-        $validator = Validator::make($input,[
-            'name'=>'required',
-            'indexNum'=>'required',
-            'email'=>'required|email',
-            'password'=>'required'
-        ]);
-        if($validator->fails()){
-            return $this->sendError('Validation error.',$validator->errors());
-        }
-        $user = User::find($input['id']);
-        $user->name = $input['name'];
-        $user->name = $input['email'];
-        $user->detail = $input['detail'];
+        
         $user->updated_at = Carbon::now();
         $user->save();
-
-
-        return $this->sendResponse(new UserResource($user), "\nuser updated successfully");
-      
+    
+        return $this->sendResponse(message: 'User updated successfully');
     }
     
     public function destroy(Request $request,User $user){
-        $input= $request->all();
-        $validator = Validator::make($input,[
-            'id'=>'required',
-        ]);
-        if($validator->fails()){
-            return $this->sendError('Validation error.',$validator->errors());
+        $url_segments_array= explode('/',$request->getPathInfo());
+         $id = end($url_segments_array);
+        $user = User::find($id);
+        if(is_null($user)){
+            return $this->sendError('user not found.');
         }
         
         $user->delete();
-        return $this->sendResponse([],'user deleted successfully');  
+        return $this->sendResponse(message:'user deleted successfully');  
       }
 }

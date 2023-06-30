@@ -5,15 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\CourseExam;
 use Illuminate\Http\Request;
 
-class CourseExamController extends Controller
+class CourseExamController extends BaseController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        //
-    }
+
 
     /**
      * Show the form for creating a new resource.
@@ -34,9 +31,21 @@ class CourseExamController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(CourseExam $courseExam)
+    public function showForExam(Request $request,CourseExam $courseExam)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'course_id' => 'required|integer',
+            'exam_period' => 'required|integer',
+            // 'hall' => 'required|string',
+            // 'examDateTime' => 'required|date_format:Y-m-d H:i:s',
+        ]);
+        $courseExam = User::find($id);
+        if(is_null($user)){
+            return $this->sendError('user not found.');
+        }
+        if($validator->fails()){
+            return $this->sendError('Validation error.',$validator->errors(),400);
+        }
     }
 
     /**

@@ -6,7 +6,26 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
-{
+{    
+    private $courses;
+    private $examRegistrations;
+    private $signedRegistrations;
+    
+    /**
+    * UserResource constructor.
+    *
+    * @param mixed $resource
+    * @param mixed $courses
+    * @param mixed $examRegistrations
+    * @param mixed $signedRegistrations
+    */
+    public function __construct($resource, $courses = null,$examRegistrations = null,$signedRegistrations = null)
+    {
+        parent::__construct($resource);
+        $this->courses = $courses;
+        $this->examRegistrations  = $examRegistrations;
+        $this->signedRegistrations = $signedRegistrations;
+    }
     /**
      * Transform the resource into an array.
      *
@@ -21,7 +40,9 @@ class UserResource extends JsonResource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'role'=>$this->role,
-            //'courses'=>$this->courses()->get()
+            'courses'=>$this->courses ?? [],
+            'examRegistrations'=>$this->examRegistrations ?? [],
+            'signedRegistrations'=>$this->signedRegistrations ?? [],
         ];
     }
 }

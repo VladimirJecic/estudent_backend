@@ -12,13 +12,12 @@ class CourseExam extends Model
 {
     use HasFactory;
 
-    // protected $fillable = [
-    //     'indexNum',
-    //     'name',
-    //     'email',
-    //     'password',
-    //     'role'
-    // ];
+    protected $fillable = [
+        'course_id',
+        'exam_period_id',
+        'examDateTime',
+        'hall',
+    ];
     public function course()
     {
         return $this->belongsTo(Course::class, 'course_id');
