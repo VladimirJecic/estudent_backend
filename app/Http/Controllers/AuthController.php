@@ -13,11 +13,13 @@ class AuthController extends BaseController
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(),[
+            'indexNum'=>'required',
             'name'=>'required',
             'role'=>'required',
             'email'=>'required|email',
             'password'=>'required',
             'c_password'=>'required|same:password'
+
         ]);
         if($validator->fails()){
             return $this->sendError('Validation error.',$validator->errors());
@@ -29,7 +31,7 @@ class AuthController extends BaseController
         $success['token'] = $user->createToken('MyApp')->accessToken;
         $success['name'] = $user->name;
 
-        return $this->sendResponse($success, "\nUser Registered Successfully");
+        return $this->sendResponse($success, "\nUser Registered Successfully!ccc");
     }
 
     public function login(Request $request){
@@ -40,7 +42,7 @@ class AuthController extends BaseController
                 $success['token'] = $user->createToken('MyApp')->accessToken;
                 $success['name'] = $user->name;
 
-                return $this->sendResponse($success, "\nUser Login Successfull");
+                return $this->sendResponse($success, "\nUser Login Successful!");
              }else{
                 return $this->sendError('Unauthorised.',['error'=>'Unathorized!']);
              }

@@ -25,7 +25,6 @@ use App\Http\Controllers\CourseExamController;
 Route::post('login', [AuthController::class, 'login']);
 
 
-
 Route::middleware('auth:api')->group(function(){
     Route::middleware('admin-auth')->group(function(){
         //User routes(admin)

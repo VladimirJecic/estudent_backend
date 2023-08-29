@@ -1,0 +1,6 @@
+$user = User::create([
+    'indexNum' => '0000/2023',
+    'name' => 'test',
+    'email' => 'test@test.com',
+    'password' => \Hash::make('test'), 
+]);
