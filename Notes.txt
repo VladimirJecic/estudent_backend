@@ -4,3 +4,4 @@ $user = User::create([
     'email' => 'test@test.com',
     'password' => \Hash::make('test'), 
 ]);
+php artisan db:seed --class=CourseUserSeeder
