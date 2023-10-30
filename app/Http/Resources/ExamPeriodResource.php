@@ -16,6 +16,8 @@ class ExamPeriodResource extends JsonResource
     {
         return [
             'name' => $this->name,
+            'dateRegistrationStart'=> $this->dateRegisterStart,
+            'dateRegistrationEnd'=> $this->dateRegisterEnd,
             'dateStart' => $this->dateStart,
             'dateEnd' => $this->dateEnd,
             'exams' => $this->exams,

@@ -18,6 +18,15 @@ class ExamPeriodController extends BaseController
         return $this->sendResponse(ExamPeriodResource::collection($examPeriods),
         'ExamPeriods retrieved successfully');
     }
+    public function active()
+    {
+        $currentDate = Carbon::now();
+        $examPeriods = ExamPeriod::where('dateRegisterStart', '<=', $currentDate)
+        ->where('dateEnd', '>=', $currentDate)
+        ->get();
+        return $this->sendResponse(ExamPeriodResource::collection($examPeriods),
+        'Active ExamPeriods retrieved successfully');
+    }
 
     /**
      * Show the form for creating a new resource.

@@ -10,14 +10,15 @@ use App\Models\CourseExam;
 class ExamPeriod extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'dateRegisterStart',
+        'dateRegisterEnd',
+        'dateStart',
+        'dateEnd',
+        'name',
+    ];
     public function exams()
     {
         return $this->hasMany(CourseExam::class, 'exam_period_id');
     }
-
-    protected $fillable = [
-        'name',
-        'dateStart',
-        'dateEnd',
-    ];
 }

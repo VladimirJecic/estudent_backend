@@ -43,6 +43,8 @@ Route::middleware('auth:api')->group(function(){
         Route::post('logout', [AuthController::class, 'logout']);
         // ExamPeriod routes
         Route::resource('exam-periods', ExamPeriodController::class)->only(['index']);
+        // ExamPeriod routes
+        Route::get('exam-periods-active',[ExamPeriodController::class,'active']);
         // Course routes
         Route::resource('courses', CourseController::class)->only('index');
 

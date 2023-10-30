@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('exam_periods', function (Blueprint $table) {
             $table->id();
+            $table->date('dateRegisterStart');
+            $table->date('dateRegisterEnd');
             $table->date('dateStart');
             $table->date('dateEnd');
             $table->string('name');
