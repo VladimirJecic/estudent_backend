@@ -30,7 +30,7 @@ class CourseResource extends JsonResource
     {
         return [
             'name' => $this->name,
-            'email' => $this->email,
+            'semester' => $this->semester,
             'espb' => $this->espb,
             'participants' => $this->participants ?? [],
         ];

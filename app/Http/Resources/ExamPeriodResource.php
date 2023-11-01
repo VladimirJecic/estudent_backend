@@ -20,7 +20,7 @@ class ExamPeriodResource extends JsonResource
             'dateRegistrationEnd'=> $this->dateRegisterEnd,
             'dateStart' => $this->dateStart,
             'dateEnd' => $this->dateEnd,
-            'exams' => $this->exams,
+            'exams' => CourseExamResource::collection($this->exams),
         ];
     }
 }

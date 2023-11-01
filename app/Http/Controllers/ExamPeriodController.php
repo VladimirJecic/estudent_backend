@@ -14,7 +14,7 @@ class ExamPeriodController extends BaseController
      */
     public function index()
     {
-        $examPeriods = ExamPeriod::all();
+        $examPeriods = ExamPeriod::with('exams')->get();
         return $this->sendResponse(ExamPeriodResource::collection($examPeriods),
         'ExamPeriods retrieved successfully');
     }
