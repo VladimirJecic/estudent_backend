@@ -8,7 +8,7 @@ class ExamPeriodFactory extends Factory
     protected $examPeriods = [
     [
         'dateRegisterStart' => '2023-10-30',
-        'dateRegisterEnd' => '2024-11-14',
+        'dateRegisterEnd' => '2023-11-14',
         'dateStart' => '2023-11-15',
         'dateEnd' => '2023-11-29',
         'name' => 'novembar-decembar-apsolventski-2023'
