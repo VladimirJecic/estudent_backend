@@ -11,7 +11,7 @@ class ExamPeriodFactory extends Factory
         'dateRegisterEnd' => '2023-11-14',
         'dateStart' => '2023-11-15',
         'dateEnd' => '2023-11-29',
-        'name' => 'novembar-decembar-apsolventski-2023'
+        'name' => 'novembarsko-decembarski-apsolventski-2023'
     ],
     [
         'dateRegisterStart' => '2024-01-02',
@@ -32,7 +32,7 @@ class ExamPeriodFactory extends Factory
         'dateRegisterEnd' => '2024-04-18',
         'dateStart' => '2024-04-19',
         'dateEnd' => '2025-05-06',
-        'name' => 'mart-april-apsolventski-2024'
+        'name' => 'martovsko-aprilski-apsolventski-2024'
     ]
 ];
 

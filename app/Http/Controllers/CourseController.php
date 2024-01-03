@@ -100,8 +100,6 @@ class CourseController extends BaseController
             }
         }
 
-        // Get the current participants for the course
-
         // Update the participants for the course
         if ($request->has('participants') and is_array($request->participants)) {
             $currentParticipants = $course->participants()->pluck('id')->toArray();

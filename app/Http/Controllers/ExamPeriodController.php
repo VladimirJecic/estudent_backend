@@ -12,11 +12,14 @@ class ExamPeriodController extends BaseController
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $examPeriods = ExamPeriod::with('exams')->get();
-        return $this->sendResponse(ExamPeriodResource::collection($examPeriods),
-        'ExamPeriods retrieved successfully');
+        $onlyActive = isset($_GET['onlyActive']) ? $_GET['onlyActive'] : false;
+        if($onlyActive === 'true')
+            return  $this->active();
+        else{
+            return $this->all();
+        }
     }
     public function active()
     {
@@ -26,6 +29,11 @@ class ExamPeriodController extends BaseController
         ->get();
         return $this->sendResponse(ExamPeriodResource::collection($examPeriods),
         'Active ExamPeriods retrieved successfully');
+    }
+    public function all(){
+         $examPeriods = ExamPeriod::with('exams')->get();
+        return $this->sendResponse(ExamPeriodResource::collection($examPeriods),
+        'ExamPeriods retrieved successfully');
     }
 
     /**

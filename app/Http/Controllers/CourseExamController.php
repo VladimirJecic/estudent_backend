@@ -47,7 +47,12 @@ class CourseExamController extends BaseController
             return $this->sendError('Validation error.',$validator->errors(),400);
         }
     }
+    public function passed(Request $request){
+    
 
+
+
+    }
     /**
      * Show the form for editing the specified resource.
      */
