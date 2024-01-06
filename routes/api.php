@@ -1,12 +1,12 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExamPeriodController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseExamController;
+use App\Http\Middleware\AdminMiddleware;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,7 +25,7 @@ use App\Http\Controllers\CourseExamController;
 Route::post('login', [AuthController::class, 'login']);
 
 
-Route::middleware('auth:api')->group(function(){
+ Route::middleware('auth:api')->group(function(){
     Route::middleware('admin-auth')->group(function(){
         //User routes(admin)
         Route::resource('users',UserController::class )->only(['index','show','update','destroy']);
@@ -48,7 +48,7 @@ Route::middleware('auth:api')->group(function(){
         // CourseExam routes
         Route::resource('course-exams', CourseExamController::class)->only(['passed','notPassed']);
 
-});
+ });
 
 
 // // ExamRegistration routes(admin)

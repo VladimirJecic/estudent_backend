@@ -28,8 +28,8 @@ public function register(Request $request)
 
     // Create email
     $trimmedName = trim($input['name']);
-    $formattedName = str_replace(' ', '.', $trimmedName);
-    $generatedEmail = $formattedName . $input['indexNum'] . '@student.fon.bg.ac.rs';
+    $words = explode(' ', $trimmedName);
+    $generatedEmail = strtolower(substr($words[0], 0, 1).substr($words[count($words)-1], 0, 1) ). $input['indexNum'] . '@student.fon.bg.ac.rs';
 
     // Check if a user with the same email exists
     if (User::where('indexNum', $input['indexNum'])->exists()) {
@@ -38,6 +38,7 @@ public function register(Request $request)
 
     $input['password'] = bcrypt($input['password']);
     $input['email'] = $generatedEmail;
+    $input['role'] = 'student';
 
     $user = User::create($input);
 
@@ -45,6 +46,7 @@ public function register(Request $request)
     $result['name'] = $user->name;
     $result['email'] = $user->email;
     $result['token'] = $user->createToken('MyApp')->accessToken;
+    $result['role'] = $user->role;
 
     return $this->sendResponse($result, "\nUser Registered Successfully!");
 }
@@ -54,12 +56,13 @@ public function register(Request $request)
             'indexNum'=>$request->indexNum,
              'password'=>$request->password])){
                 $user = Auth::user();
-                $success['token'] = $user->createToken('MyApp')->accessToken;
-                $success['name'] = $user->name;
-                $success['indexNum'] = $user->indexNum;
-                $success['email'] = $user->email;
+                $result['token'] = $user->createToken('MyApp')->accessToken;
+                $result['name'] = $user->name;
+                $result['indexNum'] = $user->indexNum;
+                $result['email'] = $user->email;
+                $result['role'] = $user->role;
 
-                return $this->sendResponse($success, "\nUser Login Successful!");
+                return $this->sendResponse($result, "\nUser Login Successful!");
              }else{
                 return $this->sendError('Unauthorised.',['error'=>'Unathorized!']);
              }

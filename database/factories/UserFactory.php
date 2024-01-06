@@ -19,7 +19,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'indexNum'=> $this->faker->regexify('[0-9]{4}/2023'),
+            'indexNum'=> $this->faker->regexify('2023/[0-9]{4}'),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'role' => 'student',
