@@ -11,6 +11,9 @@ class ExamRegistration extends Model
 {
     use HasFactory;
 
+    protected $attributes = [
+        'comment' => '', // You can set any default value you prefer
+    ];
     public function courseExam()
     {
         return $this->belongsTo(CourseExam::class)->where([

@@ -28,15 +28,15 @@ Route::post('login', [AuthController::class, 'login']);
  Route::middleware('auth:api')->group(function(){
     Route::middleware('admin-auth')->group(function(){
         //User routes(admin)
-        Route::resource('users',UserController::class )->only(['index','show','update','destroy']);
+        //Route::resource('users',UserController::class )->only(['index','show','update','destroy']);
         // User registration (admin)
         Route::post('register', [AuthController::class, 'register']);
         // ExamPeriod routes (admin)
-        Route::resource('exam_periods', ExamPeriodController::class)->only(['store','destroy']);
+        //Route::resource('exam_periods', ExamPeriodController::class)->only(['store','destroy']);
         // Course routes (admin)
-         Route::resource('courses', CourseController::class)->only(['store','update','destroy']);
+        //Route::resource('courses', CourseController::class)->only(['store','update','destroy']);
         // CourseExam routes (admin)
-        Route::resource('course-exams', CourseExamController::class)->only(['update','store', 'destroy']);
+        //Route::resource('course-exams', CourseExamController::class)->only(['update','store', 'destroy']);
 
     });
         // User logout
@@ -46,7 +46,7 @@ Route::post('login', [AuthController::class, 'login']);
         // Course routes
         Route::resource('courses', CourseController::class)->only('index');
         // CourseExam routes
-        Route::resource('course-exams', CourseExamController::class)->only(['passed','notPassed']);
+        Route::resource('course-exams', CourseExamController::class)->only(['forUser']);
 
  });
 

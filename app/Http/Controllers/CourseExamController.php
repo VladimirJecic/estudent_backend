@@ -1,9 +1,13 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Models\ExamPeriod;
 use App\Models\CourseExam;
+use App\Models\ExamRegistration;
+use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Resources\CourseExamResource;
+use Validator;
 
 class CourseExamController extends BaseController
 {
@@ -31,28 +35,41 @@ class CourseExamController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function showForExam(Request $request,CourseExam $courseExam)
+    public function index(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'course_id' => 'required|integer',
-            'exam_period' => 'required|integer',
-            // 'hall' => 'required|string',
-            // 'examDateTime' => 'required|date_format:Y-m-d H:i:s',
+            'examPeriod' => ['required', 'string', 'exists:exam_periods,name'],
+            'indexNum' => ['required', 'string', 'exists:users,indexNum'],
         ]);
-        $courseExam = User::find($id);
-        if(is_null($user)){
-            return $this->sendError('user not found.');
+
+        if ($validator->fails()) {
+            return $this->sendError('Validation error.', $validator->errors());
         }
-        if($validator->fails()){
-            return $this->sendError('Validation error.',$validator->errors(),400);
-        }
+
+        $input = $request->all();
+
+        // Retrieve ExamPeriod with exams
+        $examPeriod = ExamPeriod::where('name', $input['examPeriod'])->with('exams')->first();
+
+        // Retrieve User ID
+        $userId = User::where('indexNum', $input['indexNum'])->value('id');
+
+        // Retrieve user registrations with student and courseExam relationships
+        $userRegistrations = ExamRegistration::with(['student', 'courseExam'])->where('student_id', $userId);
+
+        // Retrieve passed courses
+        $passedCourses = $userRegistrations->whereBetween('mark', [6, 10])->pluck('courseExam.course_id')->toArray();
+
+        // Filter available course exams
+        $availableCourseExams =  $examPeriod->exams->reject(fn ($courseExam) => 
+            in_array($courseExam->course_id, $passedCourses)
+        );
+        $result['availableCourseExams'] = CourseExamResource::collection($availableCourseExams);
+
+        return $this->sendResponse($result, 'Available CourseExams retrieved successfully');
     }
-    public function passed(Request $request){
-    
 
 
-
-    }
     /**
      * Show the form for editing the specified resource.
      */
