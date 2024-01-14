@@ -39,7 +39,6 @@ class CourseExamController extends BaseController
     {
         $validator = Validator::make($request->all(), [
             'examPeriod' => ['required', 'string', 'exists:exam_periods,name'],
-            'indexNum' => ['required', 'string', 'exists:users,indexNum'],
         ]);
 
         if ($validator->fails()) {
@@ -51,23 +50,24 @@ class CourseExamController extends BaseController
         // Retrieve ExamPeriod with exams
         $examPeriod = ExamPeriod::where('name', $input['examPeriod'])->with('exams')->first();
 
-        // Retrieve User ID
-        $userId = User::where('indexNum', $input['indexNum'])->value('id');
+        // Retrieve authenticated user
+        $authenticatedUser = auth()->user();
 
         // Retrieve user registrations with student and courseExam relationships
-        $userRegistrations = ExamRegistration::with(['student', 'courseExam'])->where('student_id', $userId);
+        $userRegistrations = ExamRegistration::with(['student', 'courseExam'])->where('student_id', $authenticatedUser->id);
 
         // Retrieve passed courses
-        $passedCourses = $userRegistrations->whereBetween('mark', [6, 10])->pluck('courseExam.course_id')->toArray();
+         $passedExams = $userRegistrations->count() > 0 ? $userRegistrations->whereBetween('mark', [6, 10])->pluck('courseExam.course_id')->toArray() : [];
 
-        // Filter available course exams
-        $availableCourseExams =  $examPeriod->exams->reject(fn ($courseExam) => 
-            in_array($courseExam->course_id, $passedCourses)
+        // Filter remaining course exams
+        $remainingExams =  $examPeriod->exams->reject(fn ($courseExam) => 
+            in_array($courseExam->course_id, $passedExams)
         );
-        $result['availableCourseExams'] = CourseExamResource::collection($availableCourseExams);
+        $result['availableCourseExams'] = CourseExamResource::collection($remainingExams);
 
-        return $this->sendResponse($result, 'Available CourseExams retrieved successfully');
+        return $this->sendResponse($result, 'Remaining CourseExams for '.$examPeriod->name.' retrieved successfully');
     }
+
 
 
     /**

@@ -29,7 +29,7 @@ public function register(Request $request)
     // Create email
     $trimmedName = trim($input['name']);
     $words = explode(' ', $trimmedName);
-    $generatedEmail = strtolower(substr($words[0], 0, 1).substr($words[count($words)-1], 0, 1) ). $input['indexNum'] . '@student.fon.bg.ac.rs';
+    $generatedEmail = strtolower(substr($words[0], 0, 1).substr($words[count($words)-1], 0, 1) ). str_replace('/', '', $input['indexNum']) . '@student.fon.bg.ac.rs';
 
     // Check if a user with the same email exists
     if (User::where('indexNum', $input['indexNum'])->exists()) {

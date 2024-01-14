@@ -46,7 +46,7 @@ Route::post('login', [AuthController::class, 'login']);
         // Course routes
         Route::resource('courses', CourseController::class)->only('index');
         // CourseExam routes
-        Route::resource('course-exams', CourseExamController::class)->only(['forUser']);
+        Route::resource('course-exams', CourseExamController::class)->only(['index']);
 
  });
 
