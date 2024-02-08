@@ -34,12 +34,12 @@ class User extends Authenticatable
     
     public function examRegistrations()
     {
-        return $this->hasMany(ExamRegistration::class,'student_id');
+        return $this->hasMany(ExamRegistration::class,'student_id','id');
     }
 
     public function signedRegistrations()
     {
-        return $this->hasMany(ExamRegistration::class,'signed_by_id');
+        return $this->hasMany(ExamRegistration::class,'signed_by_id','id');
     }
     /**
      * The attributes that should be hidden for serialization.

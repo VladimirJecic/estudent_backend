@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Models\ExamPeriod;
 use App\Models\CourseExam;
 use App\Models\ExamRegistration;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Resources\CourseExamResource;
 use Validator;
@@ -48,13 +47,13 @@ class CourseExamController extends BaseController
         $input = $request->all();
 
         // Retrieve ExamPeriod with exams
-        $examPeriod = ExamPeriod::where('name', $input['examPeriod'])->with('exams')->first();
+        $examPeriod = ExamPeriod::with('exams')->where('name', $input['examPeriod'])->first();
 
         // Retrieve authenticated user
         $authenticatedUser = auth()->user();
 
         // Retrieve user registrations with student and courseExam relationships
-        $userRegistrations = ExamRegistration::with(['student', 'courseExam'])->where('student_id', $authenticatedUser->id);
+        $userRegistrations = ExamRegistration::with('student','courseExam')->where('student_id', $authenticatedUser->id)->get();
 
         // Retrieve passed courses
          $passedExams = $userRegistrations->count() > 0 ? $userRegistrations->whereBetween('mark', [6, 10])->pluck('courseExam.course_id')->toArray() : [];
@@ -63,7 +62,7 @@ class CourseExamController extends BaseController
         $remainingExams =  $examPeriod->exams->reject(fn ($courseExam) => 
             in_array($courseExam->course_id, $passedExams)
         );
-        $result['availableCourseExams'] = CourseExamResource::collection($remainingExams);
+        $result['remainingCourseExams'] = CourseExamResource::collection($remainingExams);
 
         return $this->sendResponse($result, 'Remaining CourseExams for '.$examPeriod->name.' retrieved successfully');
     }
