@@ -18,11 +18,12 @@ class ExamRegistrationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'exam'=> new CourseExamResource($this->courseExam),
+            'courseExam'=> new CourseExamResource($this->courseExam),
             'student'=>new UserResource($this->student),
-            'signed_by' => $this->signed_by ? new UserResource($this->signed_by) : null,
+            'signed_by' => $this->signedBy ? new UserResource($this->signedBy) : null,
             'mark' => $this->mark,
             'comment'=>$this->comment,
+            "updated_at"=>$this->updated_at
         ];
     }
 }

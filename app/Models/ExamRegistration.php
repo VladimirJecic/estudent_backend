@@ -26,8 +26,9 @@
         protected $primaryKey = ['course_id', 'exam_period_id','student_id'];
         protected $attributes = [
             'course_id',
-             'exam_period_id',
-             'student_id',
+            'exam_period_id',
+            'student_id', 
+            'signed_by_id', 
             'comment' => '', // You can set any default value you prefer
         ];  
         public function courseExam()

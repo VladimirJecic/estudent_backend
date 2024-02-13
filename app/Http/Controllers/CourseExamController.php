@@ -62,7 +62,7 @@ class CourseExamController extends BaseController
         $remainingExams =  $examPeriod->exams->reject(fn ($courseExam) => 
             in_array($courseExam->course_id, $passedExams)
         );
-        $result['remainingCourseExams'] = CourseExamResource::collection($remainingExams);
+        $result['courseExams'] = CourseExamResource::collection($remainingExams);
 
         return $this->sendResponse($result, 'Remaining CourseExams for '.$examPeriod->name.' retrieved successfully');
     }

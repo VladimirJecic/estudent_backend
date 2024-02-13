@@ -33,7 +33,16 @@ class UserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+       return $this->role == 'student' ?
+         [
+            'indexNum' => $this->indexNum,
+            'name' => $this->name,
+            'email' => $this->email,
+            'role'=>$this->role,
+            'courses'=>$this->courses ?? [],
+            'examRegistrations'=>$this->examRegistrations ?? [],
+         ]:
+         [
             'indexNum' => $this->indexNum,
             'name' => $this->name,
             'email' => $this->email,
@@ -41,8 +50,9 @@ class UserResource extends JsonResource
             // 'updated_at' => $this->updated_at,
             'role'=>$this->role,
             'courses'=>$this->courses ?? [],
-            'examRegistrations'=>$this->examRegistrations ?? [],
             'signedRegistrations'=>$this->signedRegistrations ?? [],
-        ];
+         ];
+
+
     }
 }

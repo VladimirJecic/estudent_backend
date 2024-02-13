@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\ExamPeriodController;
+use App\Http\Controllers\ExamRegistrationController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CourseExamController;
 use App\Http\Middleware\AdminMiddleware;
@@ -44,9 +44,10 @@ Route::post('login', [AuthController::class, 'login']);
         // ExamPeriod routes
         Route::resource('exam-periods', ExamPeriodController::class)->only(['index']);
         // Course routes
-        Route::resource('courses', CourseController::class)->only('index');
+        // Route::resource('courses', CourseController::class)->only('index');
         // CourseExam routes
         Route::resource('course-exams', CourseExamController::class)->only(['index']);
+        Route::resource('exam-registrations', ExamRegistrationController::class)->only(['index']);
 
  });
 
