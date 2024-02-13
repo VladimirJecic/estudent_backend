@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 use App\Models\ExamPeriod;
 use App\Models\CourseExam;
 use App\Models\ExamRegistration;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Http\Resources\CourseExamResource;
 use Validator;
+use Carbon\Carbon;
 
 class CourseExamController extends BaseController
 {
@@ -68,7 +70,27 @@ class CourseExamController extends BaseController
     }
 
 
+    public function registable(Request $request)
+    {
+        $currentDate = Carbon::now();
+        $examPeriods = ExamPeriod::with('exams')->where('dateRegisterStart', '<=', $currentDate)
+        ->where('dateRegisterEnd', '>=', $currentDate)
+        ->get();
+               // Retrieve authenticated user
+        $authenticatedUser = auth()->user();
 
+        // Retrieve user registrations with student and courseExam relationships
+        $courseExamsWithRegistrations = ExamRegistration::with('student','courseExam')->where('student_id', $authenticatedUser->id)->pluck('course_id')->toArray();
+        $allExams = $examPeriods->flatMap(fn ($examPeriod) => $examPeriod->exams);
+
+        $courseExamsWithoutRegistrations  = $allExams->reject(fn ($courseExam) => 
+            in_array($courseExam->course_id, $courseExamsWithRegistrations)
+        );
+
+        $result['courseExams'] = CourseExamResource::collection($courseExamsWithoutRegistrations);
+
+        return $this->sendResponse($result, 'Registable CourseExams retrieved successfully');
+    }
     /**
      * Show the form for editing the specified resource.
      */

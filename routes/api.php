@@ -47,6 +47,7 @@ Route::post('login', [AuthController::class, 'login']);
         // Route::resource('courses', CourseController::class)->only('index');
         // CourseExam routes
         Route::resource('course-exams', CourseExamController::class)->only(['index']);
+        Route::get('course-exams/registable', [CourseExamController::class,'registable']);
         Route::resource('exam-registrations', ExamRegistrationController::class)->only(['index']);
 
  });
