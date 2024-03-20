@@ -39,16 +39,11 @@ Route::post('login', [AuthController::class, 'login']);
         //Route::resource('course-exams', CourseExamController::class)->only(['update','store', 'destroy']);
 
     });
-        // User logout
         Route::post('logout', [AuthController::class, 'logout']);
-        // ExamPeriod routes
         Route::resource('exam-periods', ExamPeriodController::class)->only(['index']);
-        // Course routes
-        // Route::resource('courses', CourseController::class)->only('index');
-        // CourseExam routes
-        Route::resource('course-exams', CourseExamController::class)->only(['index']);
-        Route::get('course-exams/registable', [CourseExamController::class,'registable']);
-        Route::resource('exam-registrations', ExamRegistrationController::class)->only(['index']);
+        Route::get('exam-periods/{examPeriod}/course-exams', [CourseExamController::class, 'getRemainingCourseExams']);
+        Route::get('course-exams/registable', [CourseExamController::class,'getRegistableCourseExams']);
+        Route::resource('exam-registrations', ExamRegistrationController::class)->only(['index','store']);
 
  });
 

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\ExamPeriod;
-use App\Models\CourseExam;
 use App\Models\ExamRegistration;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Http\Resources\CourseExamResource;
 use Validator;
@@ -12,57 +10,30 @@ use Carbon\Carbon;
 
 class CourseExamController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
-     */
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
      */
-    public function index(Request $request)
+    public function getRemainingCourseExams(Request $request, $examPeriod)
     {
-        $validator = Validator::make($request->all(), [
-            'examPeriod' => ['required', 'string', 'exists:exam_periods,name'],
-        ]);
+        $validator = Validator::make(['examPeriod' => $examPeriod], [
+        'examPeriod' => ['required', 'string', 'exists:exam_periods,name'],
+         ]);
 
-        if ($validator->fails()) {
+        if($validator->fails()){
             return $this->sendError('Validation error.', $validator->errors());
         }
 
-        $input = $request->all();
+        $examPeriod = ExamPeriod::with('exams')->where('name',$examPeriod)->first();
 
-        // Retrieve ExamPeriod with exams
-        $examPeriod = ExamPeriod::with('exams')->where('name', $input['examPeriod'])->first();
+        $student = auth()->user();
 
-        // Retrieve authenticated user
-        $authenticatedUser = auth()->user();
+        $examAttempts = ExamRegistration::with('student','courseExam')->where('student_id', $student->id)->get();
 
-        // Retrieve user registrations with student and courseExam relationships
-        $userRegistrations = ExamRegistration::with('student','courseExam')->where('student_id', $authenticatedUser->id)->get();
+        $successfulAttempts = $examAttempts->count() > 0 ? $examAttempts->whereBetween('mark', [6, 10])->pluck('courseExam.course_id')->toArray() : [];
 
-        // Retrieve passed courses
-         $passedExams = $userRegistrations->count() > 0 ? $userRegistrations->whereBetween('mark', [6, 10])->pluck('courseExam.course_id')->toArray() : [];
-
-        // Filter remaining course exams
         $remainingExams =  $examPeriod->exams->reject(fn ($courseExam) => 
-            in_array($courseExam->course_id, $passedExams)
+            in_array($courseExam->course_id, $successfulAttempts)
         );
         $result['courseExams'] = CourseExamResource::collection($remainingExams);
 
@@ -70,48 +41,26 @@ class CourseExamController extends BaseController
     }
 
 
-    public function registable(Request $request)
+    public function getRegistableCourseExams(Request $request)
     {
         $currentDate = Carbon::now();
         $examPeriods = ExamPeriod::with('exams')->where('dateRegisterStart', '<=', $currentDate)
         ->where('dateRegisterEnd', '>=', $currentDate)
         ->get();
-               // Retrieve authenticated user
-        $authenticatedUser = auth()->user();
+             
+        $student = auth()->user();
 
-        // Retrieve user registrations with student and courseExam relationships
-        $courseExamsWithRegistrations = ExamRegistration::with('student','courseExam')->where('student_id', $authenticatedUser->id)->pluck('course_id')->toArray();
-        $allExams = $examPeriods->flatMap(fn ($examPeriod) => $examPeriod->exams);
+        $courseExams = $examPeriods->flatMap(fn ($examPeriod) => $examPeriod->exams);
+        $examRegistrations = ExamRegistration::with('student','courseExam')->where('student_id', $student->id);
 
-        $courseExamsWithoutRegistrations  = $allExams->reject(fn ($courseExam) => 
-            in_array($courseExam->course_id, $courseExamsWithRegistrations)
+        $courseExamsWithoutRegistrations  = $courseExams->reject(fn ($courseExam) => 
+            in_array($courseExam->course_id, $examRegistrations->pluck('course_id')->toArray())
         );
 
         $result['courseExams'] = CourseExamResource::collection($courseExamsWithoutRegistrations);
 
         return $this->sendResponse($result, 'Registable CourseExams retrieved successfully');
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(CourseExam $courseExam)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, CourseExam $courseExam)
-    {
-        //
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(CourseExam $courseExam)
-    {
-        //
-    }
 }

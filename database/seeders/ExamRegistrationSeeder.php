@@ -16,7 +16,7 @@ class ExamRegistrationSeeder extends Seeder
         ExamRegistration::factory()->count(10)->create();
 
         // Reset the counter with a random value
-        ExamRegistrationFactory::$counter = rand(1, 10);
+        ExamRegistrationFactory::$counter = rand(2, 10);
 
         // Seed the next 10, using the counter modulo 11
         ExamRegistration::factory()->count(10)->create();

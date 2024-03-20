@@ -28,8 +28,9 @@
             'course_id',
             'exam_period_id',
             'student_id', 
+            'mark',
             'signed_by_id', 
-            'comment' => '', // You can set any default value you prefer
+            'comment' => '',
         ];  
         public function courseExam()
         {   

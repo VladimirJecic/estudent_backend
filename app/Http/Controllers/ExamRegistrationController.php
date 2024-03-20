@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\ExamRegistrationResource;
 use App\Models\ExamRegistration;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class ExamRegistrationController extends BaseController
 {
@@ -13,39 +14,59 @@ class ExamRegistrationController extends BaseController
      */
 public function index(Request $request)
     {
-        // Retrieve authenticated user
-        $authenticatedUser = auth()->user();
 
-        // Retrieve user registrations with student and courseExam relationships
-        $userRegistrations = ExamRegistration::with('student','courseExam','signedBy')->where('student_id', $authenticatedUser->id)->get();
+        $passed = isset($_GET['passed']) ? $_GET['passed'] : false;
+        $failed = isset($_GET['failed']) ? $_GET['failed'] : false;
+        $notGraded = isset($_GET['notGraded']) ? $_GET['notGraded'] : false;
 
-        // Retrieve passed courses
-        $passedExamRegistrations = $userRegistrations->count() > 0 ? $userRegistrations->whereBetween('mark', [6, 10]) : [];
+        $student = auth()->user();
 
-        foreach($passedExamRegistrations as $er){
+        $userRegistrations = ExamRegistration::with('student','courseExam','signedBy')->where('student_id', $student->id)->get();
+        $marks = [];
+        if($passed){
+            $marks = array_merge($marks, [6,7,8,9,10]);
+        }
+        if($failed){
+            $marks = array_merge($marks, [5]);
+        }
+        if($notGraded){
+            $marks = array_merge($marks, [-1]);
+        }
+        $wantedRegistrations = $userRegistrations->count() > 0 ? $userRegistrations->whereIn('mark', $marks) : [];
+
+        foreach($wantedRegistrations as $er){
                   $er->courseExam->load('examPeriod');
         }
 
-        $result['successfulExamRegistrations'] = ExamRegistrationResource::collection($passedExamRegistrations);
+        $result['examRegistrations'] = ExamRegistrationResource::collection($wantedRegistrations);
 
-        return $this->sendResponse($result, 'Exam registrations with passing grades retrieved successfully');
+        return $this->sendResponse($result, 'Exam registrations retrieved successfully');
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'course_id' => 'required|integer',
+            'exam_period_id' => 'required|integer',
+            'student_id' => 'required|integer',
+
+        ]);
+        if ($validator->fails()) {
+            return $this->sendError('Validation error.', $validator->errors(), 400);
+        }
+        $examRegistration = ExamRegistration::create([
+            'course_id' => $request->course_id,
+            'exam_period_id' => $request->exam_period_id,
+            'student_id' => $request->student_id,
+            'mark' => -1,
+        ]);
+
+        return $this->sendResponse(message: 'ExamRegistration is stored successfully.');
+   
     }
 
     /**
