@@ -19,7 +19,7 @@ class CourseExam extends Model
     ];
     protected $primaryKey = ['course_id', 'exam_period_id'];
     protected $fillable = [
-        'course_id',
+        'id',
         'exam_period_id',
         'examDateTime',
         'hall',

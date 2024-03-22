@@ -5,8 +5,8 @@ use Laravel\Passport\HasApiTokens;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\UserResource;
 use Validator;
-
 class AuthController extends BaseController
 {
     //
@@ -21,7 +21,7 @@ public function register(Request $request)
     ]);
 
     if ($validator->fails()) {
-        return $this->sendError('Validation error.', $validator->errors());
+        return $this->sendError('Validation error.', $validator->errors(),400);
     }
 
     $input = $request->all();
@@ -56,13 +56,9 @@ public function register(Request $request)
             'indexNum'=>$request->indexNum,
              'password'=>$request->password])){
                 $user = Auth::user();
-                $result['token'] = $user->createToken('MyApp')->accessToken;
-                $result['name'] = $user->name;
-                $result['indexNum'] = $user->indexNum;
-                $result['email'] = $user->email;
-                $result['role'] = $user->role;
+                $user->token = $user->createToken('MyApp')->accessToken;
 
-                return $this->sendResponse($result, "\nUser Login Successful!");
+                return $this->sendResponse(new UserResource($user), "\nUser Login Successful!");
              }else{
                 return $this->sendError('Unauthorised.',['error'=>'Unathorized!']);
              }

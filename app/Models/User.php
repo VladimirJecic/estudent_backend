@@ -21,11 +21,13 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'indexNum',
         'name',
         'email',
         'password',
         'role',
+        'token'
     ];
     public function courses()
     {

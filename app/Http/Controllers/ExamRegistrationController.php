@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ExamRegistrationResource;
+use App\Models\CourseExam;
 use App\Models\ExamRegistration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -58,14 +59,24 @@ public function index(Request $request)
         if ($validator->fails()) {
             return $this->sendError('Validation error.', $validator->errors(), 400);
         }
-        $examRegistration = ExamRegistration::create([
-            'course_id' => $request->course_id,
-            'exam_period_id' => $request->exam_period_id,
-            'student_id' => $request->student_id,
-            'mark' => -1,
-        ]);
+        
+        $courseExam = CourseExam::where('course_id',$request->course_id)->where('exam_period_id', $request->exam_period_id);
+        $examRegistration = ExamRegistration::where('course_id',$request->course_id)->where('exam_period_id', $request->exam_period_id)->where('student_id',$request->student_id);
+        if(!$courseExam->exists()){
+            return $this->sendError('Validation error', 'CourseExam with provided course_id:'.$request->course_id.", and exam_period_id:".$request->exam_period_id." doesn't exist");
+        }
+        if($examRegistration->exists()){
+            return $this->sendError('Validation error', 'ExamRegistration with provided course_id:'.$request->course_id.", and exam_period_id:".$request->exam_period_id." for this student already exist");
+        }
 
-        return $this->sendResponse(message: 'ExamRegistration is stored successfully.');
+        $examRegistration = new ExamRegistration();
+        $examRegistration->course_id = $request->course_id;
+        $examRegistration->exam_period_id = $request->exam_period_id;
+        $examRegistration->student_id = $request->student_id;
+        $examRegistration->mark = $request->mark != null ? $request->mark: 5;
+        $examRegistration->save();
+         
+        return $this->sendResponse([],message: 'ExamRegistration stored successfully.',code: 201);
    
     }
 

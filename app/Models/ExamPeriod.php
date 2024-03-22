@@ -11,6 +11,7 @@ class ExamPeriod extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'id',
         'dateRegisterStart',
         'dateRegisterEnd',
         'dateStart',

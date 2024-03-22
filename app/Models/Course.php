@@ -11,7 +11,9 @@ use App\Models\CourseExam;
 class Course extends Model
 {
     use HasFactory;
+
     protected $fillable = [
+        'course_id',
         'name',
         'semester',
         'espb',

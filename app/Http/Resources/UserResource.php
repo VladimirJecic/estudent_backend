@@ -35,20 +35,22 @@ class UserResource extends JsonResource
     {
        return $this->role == 'student' ?
          [
+            'id'=> $this->id,
             'indexNum' => $this->indexNum,
             'name' => $this->name,
             'email' => $this->email,
             'role'=>$this->role,
+            'token'=>$this->token,
             'courses'=>$this->courses ?? [],
             'examRegistrations'=>$this->examRegistrations ?? [],
          ]:
          [
+            'id'=>$this->id,
             'indexNum' => $this->indexNum,
             'name' => $this->name,
             'email' => $this->email,
-            // 'created_at' => $this->created_at,
-            // 'updated_at' => $this->updated_at,
             'role'=>$this->role,
+            'token'=>$this->token,
             'courses'=>$this->courses ?? [],
             'signedRegistrations'=>$this->signedRegistrations ?? [],
          ];
