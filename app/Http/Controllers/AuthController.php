@@ -58,7 +58,7 @@ public function register(Request $request)
                 $user = Auth::user();
                 $user->token = $user->createToken('MyApp')->accessToken;
 
-                return $this->sendResponse(new UserResource($user), "\nUser Login Successful!");
+                return $this->sendResponse($user, "\nUser Login Successful!");
              }else{
                 return $this->sendError('Unauthorised.',['error'=>'Unathorized!']);
              }

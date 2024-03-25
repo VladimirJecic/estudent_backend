@@ -40,7 +40,6 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'role'=>$this->role,
-            'token'=>$this->token,
             'courses'=>$this->courses ?? [],
             'examRegistrations'=>$this->examRegistrations ?? [],
          ]:
@@ -50,7 +49,6 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'role'=>$this->role,
-            'token'=>$this->token,
             'courses'=>$this->courses ?? [],
             'signedRegistrations'=>$this->signedRegistrations ?? [],
          ];
