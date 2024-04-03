@@ -25,9 +25,15 @@
         ];
         protected $primaryKey = ['course_id', 'exam_period_id','student_id'];
         protected $attributes = [
-            'mark'=>-1,
+            'mark'=> 5,
             'comment' => '',
+            'signed_by_id'=> NULL,
         ];  
+        protected $fillable = [
+            'mark',
+            'comment',
+            'signed_by_id',
+        ];
         public function courseExam()
         {   
             return $this->belongsTo(CourseExam::class,['course_id','exam_period_id'],

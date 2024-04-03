@@ -25,17 +25,23 @@ class CourseExamController extends BaseController
         }
 
         $examPeriod = ExamPeriod::with('exams')->where('name',$examPeriod)->first();
-
+        
         $student = auth()->user();
+        
+        $enrolledCourses = $student->courses()->pluck('id')->toArray();
+
+        $courseExams_where_enrolled = $examPeriod->exams->reject(fn ($courseExam)=>
+            !in_array($courseExam->course_id,$enrolledCourses)
+        );
 
         $examAttempts = ExamRegistration::with('student','courseExam')->where('student_id', $student->id)->get();
 
         $successfulAttempts = $examAttempts->count() > 0 ? $examAttempts->whereBetween('mark', [6, 10])->pluck('courseExam.course_id')->toArray() : [];
 
-        $remainingExams =  $examPeriod->exams->reject(fn ($courseExam) => 
+        $courseExams_remaining =  $courseExams_where_enrolled->reject(fn ($courseExam) => 
             in_array($courseExam->course_id, $successfulAttempts)
         );
-        $result['courseExams'] = CourseExamResource::collection($remainingExams);
+        $result['courseExams'] = CourseExamResource::collection($courseExams_remaining);
 
         return $this->sendResponse($result, 'Remaining CourseExams for '.$examPeriod->name.' retrieved successfully');
     }

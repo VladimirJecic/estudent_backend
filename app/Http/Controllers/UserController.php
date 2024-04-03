@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends BaseController
 {
-
+    
     /**
      * Get all users.
      *
