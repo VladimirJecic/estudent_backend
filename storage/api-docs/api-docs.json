@@ -13,9 +13,7 @@
     "paths": {
         "/login": {
             "post": {
-                "tags": [
-                    "Login"
-                ],
+                "tags": ["Login"],
                 "summary": "User login",
                 "operationId": "login",
                 "parameters": [
@@ -46,5 +44,29 @@
                 }
             }
         }
-    }
+    },
+    "components": {
+        "securitySchemes": {
+            "passport": {
+                "type": "oauth2",
+                "description": "Laravel passport oauth2 security.",
+                "in": "header",
+                "scheme": "https",
+                "flows": {
+                    "password": {
+                        "authorizationUrl": "http://localhost/oauth/authorize",
+                        "tokenUrl": "http://localhost/oauth/token",
+                        "refreshUrl": "http://localhost/token/refresh",
+                        "scopes": []
+                    }
+                }
+            }
+        }
+    },
+    "security": [
+        {
+            "oauth2_security_example": ["read", "write"],
+            "passport": []
+        }
+    ]
 }

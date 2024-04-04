@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExamPeriodController;
 use App\Http\Controllers\ExamRegistrationController;
 use App\Http\Controllers\CourseExamController;
+use OpenApi\Annotations;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -16,7 +17,39 @@ use App\Http\Controllers\CourseExamController;
 |
 */
 
-// User login
+/**
+ * @OA\Post(
+ *     path="/login",
+ *     tags={"Login"},
+ *     summary="User login",
+ *     operationId="login",
+ *   @OA\Parameter(
+ *      name="indexNum",
+ *      in="query",
+ *      required=true,
+ *      @OA\Schema(
+ *           type="string"
+ *      )
+ *   ),
+ *   @OA\Parameter(
+ *      name="password",
+ *      in="query",
+ *      required=true,
+ *      @OA\Schema(
+ *          type="string"
+ *      )
+ *   ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User Login Successful!",
+ *    
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized",
+ *     )
+ * )
+ */
 Route::post('login', [AuthController::class, 'login']);
 
 

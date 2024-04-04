@@ -67,13 +67,12 @@ class ExamRegistrationController extends BaseController
     public function forGrading(Request $request){
             $admin= auth()->user();
             $courses = $admin->courses()->get();
-            $courseExams = null;
-            $examRegistrations = null;
+            $examRegistrations = collect([]);
             foreach($courses as $c){
-                $courseExams[] = $c->courses()->get();
-            }
-            foreach($courseExams as $ce){
-                $examRegistrations[] = $ce->examRegistrations()->where('signed_by_id','=', null)->get();
+                $courseExams = $c->courseExams()->get();
+                foreach($courseExams as $ce){
+                 $examRegistrations = $examRegistrations->concat($ce->examRegistrations()->where('signed_by_id','=', null)->get());
+                }
             }
 
             $result['examRegistrations'] = ExamRegistrationResource::collection($examRegistrations);
@@ -144,9 +143,9 @@ class ExamRegistrationController extends BaseController
         ])->first();
 
         if ($examRegistration) {
-            $examRegistration->mark = isset($_GET['mark']) ?  $request->mark :  $examRegistration->mark ;
-            $examRegistration->comment = isset($_GET['comment']) ?  $request->comment :  $examRegistration->comment ;
-            $examRegistration->signed_by_id = isset($_GET['signed_by_id']) ?  $request->signed_by_id :  $examRegistration->signed_by_id ;
+            $examRegistration->mark = $request->input('mark', $examRegistration->mark);
+            $examRegistration->comment = $request->input('comment', $examRegistration->comment);
+            $examRegistration->signed_by_id = $request->input('signed_by_id', $examRegistration->signed_by_id);
             $examRegistration->save();
             return $this->sendResponse(code: 204);
         } else {
