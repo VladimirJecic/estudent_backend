@@ -9,8 +9,61 @@ use App\Http\Resources\UserResource;
 use Validator;
 class AuthController extends BaseController
 {
-    //
 
+     /**
+     * @OA\Post(
+     *     path="/register",
+     *     tags={"Admin Routes"},
+     *     summary="Register new user",
+     *   @OA\Parameter(
+     *      name="indexNum",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *   @OA\Parameter(
+     *      name="name",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *   @OA\Parameter(
+     *      name="password",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *          type="string"
+     *      )
+     *   ),
+     *   @OA\Parameter(
+     *      name="confirmPassword",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *          type="string"
+     *      )
+     *   ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="User Registered Successfully!",
+     *    
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation errors:...",
+     *    
+     *     ),
+     *     @OA\Response(
+     *         response=409,
+     *         description="User with the same indexNum already exists.",
+     *    
+     *     ),
+     * )
+     */
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -26,15 +79,14 @@ class AuthController extends BaseController
 
         $input = $request->all();
 
-        // Create email
+        if (User::where('indexNum', $input['indexNum'])->exists()) {
+            return $this->sendError('User with the same indexNum already exists.', [], 409);
+        }
+
         $trimmedName = trim($input['name']);
         $words = explode(' ', $trimmedName);
         $generatedEmail = strtolower(substr($words[0], 0, 1).substr($words[count($words)-1], 0, 1) ). str_replace('/', '', $input['indexNum']) . '@student.fon.bg.ac.rs';
 
-        // Check if a user with the same email exists
-        if (User::where('indexNum', $input['indexNum'])->exists()) {
-            return $this->sendError('User with the same indexNum already exists.', [], 409); // 409 Conflict status code
-        }
 
         $input['password'] = bcrypt($input['password']);
         $input['email'] = $generatedEmail;
@@ -48,10 +100,41 @@ class AuthController extends BaseController
         $result['token'] = $user->createToken('MyApp')->accessToken;
         $result['role'] = $user->role;
 
-        return $this->sendResponse($result, "\nUser Registered Successfully!");
+        return $this->sendResponse($result, "User Registered Successfully!",201);
     }
 
-
+     /**
+     * @OA\Post(
+     *     path="/login",
+     *     tags={"Common Routes"},
+     *     summary="User login",
+     *   @OA\Parameter(
+     *      name="indexNum",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *   @OA\Parameter(
+     *      name="password",
+     *      in="query",
+     *      required=true,
+     *      @OA\Schema(
+     *          type="string"
+     *      )
+     *   ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="User Login Successful!",
+     *    
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *     )
+     * )
+     */
     public function login(Request $request){
         $validator = Validator::make($request->all(), [
             'indexNum' => 'required|string',
@@ -72,11 +155,27 @@ class AuthController extends BaseController
                 return $this->sendError(['error'=>'Unathorized!'],'Unauthorised',401);
              }
     }
+     /**
+     * @OA\Post(
+     *     path="/logout",
+     *     tags={"Common Routes"},
+     *     summary="Logouts user, by deleting its token",
+     *     @OA\Response(
+     *         response=200,
+     *         description="Success: You have logged out and the token was deleted",
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Error: You are not currently logged in",
+     *     )
+     * )
+     */
     public function logout()
     {
+        if(auth()->user()== null){
+            return $this->sendError(error_messages:'Error: You are not currently logged in',code:400);
+        }
         auth()->user()->tokens()->delete();
-        return [
-            'message' => 'Success: You have logged out and the token was deleted'
-        ];
+        return $this->sendResponse(message:'Success: You have logged out and the token was deleted');
     }
 }

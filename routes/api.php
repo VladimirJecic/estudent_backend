@@ -5,7 +5,6 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExamPeriodController;
 use App\Http\Controllers\ExamRegistrationController;
 use App\Http\Controllers\CourseExamController;
-use OpenApi\Annotations;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -17,54 +16,21 @@ use OpenApi\Annotations;
 |
 */
 
-/**
- * @OA\Post(
- *     path="/login",
- *     tags={"Login"},
- *     summary="User login",
- *     operationId="login",
- *   @OA\Parameter(
- *      name="indexNum",
- *      in="query",
- *      required=true,
- *      @OA\Schema(
- *           type="string"
- *      )
- *   ),
- *   @OA\Parameter(
- *      name="password",
- *      in="query",
- *      required=true,
- *      @OA\Schema(
- *          type="string"
- *      )
- *   ),
- *     @OA\Response(
- *         response=200,
- *         description="User Login Successful!",
- *    
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="Unauthorized",
- *     )
- * )
- */
 Route::post('login', [AuthController::class, 'login']);
+Route::post('logout', [AuthController::class, 'logout']);
 
 
  Route::middleware('auth:api')->group(function(){
      Route::resource('exam-periods', ExamPeriodController::class)->only(['index']);
      Route::resource('exam-registrations', ExamRegistrationController::class)->only(['index','store']);
+     Route::delete('/exam-registrations', [ExamRegistrationController::class,'destroy']);
      Route::get('course-exams/registable', [CourseExamController::class,'getRegistableCourseExams']);
      Route::get('course-exams/{examPeriod}', [CourseExamController::class, 'getRemainingCourseExams']);
      Route::get('exam-registrations/notGraded',[ExamRegistrationController::class,'notGraded']);
-     Route::post('logout', [AuthController::class, 'logout']);
-     Route::delete('/exam-registrations', [ExamRegistrationController::class,'destroy']);
     
      Route::middleware('admin-auth')->group(function(){
         Route::post('register', [AuthController::class, 'register']);
-        Route::get('exam-registrations/forGrading',[ExamRegistrationController::class,'forGrading']);
+        Route::get('exam-registrations/notGraded/all',[ExamRegistrationController::class,'notGraded_all']);
         Route::put('/exam-registrations', [ExamRegistrationController::class,'update']);
      });
 

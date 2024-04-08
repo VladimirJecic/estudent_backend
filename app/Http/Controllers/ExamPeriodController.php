@@ -9,8 +9,29 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Validator;
 class ExamPeriodController extends BaseController
 {
-    /**
-     * Display a listing of the resource.
+
+     /**
+     * @OA\Get(
+     *     path="/exam-periods",
+     *     tags={"Common Routes"},
+     *     summary="Retrieve only currently active or all exam periods",
+     *     security={
+     *              {"passport": {*}}
+     *      },
+     *   @OA\Parameter(
+     *      name="onlyActive",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="[Active]ExamPeriods retrieved successfully",
+     *    
+     *     ),
+     * )
      */
     public function index(Request $request)
     {
@@ -37,14 +58,6 @@ class ExamPeriodController extends BaseController
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    // public function create()
-    // {
-    //     //
-    // }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
@@ -68,30 +81,6 @@ class ExamPeriodController extends BaseController
         
 
     }
-
-    /**
-     * Display the specified resource.
-     */
-    // public function show(ExamPeriod $examPeriod)
-    // {
-    //     //
-    // }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(ExamPeriod $examPeriod)
-    // {
-    //     //
-    // }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    // public function update(Request $request, ExamPeriod $examPeriod)
-    // {
-    //     //
-    // }
 
     /**
      * Remove the specified resource from storage.

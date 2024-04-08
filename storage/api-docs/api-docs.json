@@ -1,21 +1,77 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "My First API",
-        "version": "0.1"
+        "title": "Estudent",
+        "version": "1.0"
     },
     "servers": [
         {
-            "url": "http://localhost:8000/api",
-            "description": "API Server"
+            "url": "http://localhost:8000/api/",
+            "description": "Rest API Server"
         }
     ],
     "paths": {
+        "/register": {
+            "post": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Register new user",
+                "operationId": "0903f2e0df1a8857bee538fc055417f0",
+                "parameters": [
+                    {
+                        "name": "indexNum",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "password",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "confirmPassword",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User Registered Successfully!"
+                    },
+                    "400": {
+                        "description": "Validation errors:..."
+                    },
+                    "409": {
+                        "description": "User with the same indexNum already exists."
+                    }
+                }
+            }
+        },
         "/login": {
             "post": {
-                "tags": ["Login"],
+                "tags": [
+                    "Common Routes"
+                ],
                 "summary": "User login",
-                "operationId": "login",
+                "operationId": "2dd578ff7aba2721293dac66833b27d1",
                 "parameters": [
                     {
                         "name": "indexNum",
@@ -43,29 +99,356 @@
                     }
                 }
             }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Logouts user, by deleting its token",
+                "operationId": "68a6108af04af5e3bc1ea68a6c6f1299",
+                "responses": {
+                    "200": {
+                        "description": "Success: You have logged out and the token was deleted"
+                    },
+                    "400": {
+                        "description": "Error: You are not currently logged in"
+                    }
+                }
+            }
+        },
+        "/course-exams/{examPeriod}": {
+            "get": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Get all remaining course exams for exam period",
+                "operationId": "c041dc41092555c56f2529c477fcbaf5",
+                "parameters": [
+                    {
+                        "name": "examPeriod",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Remaining CourseExams for examPeriod->name retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/exam-periods": {
+            "get": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Retrieve only currently active or all exam periods",
+                "operationId": "bc30c0b9b7c202e4df857951c1e9022b",
+                "parameters": [
+                    {
+                        "name": "onlyActive",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "[Active]ExamPeriods retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/exam-registrations": {
+            "get": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Retrieve exam registrations",
+                "operationId": "exam-registrations/index",
+                "parameters": [
+                    {
+                        "name": "excludePassed",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "excludeFailed",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Exam registrations retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Update existing exam registration",
+                "operationId": "exam-registrations/update",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "exam_period_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "student_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "mark",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "comment",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "signed_by_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "Error:Forbidden"
+                    },
+                    "404": {
+                        "description": "ExamRegistration not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Store new exam registration",
+                "operationId": "exam-registrations/store",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "exam_period_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "student_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "ExamRegistration stored successfully."
+                    },
+                    "400": {
+                        "description": "Validation errors:.../CourseExam with provided course_id:x, and exam_period_id:x doesn't exist/Registration no longer in progress for given exam period"
+                    },
+                    "409": {
+                        "description": "ExamRegistration for provided course_id:x, and exam_period_id:x and student_id:x already exist"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Delete existing exam registration",
+                "operationId": "exam-registrations/destroy",
+                "parameters": [
+                    {
+                        "name": "course_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "exam_period_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "student_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": ""
+                    },
+                    "404": {
+                        "description": "ExamRegistration not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/exam-registrations/notGraded": {
+            "get": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Retrieve not graded exam registrations only for logged in/passed student",
+                "operationId": "646f038049365a774c94adca10350066",
+                "parameters": [
+                    {
+                        "name": "student_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Not graded exam registrations retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Student with id student_id not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/exam-registrations/notGraded/all": {
+            "get": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Retrieve not graded exam registrations for all students",
+                "operationId": "575515c4d3f5fe326fd4c4a9bb9bd8b4",
+                "responses": {
+                    "200": {
+                        "description": "All not graded exam registrations retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "securitySchemes": {
             "passport": {
-                "type": "oauth2",
-                "description": "Laravel passport oauth2 security.",
+                "type": "apiKey",
+                "description": "trying out apikey",
                 "in": "header",
                 "scheme": "https",
-                "flows": {
-                    "password": {
-                        "authorizationUrl": "http://localhost/oauth/authorize",
-                        "tokenUrl": "http://localhost/oauth/token",
-                        "refreshUrl": "http://localhost/token/refresh",
-                        "scopes": []
-                    }
-                }
+                "name": "Authorization"
             }
         }
     },
     "security": [
         {
-            "oauth2_security_example": ["read", "write"],
+            "oauth2_security_example": [
+                "read",
+                "write"
+            ],
             "passport": []
         }
     ]

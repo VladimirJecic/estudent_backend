@@ -11,8 +11,28 @@ use Carbon\Carbon;
 class CourseExamController extends BaseController
 {
 
-    /**
-     * Display the specified resource.
+     /**
+     * @OA\Get(
+     *     path="/course-exams/{examPeriod}",
+     *     tags={"Common Routes"},
+     *     summary="Get all remaining course exams for exam period",
+     *     security={
+     *              {"passport": {*}}
+     *      },
+     *   @OA\Parameter(
+     *      name="examPeriod",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="string"
+     *      )
+     *   ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Remaining CourseExams for examPeriod->name retrieved successfully",
+     *    
+     *     ),
+     * )
      */
     public function getRemainingCourseExams(Request $request, $examPeriod)
     {
@@ -21,7 +41,7 @@ class CourseExamController extends BaseController
          ]);
 
         if($validator->fails()){
-            return $this->sendError('Validation error.', $validator->errors());
+            return $this->sendError('Validation error.', $validator->errors(),400);
         }
 
         $examPeriod = ExamPeriod::with('exams')->where('name',$examPeriod)->first();
@@ -57,9 +77,14 @@ class CourseExamController extends BaseController
         $student = auth()->user();
 
         $courseExams = $examPeriods->flatMap(fn ($examPeriod) => $examPeriod->exams);
+        $enrolledCourses = $student->courses()->pluck('id')->toArray();
+        $courseExams_where_enrolled = $courseExams->reject(fn ($courseExam)=>
+            !in_array($courseExam->course_id,$enrolledCourses)
+        );
         $examRegistrations = ExamRegistration::with('student','courseExam')->where('student_id', $student->id);
 
-        $courseExamsWithoutRegistrations  = $courseExams->reject(fn ($courseExam) => 
+
+        $courseExamsWithoutRegistrations  = $courseExams_where_enrolled->reject(fn ($courseExam) => 
             in_array($courseExam->course_id, $examRegistrations->pluck('course_id')->toArray())
         );
 

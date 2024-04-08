@@ -8,11 +8,11 @@ use Illuminate\Routing\Controller as BaseController;
 
 /**
  *  * @OA\Info(    
- *          title="My First API",
- *           version="0.1")
+ *          title="Estudent",
+ *           version="1.0")
  *  * @OA\Server(
  *      url=L5_SWAGGER_CONST_HOST,
- *      description="API Server"
+ *      description="Rest API Server"
  * )
  */
 class Controller extends BaseController
