@@ -39,7 +39,7 @@ class UserResource extends JsonResource
             'indexNum' => $this->indexNum,
             'name' => $this->name,
             'email' => $this->email,
-            'role'=>$this->role,
+            'role'=>'student',
             'courses'=>$this->courses ?? [],
             'examRegistrations'=>$this->examRegistrations ?? [],
          ]:
@@ -48,7 +48,7 @@ class UserResource extends JsonResource
             'indexNum' => $this->indexNum,
             'name' => $this->name,
             'email' => $this->email,
-            'role'=>$this->role,
+            'role'=>'admin',
             'courses'=>$this->courses ?? [],
             'signedRegistrations'=>$this->signedRegistrations ?? [],
          ];

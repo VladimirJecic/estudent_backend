@@ -68,7 +68,7 @@
         "/login": {
             "post": {
                 "tags": [
-                    "Common Routes"
+                    "Public Routes"
                 ],
                 "summary": "User login",
                 "operationId": "2dd578ff7aba2721293dac66833b27d1",
@@ -159,7 +159,7 @@
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "string"
+                            "type": "boolean"
                         }
                     }
                 ],

@@ -106,7 +106,7 @@ class AuthController extends BaseController
      /**
      * @OA\Post(
      *     path="/login",
-     *     tags={"Common Routes"},
+     *     tags={"Public Routes"},
      *     summary="User login",
      *   @OA\Parameter(
      *      name="indexNum",
@@ -148,9 +148,14 @@ class AuthController extends BaseController
             'indexNum'=>$request->indexNum,
              'password'=>$request->password])){
                 $user = Auth::user();
-                $user->token = $user->createToken('MyApp')->accessToken;
+                $result['id'] = $user->id;
+                $result['indexNum'] = $user->indexNum;
+                $result['name'] = $user->name;
+                $result['email'] = $user->email;
+                $result['role'] = $user->role;
+                $result['token'] = $user->createToken('MyApp')->accessToken;
 
-                return $this->sendResponse($user, "\nUser Login Successful!",200);
+                return $this->sendResponse($result, "\nUser Login Successful!",200);
              }else{
                 return $this->sendError(['error'=>'Unathorized!'],'Unauthorised',401);
              }

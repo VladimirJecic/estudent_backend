@@ -23,7 +23,7 @@ class ExamPeriodController extends BaseController
      *      in="query",
      *      required=false,
      *      @OA\Schema(
-     *           type="string"
+     *           type="boolean"
      *      )
      *   ),
      *     @OA\Response(

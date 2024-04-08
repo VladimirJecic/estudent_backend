@@ -17,16 +17,16 @@ use App\Http\Controllers\CourseExamController;
 */
 
 Route::post('login', [AuthController::class, 'login']);
-Route::post('logout', [AuthController::class, 'logout']);
 
 
- Route::middleware('auth:api')->group(function(){
-     Route::resource('exam-periods', ExamPeriodController::class)->only(['index']);
-     Route::resource('exam-registrations', ExamRegistrationController::class)->only(['index','store']);
-     Route::delete('/exam-registrations', [ExamRegistrationController::class,'destroy']);
-     Route::get('course-exams/registable', [CourseExamController::class,'getRegistableCourseExams']);
-     Route::get('course-exams/{examPeriod}', [CourseExamController::class, 'getRemainingCourseExams']);
-     Route::get('exam-registrations/notGraded',[ExamRegistrationController::class,'notGraded']);
+Route::middleware('auth:api')->group(function(){
+    Route::resource('exam-periods', ExamPeriodController::class)->only(['index']);
+    Route::resource('exam-registrations', ExamRegistrationController::class)->only(['index','store']);
+    Route::delete('/exam-registrations', [ExamRegistrationController::class,'destroy']);
+    Route::get('course-exams/registable', [CourseExamController::class,'getRegistableCourseExams']);
+    Route::get('course-exams/{examPeriod}', [CourseExamController::class, 'getRemainingCourseExams']);
+    Route::get('exam-registrations/notGraded',[ExamRegistrationController::class,'notGraded']);
+    Route::post('logout', [AuthController::class, 'logout']);
     
      Route::middleware('admin-auth')->group(function(){
         Route::post('register', [AuthController::class, 'register']);
