@@ -21,7 +21,7 @@ class ExamRegistrationFactory extends Factory
 
         return [
             'student_id' => $student->id,
-            'course_id' => (($courseExam->course_id + self::$counter) % 10)+1,
+            'course_id' => (($courseExam->course_id + self::$counter) % 15)+1,
             'exam_period_id' => $courseExam->exam_period_id,
             'mark' => $mark,
             'signed_by_id' => $admin->id,

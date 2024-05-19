@@ -16,24 +16,24 @@ class CourseExamFactory extends Factory
      *
      * @return array<string, mixed>
      */
+     private static $halls = range(101, 301);
+     private static $courses = [];
+     private  static $examPeriods = ExamPeriod::pluck('id');
+
+     private static $currentExamPeriod;
+
     public function definition(): array
     {
-        $courses = Course::all();
-        $examPeriods = ExamPeriod::all();
-
-        
-        
-        foreach ($examPeriods as $examPeriod) {
-             $halls = ['101', '102','103','104','105','201','202','203','204','205'];
-            foreach ($courses as $course) {
-                $this->courseExamAssociations[] = [
-                    'course_id' => $course->id,
-                    'exam_period_id' => $examPeriod->id,
-                    'examDateTime' => $this->faker->dateTimeBetween($examPeriod->dateStart, $examPeriod->dateEnd),
-                    'hall' => array_shift($halls), 
+        if(count(self::$courses)==0){
+            self::$courses = Course::pluck('id');
+            self::$currentExamPeriod = array_shift(self::$examPeriods);
+        } 
+                return [
+                    'course_id' => array_shift(self::$courses),
+                    'exam_period_id' => self::$currentExamPeriod->id,
+                    'examDateTime' => $this->faker->dateTimeBetween(self::$currentExamPeriod->dateStart, self::$currentExamPeriod->dateEnd),
+                    'hall' => array_shift(self::$halls), 
                 ];
-            }
-        }
-         return array_shift($this->courseExamAssociations);
+            
     }
 }

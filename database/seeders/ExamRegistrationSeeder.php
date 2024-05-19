@@ -13,12 +13,12 @@ class ExamRegistrationSeeder extends Seeder
     public function run(): void
     {
         // Seed the first 10 with random course_id
-        ExamRegistration::factory()->count(10)->create();
+        ExamRegistration::factory()->count(30)->create();
 
-        // Reset the counter with a random value
-        ExamRegistrationFactory::$counter = rand(2, 10);
+        // // Reset the counter with a random value
+        // ExamRegistrationFactory::$counter = rand(2, 10);
 
-        // Seed the next 10, using the counter modulo 11
-        ExamRegistration::factory()->count(10)->create();
+        // // Seed the next 10, using the counter modulo 11
+        // ExamRegistration::factory()->count(10)->create();
     }
 }

@@ -1,15 +1,15 @@
 <?php
 
 namespace Database\Seeders;
-use App\Models\CourseUser;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\CourseUser;
 use Database\Factories\CourseUserFactory;
 
 class CourseUserSeeder extends Seeder
 {
     public function run()
     {
-     CourseUserFactory::new()->enrollAllUsersInAllCourses();
+        CourseUser::factory()->prepare();
+        CourseUser::factory()->create();
     }
 }

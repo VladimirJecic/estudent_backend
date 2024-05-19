@@ -4,9 +4,9 @@ namespace Database\Factories;
 use App\Models\User;
 use App\Models\Course;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
+use Illuminate\Database\Eloquent\Model;
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CourseUser>
  */
 class CourseUserFactory extends Factory
 {
@@ -15,31 +15,25 @@ class CourseUserFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    public static $userIds = [];
+    public static $courseIds =[];
     public function definition(): array
     {
         return [
-            'user_id' => User::inRandomOrder()->first()->id,
-            'course_id' => Course::inRandomOrder()->first()->id,
+            'user_id' => array_shift(self::$userIds),
+            'course_id' => array_shift(self::$courseIds),
         ];
     }
-   public function enrollAllUsersInAllCourses()
-    {
-        $enrollments = [];
-        $userIds = User::pluck('id');
-        $courseIds = Course::pluck('id');
-
-        foreach ($userIds as $userId) {
-            foreach ($courseIds as $courseId) {
-                // Check if this user is already enrolled in this course
-                if (!isset($enrollments[$userId][$courseId])) {
-                    $enrollments[$userId][$courseId] = true;
-
-                    $this->create([
-                        'user_id' => $userId,
-                        'course_id' => $courseId,
-                    ]);
-                }
-            }
-        }
+    private static function beforeCreate(){
+        CourseUserFactory::$userIds = User::pluck('id');
+        CourseUserFactory::$courseIds = Course::pluck('id');
+        $createCount = count(self::$userIds) * count(self::$courseIds);
+        self::count($createCount);
     }
+    public function create($attributes = [], ?Model $parent = null){
+        self::beforeCreate();
+        parent::create($attributes, $parent);
+    }
+
+
 }
