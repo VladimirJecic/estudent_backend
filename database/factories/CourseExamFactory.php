@@ -6,6 +6,7 @@ use App\Models\Course;
 use App\Models\ExamPeriod;
 use App\Models\CourseExam;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 
 class CourseExamFactory extends Factory
@@ -16,24 +17,35 @@ class CourseExamFactory extends Factory
      *
      * @return array<string, mixed>
      */
-     private static $halls = range(101, 301);
-     private static $courses = [];
-     private  static $examPeriods = ExamPeriod::pluck('id');
-
-     private static $currentExamPeriod;
+    
+     private static $courseExams;
 
     public function definition(): array
     {
-        if(count(self::$courses)==0){
-            self::$courses = Course::pluck('id');
-            self::$currentExamPeriod = array_shift(self::$examPeriods);
-        } 
+        $courseExam = array_shift(self::$courseExams);
+        $examPeriod = ExamPeriod::find($courseExam[1]);
                 return [
-                    'course_id' => array_shift(self::$courses),
-                    'exam_period_id' => self::$currentExamPeriod->id,
-                    'examDateTime' => $this->faker->dateTimeBetween(self::$currentExamPeriod->dateStart, self::$currentExamPeriod->dateEnd),
-                    'hall' => array_shift(self::$halls), 
+                    'course_id' => $courseExam[0],
+                    'exam_period_id' => $courseExam[1],
+                    'examDateTime' => $this->faker->dateTimeBetween($examPeriod->dateStart, $examPeriod->dateEnd),
+                    'hall' => random_int(101,501), 
                 ];
             
+    }
+    private function beforeCreate(){
+        $courseIds = Course::pluck('id');
+        $examPeriodIds = ExamPeriod::pluck('id');
+        !property_exists($this, 'count') && $this->count(count($examPeriodIds) * count($courseIds));
+        foreach( $courseIds as $c){
+            foreach( $examPeriodIds as $e){
+                self::$courseExams[]= [$c,$e];
+            }
+        }
+
+
+    }
+    public function create($attributes = [], ?Model $parent = null){
+        self::beforeCreate();
+        parent::create($attributes, $parent);
     }
 }

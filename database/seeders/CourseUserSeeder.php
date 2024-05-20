@@ -9,7 +9,6 @@ class CourseUserSeeder extends Seeder
 {
     public function run()
     {
-        CourseUser::factory()->prepare();
         CourseUser::factory()->create();
     }
 }
