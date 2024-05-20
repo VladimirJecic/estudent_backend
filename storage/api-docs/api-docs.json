@@ -146,6 +146,25 @@
                 ]
             }
         },
+        "/course-exams/registable": {
+            "get": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Get all course-exams for current user that he can currently register for",
+                "operationId": "f7692511c52649acecb35e0f4b87104f",
+                "responses": {
+                    "200": {
+                        "description": "'Registable CourseExams retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/exam-periods": {
             "get": {
                 "tags": [
@@ -436,7 +455,7 @@
         "securitySchemes": {
             "passport": {
                 "type": "apiKey",
-                "description": "trying out apikey",
+                "description": "Bearer Token",
                 "in": "header",
                 "scheme": "https",
                 "name": "Authorization"

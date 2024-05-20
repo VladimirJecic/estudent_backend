@@ -66,7 +66,21 @@ class CourseExamController extends BaseController
         return $this->sendResponse($result, 'Remaining CourseExams for '.$examPeriod->name.' retrieved successfully');
     }
 
-
+     /**
+     * @OA\Get(
+     *     path="/course-exams/registable",
+     *     tags={"Common Routes"},
+     *     summary="Get all course-exams for current user that he can currently register for",
+     *     security={
+     *              {"passport": {*}}
+     *      },
+     *     @OA\Response(
+     *         response=200,
+     *         description="'Registable CourseExams retrieved successfully",
+     *    
+     *     ),
+     * )
+     */
     public function getRegistableCourseExams(Request $request)
     {
         $currentDate = Carbon::now();

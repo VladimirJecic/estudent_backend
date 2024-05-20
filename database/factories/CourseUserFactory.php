@@ -15,21 +15,28 @@ class CourseUserFactory extends Factory
      *
      * @return array<string, mixed>
      */
-    public static $userIds = [];
-    public static $courseIds =[];
+    public static $courseUsers = [];
+
     public function definition(): array
     {
+        $courseuser = array_shift(self::$courseUsers);
+
         return [
-            'user_id' => array_shift(self::$userIds),
-            'course_id' => array_shift(self::$courseIds),
+            'user_id' => $courseuser[0],
+            'course_id' => $courseuser[1],
         ];
     }
-    private static function beforeCreate(){
-        CourseUserFactory::$userIds = User::pluck('id');
-        CourseUserFactory::$courseIds = Course::pluck('id');
-        $createCount = count(self::$userIds) * count(self::$courseIds);
-        self::count($createCount);
-    }
+        private  function beforeCreate(){
+            $userIds = User::pluck('id');
+            $courseIds = Course::pluck('id');
+            !property_exists($this, 'count') && $this->count(count($userIds) * count($courseIds));
+            foreach( $userIds as $u){
+                foreach( $courseIds as $c){
+                    self::$courseUsers[]=([$u,$c]);
+                }
+            }
+
+        }
     public function create($attributes = [], ?Model $parent = null){
         self::beforeCreate();
         parent::create($attributes, $parent);

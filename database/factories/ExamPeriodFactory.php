@@ -15,7 +15,7 @@ class ExamPeriodFactory extends Factory
     ],
     [
         'dateRegisterStart' => '2024-01-02',
-        'dateRegisterEnd' => '2024-01-09',
+        'dateRegisterEnd' => '2024-09-09',
         'dateStart' => '2024-01-09',
         'dateEnd' => '2024-01-24',
         'name' => 'januar-2024'
