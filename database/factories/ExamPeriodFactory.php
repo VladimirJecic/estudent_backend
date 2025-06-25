@@ -7,32 +7,39 @@ class ExamPeriodFactory extends Factory
 {
     protected $examPeriods = [
     [
-        'dateRegisterStart' => '2023-10-30',
-        'dateRegisterEnd' => '2023-11-14',
-        'dateStart' => '2023-11-15',
-        'dateEnd' => '2023-11-29',
-        'name' => 'novembarsko-decembarski-apsolventski-2023'
+        'dateRegisterStart' => '2024-10-30',
+        'dateRegisterEnd' => '2024-11-14',
+        'dateStart' => '2024-11-15',
+        'dateEnd' => '2024-11-29',
+        'name' => 'novembarsko-decembarski-apsolventski-2024'
     ],
     [
-        'dateRegisterStart' => '2024-01-02',
-        'dateRegisterEnd' => '2024-09-09',
-        'dateStart' => '2024-01-09',
-        'dateEnd' => '2024-01-24',
-        'name' => 'januar-2024'
+        'dateRegisterStart' => '2025-01-02',
+        'dateRegisterEnd' => '2025-01-09',
+        'dateStart' => '2025-01-09',
+        'dateEnd' => '2025-01-24',
+        'name' => 'januar-2025'
     ],
     [
-        'dateRegisterStart' => '2024-01-18',
-        'dateRegisterEnd' => '2024-01-24',
-        'dateStart' => '2024-01-25',
-        'dateEnd' => '2024-02-09',
-        'name' => 'februar-2024'
+        'dateRegisterStart' => '2025-01-18',
+        'dateRegisterEnd' => '2025-01-24',
+        'dateStart' => '2025-01-25',
+        'dateEnd' => '2025-02-09',
+        'name' => 'februar-2025'
     ],
     [
-        'dateRegisterStart' => '2024-04-11',
-        'dateRegisterEnd' => '2024-04-18',
-        'dateStart' => '2024-04-19',
+        'dateRegisterStart' => '2025-04-11',
+        'dateRegisterEnd' => '2025-04-18',
+        'dateStart' => '2025-04-19',
         'dateEnd' => '2025-05-06',
-        'name' => 'martovsko-aprilski-apsolventski-2024'
+        'name' => 'martovsko-aprilski-apsolventski-2025'
+    ],
+    [
+        'dateRegisterStart' => '2025-06-23',
+        'dateRegisterEnd' => '2025-07-06',
+        'dateStart' => '2025-07-06',
+        'dateEnd' => '2025-07-20',
+        'name' => 'jun-2025'
     ]
 ];
 

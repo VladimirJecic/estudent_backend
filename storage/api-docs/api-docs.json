@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8000/api/",
+            "url": "http://localhost:8081/api/",
             "description": "Rest API Server"
         }
     ],
@@ -68,31 +68,37 @@
         "/login": {
             "post": {
                 "tags": [
-                    "Public Routes"
+                    "Common Routes"
                 ],
                 "summary": "User login",
                 "operationId": "2dd578ff7aba2721293dac66833b27d1",
-                "parameters": [
-                    {
-                        "name": "indexNum",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "indexNum",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "indexNum": {
+                                        "type": "string",
+                                        "example": "2023/0000"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "test"
+                                    }
+                                },
+                                "type": "object"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "200": {
-                        "description": "User Login Successful!"
+                        "description": "User Login Successful"
                     },
                     "401": {
                         "description": "Unauthorized"
@@ -451,6 +457,16 @@
             }
         }
     },
+    "tags": [
+        {
+            "name": "Admin Routes",
+            "description": "Admin Routes"
+        },
+        {
+            "name": "Common Routes",
+            "description": "Common Routes"
+        }
+    ],
     "components": {
         "securitySchemes": {
             "passport": {

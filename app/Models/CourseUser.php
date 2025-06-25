@@ -3,9 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Awobaz\Compoships\Database\Eloquent\Model;
+use App\Models\CustomModel;
 
-class CourseUser extends Model
+
+class CourseUser extends CustomModel
 {
     use HasFactory;
     protected $fillable = [

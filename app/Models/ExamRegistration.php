@@ -6,9 +6,9 @@
     // use Illuminate\Database\Eloquent\Model;
     use App\Models\CourseExam;
     use App\Models\User;
-    use Awobaz\Compoships\Database\Eloquent\Model;
 
-    class ExamRegistration extends Model
+
+    class ExamRegistration extends CustomModel
     {
         use HasFactory;
 
@@ -49,6 +49,7 @@
         {
             return $this->belongsTo(User::class, 'signed_by_id','id');
         }
-        
+       
+                
         
     }

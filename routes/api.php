@@ -15,7 +15,7 @@ use App\Http\Controllers\CourseExamController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-
+/* swagger URL: http://localhost:8081/estudent/swagger-ui/index.html*/
 Route::post('login', [AuthController::class, 'login']);
 
 

@@ -3,11 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Awobaz\Compoships\Database\Eloquent\Model;
 use App\Models\CourseExam;
 
 
-class ExamPeriod extends Model
+class ExamPeriod extends CustomModel
 {
     use HasFactory;
     protected $fillable = [

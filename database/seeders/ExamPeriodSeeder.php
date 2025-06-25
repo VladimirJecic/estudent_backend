@@ -14,6 +14,6 @@ class ExamPeriodSeeder extends Seeder
      */
     public function run(): void
     {
-        ExamPeriod::factory()->count(4)->create();
+        ExamPeriod::factory()->count(5)->create();
     }
 }

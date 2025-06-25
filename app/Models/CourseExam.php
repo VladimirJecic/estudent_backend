@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Course;
 use App\Models\ExamPeriod;
 use App\Models\ExamRegistration;
-use Awobaz\Compoships\Database\Eloquent\Model;
 
-class CourseExam extends Model
+class CourseExam extends CustomModel
 {   
     use HasFactory;
     public $incrementing = false;

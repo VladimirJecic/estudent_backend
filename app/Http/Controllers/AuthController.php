@@ -103,38 +103,29 @@ class AuthController extends BaseController
         return $this->sendResponse($result, "User Registered Successfully!",201);
     }
 
-     /**
-     * @OA\Post(
-     *     path="/login",
-     *     tags={"Public Routes"},
-     *     summary="User login",
-     *   @OA\Parameter(
-     *      name="indexNum",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="password",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *          type="string"
-     *      )
-     *   ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="User Login Successful!",
-     *    
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
-     *     )
-     * )
-     */
+/**
+ * @OA\Post(
+ *     path="/login",
+ *     tags={"Common Routes"},
+ *     summary="User login",
+ *     @OA\RequestBody(
+ *         required=true,
+ *         @OA\JsonContent(
+ *             required={"indexNum", "password"},
+ *             @OA\Property(property="indexNum", type="string", example="2023/0000"),
+ *             @OA\Property(property="password", type="string", example="test")
+ *         )
+ *     ),
+ *     @OA\Response(
+ *         response=200,
+ *         description="User Login Successful"
+ *     ),
+ *     @OA\Response(
+ *         response=401,
+ *         description="Unauthorized"
+ *     )
+ * )
+ */
     public function login(Request $request){
         $validator = Validator::make($request->all(), [
             'indexNum' => 'required|string',
