@@ -25,6 +25,7 @@
         ];
         protected $primaryKey = ['course_id', 'exam_period_id','student_id'];
         protected $attributes = [
+            'hasAttended' => false,
             'mark'=> 5,
             'comment' => '',
             'signed_by_id'=> NULL,

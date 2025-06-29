@@ -171,6 +171,81 @@
                 ]
             }
         },
+        "/course-exam-reports/{courseId}/{examPeriodId}": {
+            "get": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Download Excel report for a course exam identified by courseId and examPeriodId",
+                "operationId": "getCourseExamReport",
+                "parameters": [
+                    {
+                        "name": "courseId",
+                        "in": "path",
+                        "description": "ID of the Course",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "examPeriodId",
+                        "in": "path",
+                        "description": "ID of the Exam Period",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 2
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Excel file download",
+                        "content": {
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+                                "schema": {
+                                    "type": "string",
+                                    "format": "binary"
+                                }
+                            }
+                        }
+                    },
+                    "204": {
+                        "description": "No registrations found for this course exam"
+                    },
+                    "400": {
+                        "description": "Validation failed or CourseExam not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error: Course Exam with courseId 1 and examPeriodId 2 not found"
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/exam-periods": {
             "get": {
                 "tags": [

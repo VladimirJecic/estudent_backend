@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CourseExamReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExamPeriodController;
@@ -32,6 +33,7 @@ Route::middleware('auth:api')->group(function(){
         Route::post('register', [AuthController::class, 'register']);
         Route::get('exam-registrations/notGraded/all',[ExamRegistrationController::class,'notGraded_all']);
         Route::put('/exam-registrations', [ExamRegistrationController::class,'update']);
+        Route::get( "/course-exam-reports/{courseId}/{examPeriodId}", [CourseExamReportController::class,'getReportForCourseExam']);
      });
 
  });

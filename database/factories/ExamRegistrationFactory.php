@@ -22,6 +22,7 @@ class ExamRegistrationFactory extends Factory
             'exam_period_id' => $registration[1],
             'student_id' => $registration[2],
             'mark' => $mark,
+            'hasAttended' => true,
             'signed_by_id' => $admin->id,
             'comment' => $mark > 5 ? 'položio' : 'pao',
         ];

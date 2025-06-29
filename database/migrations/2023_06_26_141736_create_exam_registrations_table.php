@@ -17,6 +17,7 @@ return new class extends Migration
         $table->unsignedBigInteger('exam_period_id');
         $table->unsignedBigInteger('student_id');
         $table->unsignedBigInteger('signed_by_id')->nullable();
+        $table->boolean('hasAttended');
         $table->integer('mark');
         $table->string('comment');
         $table->primary(['course_id', 'exam_period_id', 'student_id']);

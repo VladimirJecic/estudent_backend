@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Providers;
-
+use App\ports\output\GenerateCourseExamReport;
+use External\Reports\GenerateCourseExamReportImpl;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        
+        $this->app->bind(GenerateCourseExamReport::class, GenerateCourseExamReportImpl::class);
+
     }
 
     /**

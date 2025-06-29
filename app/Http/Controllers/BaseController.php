@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class BaseController extends Controller
 {
@@ -27,4 +27,5 @@ class BaseController extends Controller
         }
         return response()->json($response,$code);
     }
+
 }

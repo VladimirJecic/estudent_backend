@@ -235,6 +235,7 @@ class ExamRegistrationController extends BaseController
         $examRegistration->exam_period_id = $request->exam_period_id;
         $examRegistration->student_id = $request->student_id;
         $examRegistration->mark = $request->mark != null ? $request->mark: 5;
+        $examRegistration->hasAttended = true;
         $examRegistration->save();
          
         return $this->sendResponse([],message: 'ExamRegistration stored successfully.',code: 201);
