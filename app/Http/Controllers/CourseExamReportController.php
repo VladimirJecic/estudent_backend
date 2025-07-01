@@ -36,7 +36,7 @@ class CourseExamReportController extends BaseController
      *         in="path",
      *         required=true,
      *         description="ID of the Exam Period",
-     *         @OA\Schema(type="integer", example=2)
+     *         @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\Response(
      *         response=200,

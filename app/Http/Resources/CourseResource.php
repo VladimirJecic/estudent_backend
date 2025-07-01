@@ -4,6 +4,18 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
+/**
+ * @OA\Schema(
+ *     schema="Course",
+ *     type="object",
+ *     title="Course",
+ *     @OA\Property(property="id", type="integer", example=5),
+ *     @OA\Property(property="name", type="string", example="Matematika"),
+ *     @OA\Property(property="semester", type="integer", example=2),
+ *     @OA\Property(property="espb", type="integer", example=6),
+ *     @OA\Property(property="participants", type="array", @OA\Items(type="string")) 
+ * )
+ */
 class CourseResource extends JsonResource
 {
     private $participants;
