@@ -26,8 +26,8 @@ class CourseExamController extends BaseController
          *         name="page",
          *         in="query",
          *         required=false,
-         *         description="Page number (starting from 0)",
-         *         @OA\Schema(type="integer", example=0)
+         *         description="Page number (starting from 1)",
+         *         @OA\Schema(type="integer", example=1)
          *     ),
          *     @OA\Parameter(
          *         name="page-size",

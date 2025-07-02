@@ -91,7 +91,7 @@ class CourseExamReportController extends BaseController
 
      if(count( $courseExamReportDTO->reportItemList) == 0)
       {
-        return $this->sendError('No registrations for this course exam', null,204);
+        return $this->sendError('There are no registrations for this course exam', null,204);
       }
       $registrations = $courseExam->examRegistrations;
       $total = $registrations->count();

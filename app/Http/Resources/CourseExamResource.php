@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\CourseResource;
 use App\Http\Resources\ExamPeriodResource;
-
+use Carbon\Carbon;
 /**
  * @OA\Schema(
  *     schema="CourseExam",
@@ -30,7 +30,9 @@ class CourseExamResource extends JsonResource
         return [
             'examPeriod'=> $this->examPeriod ? new ExamPeriodResource($this->examPeriod): null,
             'course' => new CourseResource($this->course),
-            'examDateTime'=>$this->examDateTime,
+            'examDateTime'=>$this->examDateTime
+            ? Carbon::parse($this->examDateTime)->toISOString()
+            : null,
             'hall'=>$this->hall,
         ];
     }
