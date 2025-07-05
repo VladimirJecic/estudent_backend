@@ -2,12 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\Course;
+use App\Models\CourseInstance;
 use App\Models\ExamPeriod;
-use App\Models\CourseExam;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 
 class CourseExamFactory extends Factory
 {
@@ -25,7 +23,7 @@ class CourseExamFactory extends Factory
         $courseExam = array_shift(self::$courseExams);
         $examPeriod = ExamPeriod::find($courseExam[1]);
                 return [
-                    'course_id' => $courseExam[0],
+                    'course_instance_id' => $courseExam[0],
                     'exam_period_id' => $courseExam[1],
                     'examDateTime' => $this->faker->dateTimeBetween($examPeriod->dateStart, $examPeriod->dateEnd),
                     'hall' => random_int(101,501), 
@@ -33,7 +31,7 @@ class CourseExamFactory extends Factory
             
     }
     private function beforeCreate(){
-        $courseIds = Course::pluck('id');
+        $courseIds = CourseInstance::pluck('id');
         $examPeriodIds = ExamPeriod::pluck('id');
         !property_exists($this, 'count') && $this->count(count($examPeriodIds) * count($courseIds));
         foreach( $courseIds as $c){

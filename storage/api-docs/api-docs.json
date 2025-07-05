@@ -11,60 +11,6 @@
         }
     ],
     "paths": {
-        "/register": {
-            "post": {
-                "tags": [
-                    "Admin Routes"
-                ],
-                "summary": "Register new user",
-                "operationId": "0903f2e0df1a8857bee538fc055417f0",
-                "parameters": [
-                    {
-                        "name": "indexNum",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "name",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "password",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "confirmPassword",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "User Registered Successfully!"
-                    },
-                    "400": {
-                        "description": "Validation errors:..."
-                    },
-                    "409": {
-                        "description": "User with the same indexNum already exists."
-                    }
-                }
-            }
-        },
         "/login": {
             "post": {
                 "tags": [
@@ -134,11 +80,11 @@
                     {
                         "name": "page",
                         "in": "query",
-                        "description": "Page number (starting from 0)",
+                        "description": "Page number (starting from 1)",
                         "required": false,
                         "schema": {
                             "type": "integer",
-                            "example": 0
+                            "example": 1
                         }
                     },
                     {
@@ -219,26 +165,27 @@
                 ]
             }
         },
-        "/course-exams/{examPeriod}": {
+        "/course-exams/{examPeriodId}/remaining-course-exams": {
             "get": {
                 "tags": [
                     "Common Routes"
                 ],
                 "summary": "Get all remaining course exams for exam period",
-                "operationId": "c041dc41092555c56f2529c477fcbaf5",
+                "operationId": "1451cad87b41bb71ab6774d909019c46",
                 "parameters": [
                     {
-                        "name": "examPeriod",
+                        "name": "examPeriodId",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer",
+                            "example": "5"
                         }
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Remaining CourseExams for examPeriod->name retrieved successfully"
+                        "description": "Remaining CourseExams retrieved successfully"
                     }
                 },
                 "security": [
@@ -248,16 +195,27 @@
                 ]
             }
         },
-        "/course-exams/registable": {
+        "/course-exams/{examPeriodId}/registerable-course-exams": {
             "get": {
                 "tags": [
                     "Common Routes"
                 ],
                 "summary": "Get all course-exams for current user that he can currently register for",
-                "operationId": "f7692511c52649acecb35e0f4b87104f",
+                "operationId": "ae918365dc2b5dd7a07ef802adbd2d15",
+                "parameters": [
+                    {
+                        "name": "examPeriodId",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "5"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "'Registable CourseExams retrieved successfully"
+                        "description": "'Registerable CourseExams retrieved successfully"
                     }
                 },
                 "security": [
@@ -267,28 +225,18 @@
                 ]
             }
         },
-        "/course-exam-reports/{courseId}/{examPeriodId}": {
+        "/course-exam-reports/{courseExamId}": {
             "get": {
                 "tags": [
                     "Admin Routes"
                 ],
-                "summary": "Download Excel report for a course exam identified by courseId and examPeriodId",
+                "summary": "Download Excel report for a course exam identified by courseExamId",
                 "operationId": "getCourseExamReport",
                 "parameters": [
                     {
-                        "name": "courseId",
+                        "name": "courseExamId",
                         "in": "path",
                         "description": "ID of the Course",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "example": 1
-                        }
-                    },
-                    {
-                        "name": "examPeriodId",
-                        "in": "path",
-                        "description": "ID of the Exam Period",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -323,7 +271,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Validation error: Course Exam with courseId 1 and examPeriodId 2 not found"
+                                            "example": "Validation error: Course Exam with courseExamId 1 not found"
                                         },
                                         "data": {
                                             "type": "object"
@@ -407,79 +355,6 @@
                     }
                 ]
             },
-            "put": {
-                "tags": [
-                    "Admin Routes"
-                ],
-                "summary": "Update existing exam registration",
-                "operationId": "exam-registrations/update",
-                "parameters": [
-                    {
-                        "name": "course_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "exam_period_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "student_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "mark",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "comment",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "signed_by_id",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": ""
-                    },
-                    "403": {
-                        "description": "Error:Forbidden"
-                    },
-                    "404": {
-                        "description": "ExamRegistration not found"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            },
             "post": {
                 "tags": [
                     "Common Routes"
@@ -488,15 +363,7 @@
                 "operationId": "exam-registrations/store",
                 "parameters": [
                     {
-                        "name": "course_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "exam_period_id",
+                        "name": "course_exam_id",
                         "in": "query",
                         "required": true,
                         "schema": {
@@ -521,52 +388,6 @@
                     },
                     "409": {
                         "description": "ExamRegistration for provided course_id:x, and exam_period_id:x and student_id:x already exist"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Common Routes"
-                ],
-                "summary": "Delete existing exam registration",
-                "operationId": "exam-registrations/destroy",
-                "parameters": [
-                    {
-                        "name": "course_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "exam_period_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "student_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": ""
-                    },
-                    "404": {
-                        "description": "ExamRegistration not found"
                     }
                 },
                 "security": [
@@ -626,6 +447,102 @@
                     }
                 ]
             }
+        },
+        "/exam-registrations/{id}": {
+            "put": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Update existing exam registration",
+                "operationId": "exam-registrations/update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the exam registration to update",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "mark",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "comment",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "hasAttended",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Updated successfully"
+                    },
+                    "403": {
+                        "description": "Error: Forbidden"
+                    },
+                    "404": {
+                        "description": "ExamRegistration not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/exam-registrations/{examRegistrationId}": {
+            "delete": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Delete existing exam registration",
+                "operationId": "exam-registrations/destroy",
+                "parameters": [
+                    {
+                        "name": "examRegistrationId",
+                        "in": "path",
+                        "description": "ID of the exam registration to delete",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Deleted successfully"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "ExamRegistration not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -637,7 +554,7 @@
                         "$ref": "#/components/schemas/ExamPeriod"
                     },
                     "course": {
-                        "$ref": "#/components/schemas/Course"
+                        "$ref": "#/components/schemas/CourseInstance"
                     },
                     "examDateTime": {
                         "type": "string",
@@ -651,8 +568,8 @@
                 },
                 "type": "object"
             },
-            "Course": {
-                "title": "Course",
+            "CourseInstance": {
+                "title": "CourseInstance",
                 "properties": {
                     "id": {
                         "type": "integer",
@@ -726,12 +643,12 @@
     },
     "tags": [
         {
-            "name": "Admin Routes",
-            "description": "Admin Routes"
-        },
-        {
             "name": "Common Routes",
             "description": "Common Routes"
+        },
+        {
+            "name": "Admin Routes",
+            "description": "Admin Routes"
         }
     ],
     "security": [

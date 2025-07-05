@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Http\Resources\UserResource;
-use App\Http\Resources\CourseResource;
+use App\Http\Resources\CourseInstanceResource;
 use App\Http\Resources\ExamRegistrationResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -39,7 +39,7 @@ class UserController extends BaseController
         if(is_null($user)){
             return $this->sendError('user not found.');
         }
-        return $this->sendResponse(new UserResource($user,courses:$user->courses(),examRegistrations:$user->examRegistrations(),signedRegistrations: $user->signedRegistrations()),'user retrieved successfully');
+        return $this->sendResponse(new UserResource($user,courses:$user->courseIntances(),examRegistrations:$user->examRegistrations(),signedRegistrations: $user->signedRegistrations()),'user retrieved successfully');
     
     }
 

@@ -13,12 +13,15 @@ return new class extends Migration
     {
         Schema::create('exam_periods', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('semester_id')->constrained()->onDelete('cascade');
             $table->date('dateRegisterStart');
             $table->date('dateRegisterEnd');
             $table->date('dateStart');
             $table->date('dateEnd');
             $table->string('name');
+            $table->unique(['name', 'semester_id']);
             $table->timestamps();
+
         });
     }
 

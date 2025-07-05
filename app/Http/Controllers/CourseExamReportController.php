@@ -19,23 +19,16 @@ class CourseExamReportController extends BaseController
     }
     /**
      * @OA\Get(
-     *     path="/course-exam-reports/{courseId}/{examPeriodId}",
+     *     path="/course-exam-reports/{courseExamId}",
      *     tags={"Admin Routes"},
-     *     summary="Download Excel report for a course exam identified by courseId and examPeriodId",
+     *     summary="Download Excel report for a course exam identified by courseExamId",
      *     operationId="getCourseExamReport",
      *     security={{"passport": {}}},
      *     @OA\Parameter(
-     *         name="courseId",
+     *         name="courseExamId",
      *         in="path",
      *         required=true,
      *         description="ID of the Course",
-     *         @OA\Schema(type="integer", example=1)
-     *     ),
-     *     @OA\Parameter(
-     *         name="examPeriodId",
-     *         in="path",
-     *         required=true,
-     *         description="ID of the Exam Period",
      *         @OA\Schema(type="integer", example=1)
      *     ),
      *     @OA\Response(
@@ -55,34 +48,33 @@ class CourseExamReportController extends BaseController
      *         description="Validation failed or CourseExam not found",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Validation error: Course Exam with courseId 1 and examPeriodId 2 not found"),
+     *             @OA\Property(property="message", type="string", example="Validation error: Course Exam with courseExamId 1 not found"),
      *             @OA\Property(property="data", type="object")
      *         )
      *     )
      * )
      */
-  public function getReportForCourseExam(Request $request, int $courseId, int $examPeriodId)
+  public function getReportForCourseExam(Request $request, int $courseExamId)
   {
       // Validate route params explicitly:
       $validator = Validator::make(
-          ['courseId' => $courseId, 'examPeriodId' => $examPeriodId],
+          ['courseExamId' => $courseExamId],
           [
-              'courseId' => ['required', 'integer', 'exists:course_exams,course_id'],
-              'examPeriodId' => ['required', 'integer', 'exists:course_exams,exam_period_id'],
+              'courseExamId' => ['required', 'integer', 'exists:course_exams,id'],
+              
           ]
       );
   
       if ($validator->fails()) {
           return $this->sendError(
-              "Validation error: Course Exam with courseId {$courseId} and examPeriodId {$examPeriodId} not found",
+              "Validation error: Course Exam with courseExamId {$courseExamId} not found",
               $validator->errors(),
               400
           );
       }
   
       $courseExam = CourseExam::with('examRegistrations.student')
-          ->where('course_id', $courseId)
-          ->where('exam_period_id', $examPeriodId)
+          ->where('id', $courseExamId)
           ->firstOrFail();
       /** @var \App\Models\CourseExam $courseExam */
       $courseExamReportDTO = new CourseExamReportDTO($courseExam);

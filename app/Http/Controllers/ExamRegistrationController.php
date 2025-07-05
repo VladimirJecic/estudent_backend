@@ -138,7 +138,7 @@ class ExamRegistrationController extends BaseController
      */
     public function notGraded_all(Request $request){
             $admin= auth()->user();
-            $courses = $admin->courses()->get();
+            $courses = $admin->courseIntances()->get();
             $examRegistrations = collect([]);
             foreach($courses as $c){
                 $courseExams = $c->courseExams()->get();
@@ -162,15 +162,7 @@ class ExamRegistrationController extends BaseController
      *              {"passport": {*}}
      *      },
      *   @OA\Parameter(
-     *      name="course_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="exam_period_id",
+     *      name="course_exam_id",
      *      in="query",
      *      required=true,
      *      @OA\Schema(
@@ -205,219 +197,151 @@ class ExamRegistrationController extends BaseController
      */
     public function store(Request $request)
     {
-
         $validator = Validator::make($request->all(), [
-            'course_id' => 'required|integer',
-            'exam_period_id' => 'required|integer',
+            'course_exam_id' => 'required|integer',
             'student_id' => 'required|integer',
-
         ]);
+    
+        $validator->after(function ($validator) use ($request) {
+            $user = auth()->user();
+            if ($user->role === 'student' && $request->student_id != $user->id) {
+                $validator->errors()->add('student_id', 'As student, you can only register exams for yourself.');
+            }
+        });
+    
         if ($validator->fails()) {
-            return $this->sendError('Validation error.','Validation errors:'.$validator->errors(), 400);
+            return $this->sendError('Validation error.', $validator->errors()->first(), 400);
         }
-        $courseExam = CourseExam::where('course_id',$request->course_id)->where('exam_period_id', $request->exam_period_id)->with('examPeriod');
-        if(!$courseExam->exists()){
-            return $this->sendError('Validation error', 'CourseExam with provided course_id:'.$request->course_id.", and exam_period_id:".$request->exam_period_id." doesn't exist",400);
+    
+        $courseExam = CourseExam::with('examPeriod')->find($request->course_exam_id);
+        if (!$courseExam) {
+            return $this->sendError('Validation error', 'CourseExam with provided course_exam_id: '.$request->course_exam_id." doesn't exist", 400);
         }
-        $alreadyExists =  ExamRegistration::where([
-            ['course_id', '=', $request->course_id],
-            ['exam_period_id', '=', $request->exam_period_id],
+    
+        $alreadyExists = ExamRegistration::where([
+            ['course_exam_id', '=', $request->course_exam_id],
             ['student_id', '=', $request->student_id],
         ])->exists();
-        if($alreadyExists){
-            return $this->sendError('Validation error', 'ExamRegistration for provided course_id:'.$request->course_id.", and exam_period_id:".$request->exam_period_id." and student_id:".$request->student_id." already exist",409);
+    
+        if ($alreadyExists) {
+            return $this->sendError('Validation error', 'ExamRegistration for provided course_exam_id: '.$request->course_exam_id." and student_id: ".$request->student_id." already exists", 409);
         }
-        if($courseExam->get()[0]->examPeriod->dateRegisterEnd < Carbon::now() || $courseExam->get()[0]->examPeriod->dateRegisterEnd < Carbon::now()){
-            return $this->sendError('Validation error','Registration no longer in progress for given exam period', 400);
+        $now = now();
+        if ($courseExam->examPeriod->dateRegisterStart > $now || $courseExam->examPeriod->dateRegisterEnd < $now) {
+            return $this->sendError('Validation error', 'Registration not in progress for given exam period', 400);
         }
-        $examRegistration = new ExamRegistration();
-        $examRegistration->course_id = $request->course_id;
-        $examRegistration->exam_period_id = $request->exam_period_id;
-        $examRegistration->student_id = $request->student_id;
-        $examRegistration->mark = $request->mark != null ? $request->mark: 5;
-        $examRegistration->hasAttended = true;
-        $examRegistration->save();
-         
-        return $this->sendResponse([],message: 'ExamRegistration stored successfully.',code: 201);
-   
+    
+        ExamRegistration::create([
+            'course_exam_id' => $courseExam->id,
+            'student_id' => $request->student_id,
+            'mark' => $request->mark ?? 5,
+            'hasAttended' => false,
+        ]);
+    
+        return $this->sendResponse([], 'ExamRegistration stored successfully.', 201);
     }
-
-     /**
+    
+    /**
      * @OA\Put(
-     *     path="/exam-registrations",
+     *     path="/exam-registrations/{id}",
      *     tags={"Admin Routes"},
      *     summary="Update existing exam registration",
      *     operationId="exam-registrations/update",
-     *     security={
-     *              {"passport": {*}}
-     *      },
-     *   @OA\Parameter(
-     *      name="course_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="exam_period_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="student_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-    *   @OA\Parameter(
-     *      name="mark",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="comment",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="signed_by_id",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     *     @OA\Response(
-     *         response=204,
-     *         description="",
-     *    
-     *     ),
-     *     @OA\Response(
-     *         response=403,
-     *         description="Error:Forbidden",
-     *    
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="ExamRegistration not found",
-     *    
-     *     ),
-     * 
-     * )
-     */
-    public function update(Request $request)
+     *     security={{"passport": {*}}},
+
+    *     @OA\Parameter(
+    *         name="id",
+    *         in="path",
+    *         required=true,
+    *         description="ID of the exam registration to update",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="mark",
+    *         in="query",
+    *         required=false,
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Parameter(
+    *         name="comment",
+    *         in="query",
+    *         required=false,
+    *         @OA\Schema(type="string")
+    *     ),
+    *     @OA\Parameter(
+    *         name="hasAttended",
+    *         in="query",
+    *         required=true,
+    *         @OA\Schema(type="boolean")
+    *     ),
+    *     @OA\Response(response=204, description="Updated successfully"),
+    *     @OA\Response(response=403, description="Error: Forbidden"),
+    *     @OA\Response(response=404, description="ExamRegistration not found")
+    * )
+    */
+    public function update(Request $request, int $examRegistrationId )
     {
-        $validator = Validator::make($request->all(), [
-            'exam_period_id' => ['required', 'int', 'exists:exam_periods,id'],
-            'course_id' => ['required', 'int', 'exists:courses,id'],
-            'student_id' => ['required', 'int', 'exists:users,id'],
-         ]);
+        $examRegistration = ExamRegistration::find($examRegistrationId);
 
-        if($validator->fails()){
-            return $this->sendError('Validation error.', $validator->errors());
+        if (!$examRegistration) {
+            return $this->sendError([], 'ExamRegistration not found', 404);
+        }
+        $user = auth()->user();
+
+        if ($user->role === 'student') {
+            return $this->sendError([], 'Forbidden: As student, you cannot update an exam registration.', 403);
         }
 
-        $examRegistration = ExamRegistration::where([
-            ['course_id','=', $request->course_id],
-            ['exam_period_id','=', $request->exam_period_id],
-            ['student_id','=',  $request->student_id],
-        ])->first();
+        $examRegistration->mark = $request->input('mark', $examRegistration->mark);
+        $examRegistration->comment = $request->input('comment', $examRegistration->comment);
+        $examRegistration->signed_by_id = $request->input('signed_by_id', $user->id);
+        $examRegistration->hasAttended = $request->input('hasAttended');
+        $examRegistration->save();
 
-        if ($examRegistration) {
-            $examRegistration->mark = $request->input('mark', $examRegistration->mark);
-            $examRegistration->comment = $request->input('comment', $examRegistration->comment);
-            $examRegistration->signed_by_id = $request->input('signed_by_id', $examRegistration->signed_by_id);
-            $examRegistration->save();
-            return $this->sendResponse(code: 204);
-        } else {
-            return $this->sendError([], error_messages: 'ExamRegistration not found', code: 404);
-        }
+        return $this->sendResponse(code: 204);
     }
 
 
-     /**
+    /**
      * @OA\Delete(
-     *     path="/exam-registrations",
+     *     path="/exam-registrations/{examRegistrationId}",
      *     tags={"Common Routes"},
      *     summary="Delete existing exam registration",
      *     operationId="exam-registrations/destroy",
-     *     security={
-     *              {"passport": {*}}
-     *      },
-     *   @OA\Parameter(
-     *      name="course_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="exam_period_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="student_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     *     @OA\Response(
-     *         response=204,
-     *         description="",
-     *    
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="ExamRegistration not found",
-     *    
-     *     ),
-     * 
-     * )
-     */
-    public function destroy(Request $request)
+     *     security={{"passport": {*}}},
+
+    *     @OA\Parameter(
+    *         name="examRegistrationId",
+    *         in="path",
+    *         required=true,
+    *         description="ID of the exam registration to delete",
+    *         @OA\Schema(type="integer")
+    *     ),
+    *     @OA\Response(response=204, description="Deleted successfully"),
+    *     @OA\Response(response=403, description="Forbidden"),
+    *     @OA\Response(response=404, description="ExamRegistration not found")
+    * )
+    */
+    public function destroy(int $examRegistrationId)
     {
-        $validator = Validator::make($request->all(), [
-            'exam_period_id' => ['required', 'int', 'exists:exam_periods,id'],
-            'course_id' => ['required', 'int', 'exists:courses,id'],
-            'student_id' => ['required', 'int', 'exists:users,id'],
-         ]);
+        $examRegistration = ExamRegistration::find($examRegistrationId);
 
-        if($validator->fails()){
-            return $this->sendError('Validation error.', $validator->errors());
+        if (!$examRegistration) {
+            return $this->sendError([], 'ExamRegistration not found', 404);
         }
 
-        $examRegistration = ExamRegistration::where([
-            ['course_id','=', $request->course_id],
-            ['exam_period_id','=', $request->exam_period_id],
-            ['student_id','=',  $request->student_id],
-        ])->first();
+        $user = auth()->user();
 
-        if ($examRegistration) {
-            // ExamRegistration::destroy($examRegistration->getKey());
-            $examRegistration->delete();
-            return $this->sendResponse(code: 204);
-        } else {
-            return $this->sendError([], error_messages: 'ExamRegistration not found', code: 404);
+        // If the user is a student, they can only delete their own registrations
+        if ($user->role === 'student' && $examRegistration->student_id != $user->id) {
+            return $this->sendError([], 'Forbidden: You can only delete your own exam registrations.', 403);
         }
+
+        $examRegistration->delete();
+
+        return $this->sendResponse(code: 204);
     }
+
+
 
 }

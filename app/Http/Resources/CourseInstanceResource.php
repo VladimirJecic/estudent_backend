@@ -6,9 +6,9 @@ use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
  * @OA\Schema(
- *     schema="Course",
+ *     schema="CourseInstance",
  *     type="object",
- *     title="Course",
+ *     title="CourseInstance",
  *     @OA\Property(property="id", type="integer", example=5),
  *     @OA\Property(property="name", type="string", example="Matematika"),
  *     @OA\Property(property="semester", type="integer", example=2),
@@ -16,21 +16,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     @OA\Property(property="participants", type="array", @OA\Items(type="string")) 
  * )
  */
-class CourseResource extends JsonResource
+class CourseInstanceResource extends JsonResource
 {
-    private $participants;
-
-    /**
-     * CourseResource constructor.
-     *
-     * @param mixed $resource
-     * @param mixed $participants
-     */
-    public function __construct($resource, $participants = null)
-    {
-        parent::__construct($resource);
-        $this->participants = $participants;
-    }
 
     /**
      * Transform the resource into an array.
@@ -42,10 +29,10 @@ class CourseResource extends JsonResource
     {
         return [
             'id'=> $this->id,
-            'name' => $this->name,
-            'semester' => $this->semester,
+            'name' => $this->course->name,
+            'semester' => (string) $this->semester,
             'espb' => $this->espb,
-            'participants' => $this->participants ?? [],
+            //'participants' => $this->participants ?? [],
         ];
     }
 }

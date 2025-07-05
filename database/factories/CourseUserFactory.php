@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 use App\Models\User;
-use App\Models\Course;
+use App\Models\CourseInstance;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 /**
@@ -23,12 +23,12 @@ class CourseUserFactory extends Factory
 
         return [
             'user_id' => $courseuser[0],
-            'course_id' => $courseuser[1],
+            'course_instance_id' => $courseuser[1],
         ];
     }
         private  function beforeCreate(){
             $userIds = User::pluck('id');
-            $courseIds = Course::pluck('id');
+            $courseIds = CourseInstance::pluck('id');
             !property_exists($this, 'count') && $this->count(count($userIds) * count($courseIds));
             foreach( $userIds as $u){
                 foreach( $courseIds as $c){

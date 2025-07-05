@@ -9,17 +9,20 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('course_exams', function (Blueprint $table) {
-            $table->unsignedBigInteger('course_id');
+            $table->id(); 
+            $table->unsignedBigInteger('course_instance_id');
             $table->unsignedBigInteger('exam_period_id');
-            $table->primary(['course_id', 'exam_period_id']);
             $table->dateTime('examDateTime');
             $table->string('hall');
-            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-            $table->foreign('exam_period_id')->references('id')->on('exam_periods')->onDelete('cascade');
             $table->timestamps();
+        
+            $table->foreign('course_instance_id')->references('id')->on('course_instances')->noActionOnDelete();
+            $table->foreign('exam_period_id')->references('id')->on('exam_periods')->cascadeOnDelete();
+        
+            $table->unique(['course_instance_id', 'exam_period_id']); 
         });
     }
 
@@ -28,7 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        
         Schema::dropIfExists('course_exams');
     }
 };

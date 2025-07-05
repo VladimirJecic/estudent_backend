@@ -57,44 +57,44 @@ class ExamPeriodController extends BaseController
         'ExamPeriods retrieved successfully');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'dateStart' => 'required|date',
-            'dateEnd' => 'required|date|after:dateStart',
-            'name' => 'required|string',
-        ]);
+    // /**
+    //  * Store a newly created resource in storage.
+    //  */
+    // public function store(Request $request)
+    // {
+    //     $validator = Validator::make($request->all(), [
+    //         'dateStart' => 'required|date',
+    //         'dateEnd' => 'required|date|after:dateStart',
+    //         'name' => 'required|string',
+    //     ]);
 
-        if($validator->fails()){
-            return $this->sendError('Validation error.',$validator->errors(),400);
-        }
-        $examPeriod = ExamPeriod::create([
-            'dateStart' => $request->dateStart,
-            'dateEnd' => $request->dateEnd,
-            'name' => $request->name,
-        ]);
+    //     if($validator->fails()){
+    //         return $this->sendError('Validation error.',$validator->errors(),400);
+    //     }
+    //     $examPeriod = ExamPeriod::create([
+    //         'dateStart' => $request->dateStart,
+    //         'dateEnd' => $request->dateEnd,
+    //         'name' => $request->name,
+    //     ]);
 
-        return $this->sendResponse(message:'ExamPeriod is stored successfully.');
+    //     return $this->sendResponse(message:'ExamPeriod is stored successfully.');
         
 
-    }
+    // }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Request $request, ExamPeriod $examPeriod)
-    {
-        $url_segments_array= explode('/',$request->getPathInfo());
-        $id = end($url_segments_array);
-       $examPeriod = examPeriod::find($id);
-       if(is_null($examPeriod)){
-           return $this->sendError('examPeriod not found.');
-       }
+    // /**
+    //  * Remove the specified resource from storage.
+    //  */
+    // public function destroy(Request $request, ExamPeriod $examPeriod)
+    // {
+    //     $url_segments_array= explode('/',$request->getPathInfo());
+    //     $id = end($url_segments_array);
+    //    $examPeriod = examPeriod::find($id);
+    //    if(is_null($examPeriod)){
+    //        return $this->sendError('examPeriod not found.');
+    //    }
        
-       $examPeriod->delete();
-       return $this->sendResponse(message:'examPeriod deleted successfully');  
-    }
+    //    $examPeriod->delete();
+    //    return $this->sendResponse(message:'examPeriod deleted successfully');  
+    // }
 }

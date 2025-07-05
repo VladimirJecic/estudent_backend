@@ -2,12 +2,11 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use App\Models\Course;
+use App\Models\CourseInstance;
 use App\Models\ExamRegistration;
 
 
@@ -28,9 +27,9 @@ class User extends Authenticatable
         'password',
         'role',
     ];
-    public function courses()
+    public function courseIntances()
     {
-        return $this->belongsToMany(Course::class,'course_users');
+        return $this->belongsToMany(CourseInstance::class,'course_users');
     }
     
     public function examRegistrations()

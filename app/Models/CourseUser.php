@@ -11,7 +11,7 @@ class CourseUser extends CustomModel
     use HasFactory;
     protected $fillable = [
         'user_id',
-        'course_id',
+        'course_instance_id',
     ];
 
 }

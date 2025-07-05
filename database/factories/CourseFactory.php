@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Arr;
+use App\Models\Semester;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Course>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CourseInstance>
  */
 class CourseFactory extends Factory
 {
@@ -32,11 +32,9 @@ class CourseFactory extends Factory
      */
     public function definition(): array
     {   
-        $semester = [1, 2, 3, 4, 5, 6, 7, 8];
         $espb = [4,5,6,7];
         return [
             'name' =>  array_shift($this->exams),
-            'semester' => $this->faker->randomElement($semester),
             'espb' => $this->faker->randomElement($espb),
         ];
     }

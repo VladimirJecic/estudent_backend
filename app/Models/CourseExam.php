@@ -3,28 +3,22 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Course;
+use App\Models\CourseInstance;
 use App\Models\ExamPeriod;
 use App\Models\ExamRegistration;
 
 class CourseExam extends CustomModel
 {   
     use HasFactory;
-    public $incrementing = false;
-    protected $casts = [
-        'course_id' => 'integer',
-        'exam_period_id' => 'integer',
-    ];
-    protected $primaryKey = ['course_id', 'exam_period_id'];
     protected $fillable = [
-        'id',
+        'course_instance_id',
         'exam_period_id',
         'examDateTime',
         'hall',
     ];
-    public function course()
+    public function courseInstance()
     {
-        return $this->belongsTo(Course::class, 'course_id','id');
+        return $this->belongsTo(CourseInstance::class, 'course_instance_id','id');
     }
 
     public function examPeriod()
@@ -34,7 +28,7 @@ class CourseExam extends CustomModel
 
     public function examRegistrations()
     {
-        return $this->hasMany(ExamRegistration::class,['course_id','exam_period_id'],['course_id','exam_period_id']);
+        return $this->hasMany(ExamRegistration::class);
 
     }
 }
