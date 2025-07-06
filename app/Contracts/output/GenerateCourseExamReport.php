@@ -1,8 +1,8 @@
 <?php
 
-namespace App\ports\output;
+namespace App\Contracts\output;
 
-use App\ports\output\model\CourseExamReportDTO;
+use App\Contracts\output\model\CourseExamReportDTO;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 interface GenerateCourseExamReport
 {

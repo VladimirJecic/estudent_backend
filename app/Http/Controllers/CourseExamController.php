@@ -1,17 +1,36 @@
 <?php
 
 namespace App\Http\Controllers;
-use App\Models\CourseExam;
-use App\Models\ExamPeriod;
-use App\Models\ExamRegistration;
+use App\Contracts\input\GetReportForCourseExam;
+use App\Contracts\input\model\CourseExamFilters;
+use App\Http\Requests\GetRemainingCourseExamsRequest;
+use App\Http\Requests\GetRegisterableCourseExamsRequest;
 use Illuminate\Http\Request;
 use App\Http\Resources\CourseExamResource;
-use Validator;
-use Carbon\Carbon;
+use App\Contracts\input\GetRegisterableCourseExams;
+use App\Contracts\input\GetRemainingCourseExams;
+use App\Contracts\input\CourseExamService;
+use App\Http\Requests\CourseExamReportRequest;
 
 class CourseExamController extends BaseController
 {
+    private readonly CourseExamService $courseExamService;
+    private readonly GetRegisterableCourseExams $getRegisterableCourseExamsService;
 
+    private readonly GetRemainingCourseExams $getRemainingCourseExamsService;
+
+    private readonly GetReportForCourseExam $getReportForCourseExamService;
+    public function __construct(
+        CourseExamService  $courseExamService,
+        GetRegisterableCourseExams $getRegisterableCourseExamsService,
+        GetRemainingCourseExams $getRemainingCourseExamsService,
+        GetReportForCourseExam $getReportForCourseExam)
+    {
+        $this->courseExamService = $courseExamService;
+        $this->getRegisterableCourseExamsService = $getRegisterableCourseExamsService;
+        $this->getRemainingCourseExamsService = $getRemainingCourseExamsService;
+        $this->getReportForCourseExamService = $getReportForCourseExam;
+    }
 
     /**
      * @OA\Get(
@@ -74,32 +93,15 @@ class CourseExamController extends BaseController
     */
     public function index(Request $request)
     {
-        $query = CourseExam::with(['courseInstance', 'examPeriod']);
-
-        // Filters
-        if ($request->filled('course-name')) {
-            $query->whereHas('courseInstance.course', function ($q) use ($request) {
-                $q->where('name', 'like', '%' . $request->input('course-name') . '%');
-            });
-        }
-
-        if ($request->filled('date-from')) {
-            $query->whereDate('examDateTime', '>=', Carbon::parse($request->input('date-from'))->toDateString());
-        }
+        $courseExamFilters = new CourseExamFilters($request->query());
         
-        if ($request->filled('date-to')) {
-            $query->whereDate('examDateTime', '<=', Carbon::parse($request->input('date-to'))->toDateString());
-        }
-
-        $query->orderBy('examDateTime', 'desc');
-
-        $pageSize = (int) $request->input('page-size', 10);
-        $courseExams = $query->paginate($pageSize)->appends($request->query());
+       
+        $paginatedCourseExams = $this->courseExamService->getAllCourseExamsWithFilters( $courseExamFilters );
 
         return response()->json([
-            'content' => CourseExamResource::collection($courseExams->items()),
-            'totalPages' => $courseExams->lastPage(),
-            'totalElements' => $courseExams->total(),
+            'content' => CourseExamResource::collection($paginatedCourseExams->items()),
+            'totalPages' => $paginatedCourseExams->lastPage(),
+            'totalElements' => $paginatedCourseExams->total(),
         ]);
     }
             
@@ -128,10 +130,11 @@ class CourseExamController extends BaseController
      *     ),
      * )
      */
-    public function getRemainingCourseExams(Request $request, $examPeriodId)
+    public function getRemainingCourseExams(GetRemainingCourseExamsRequest $request, $examPeriodId)
     {
-
-        $result['courseExams'] = $this->getRemainingCourseExamsCollection($request, $examPeriodId);
+        $request->validated(); // Ensure request passes validation, we don't need the result
+        $remainingCourseExams = $this->getRemainingCourseExamsService->getRemainingCourseExams($examPeriodId);
+        $result['courseExams'] = CourseExamResource::collection($remainingCourseExams);
         return $this->sendResponse($result, 'Remaining CourseExams retrieved successfully');
     }
 
@@ -159,57 +162,58 @@ class CourseExamController extends BaseController
      *     ),
      * )
      */
-    public function getRegisterableCourseExams(Request $request, $examPeriodId)
+    public function getRegisterableCourseExams(GetRegisterableCourseExamsRequest $request, $examPeriodId)
     {
-        $student = auth()->user();
-        $remainingCourseExams = $this->getRemainingCourseExamsCollection($request, $examPeriodId);
-        $examRegistrationsForExamPeriod = ExamRegistration::where('student_id', $student->id)
-        ->whereHas('courseExam', function ($query) use ($examPeriodId) {
-            $query->where('exam_period_id', $examPeriodId);
-        })->get();
-        $registerableCourseExams  = $remainingCourseExams->reject(fn ($courseExam) =>
-        in_array($courseExam->id,$examRegistrationsForExamPeriod->pluck('course_exam_id')->toArray())
-    );
+        $request->validated(); // Ensure request passes validation, we don't need the result
+        $registerableCourseExams = $this->getRegisterableCourseExamsService->getRegisterableCourseExams($examPeriodId);
+       
         $result['courseExams'] = CourseExamResource::collection($registerableCourseExams);    
         return $this->sendResponse($result, 'Registerable CourseExams retrieved successfully');
     }
 
-    private function getRemainingCourseExamsCollection(Request $request, $examPeriodId)
-    {
-        $validator = Validator::make(
-            ['examPeriodId' => $examPeriodId],
-            [
-                'examPeriodId' => ['required', 'integer', 'exists:exam_periods,id'],
-            ]
-        );
-    
-        if ($validator->fails()) {
-            return $this->sendError(
-                "Validation error: ExamPeriod with examPeriodId {$examPeriodId} not found",
-                $validator->errors(),
-                400
-            );
-        }
-
-        $examPeriod = ExamPeriod::with('exams.courseInstance')->findOrFail($examPeriodId);
-        
-        $student = auth()->user();
-        
-        $enrolledCourses = $student->courseIntances()->pluck('id')->toArray();
-
-        $courseExams_where_enrolled = $examPeriod->exams->reject(fn ($courseExam)=>
-            !in_array($courseExam->courseInstance->id,$enrolledCourses)
-        );
-
-        $examAttempts = ExamRegistration::with('student','courseExam')->where('student_id', $student->id)->get();
-
-        $successfulAttempts = $examAttempts->count() > 0 ? $examAttempts->whereBetween('mark', [6, 10])->pluck('courseExam.course_instance_id')->toArray() : [];
-
-        $courseExams_remaining =  $courseExams_where_enrolled->reject(fn ($courseExam) => 
-            in_array($courseExam->course_instance_id, $successfulAttempts)
-        );
-        return CourseExamResource::collection($courseExams_remaining);;
+    /**
+     * @OA\Get(
+     *     path="/course-exam-reports/{courseExamId}",
+     *     tags={"Admin Routes"},
+     *     summary="Download Excel report for a course exam identified by courseExamId",
+     *     operationId="getCourseExamReport",
+     *     security={{"passport": {}}},
+     *     @OA\Parameter(
+     *         name="courseExamId",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the Course",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Excel file download",
+     *         @OA\MediaType(
+     *             mediaType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+     *             @OA\Schema(type="string", format="binary")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=204,
+     *         description="No registrations found for this course exam"
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Validation failed or CourseExam not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Validation error: Course Exam with courseExamId 1 not found"),
+     *             @OA\Property(property="data", type="object")
+     *         )
+     *     )
+     * )
+     */
+  public function getReportForCourseExam(CourseExamReportRequest $request, int $courseExamId)
+  {
+     $request->validated(); // Ensure request passes validation, we don't need the result
+  
+    $report = $this->getReportForCourseExamService->getReportForCourseExam($courseExamId);
+    return $report;
     }
-   
 
 }

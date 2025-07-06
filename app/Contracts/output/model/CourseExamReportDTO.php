@@ -1,5 +1,5 @@
 <?php
-namespace App\ports\output\model;
+namespace App\Contracts\output\model;
 
 use App\Models\CourseExam;
 
