@@ -132,7 +132,6 @@ class CourseExamController extends BaseController
      */
     public function getRemainingCourseExams(GetRemainingCourseExamsRequest $request, $examPeriodId)
     {
-        $request->validated(); // Ensure request passes validation, we don't need the result
         $remainingCourseExams = $this->getRemainingCourseExamsService->getRemainingCourseExams($examPeriodId);
         $result['courseExams'] = CourseExamResource::collection($remainingCourseExams);
         return $this->sendResponse($result, 'Remaining CourseExams retrieved successfully');
@@ -164,9 +163,7 @@ class CourseExamController extends BaseController
      */
     public function getRegisterableCourseExams(GetRegisterableCourseExamsRequest $request, $examPeriodId)
     {
-        $request->validated(); // Ensure request passes validation, we don't need the result
         $registerableCourseExams = $this->getRegisterableCourseExamsService->getRegisterableCourseExams($examPeriodId);
-       
         $result['courseExams'] = CourseExamResource::collection($registerableCourseExams);    
         return $this->sendResponse($result, 'Registerable CourseExams retrieved successfully');
     }
@@ -182,9 +179,10 @@ class CourseExamController extends BaseController
      *         name="courseExamId",
      *         in="path",
      *         required=true,
-     *         description="ID of the Course",
+     *         description="ID of the CourseExam to generate the report for, will include all exam registrations for that course exam",
      *         @OA\Schema(type="integer", example=1)
      *     ),
+     * 
      *     @OA\Response(
      *         response=200,
      *         description="Excel file download",
@@ -210,8 +208,6 @@ class CourseExamController extends BaseController
      */
   public function getReportForCourseExam(CourseExamReportRequest $request, int $courseExamId)
   {
-     $request->validated(); // Ensure request passes validation, we don't need the result
-  
     $report = $this->getReportForCourseExamService->getReportForCourseExam($courseExamId);
     return $report;
     }

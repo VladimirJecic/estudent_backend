@@ -1,13 +1,21 @@
 <?php
 namespace App\Contracts\input\model;
 
-
+/**
+ * @OA\Schema(
+ *     schema="ExamRegistrationUpdateDTO",
+ *     type="object",
+ *     required={"hasAttended"},
+ *     @OA\Property(property="mark", type="integer", example=5),
+ *     @OA\Property(property="hasAttended", type="boolean", example=true),
+ *     @OA\Property(property="comment", type="string", example=""),
+ * )
+ */
 class ExamRegistrationUpdateDTO
 {
     public int $mark;
-
-    public string $comment;
     public bool $hasAttended;
+    public string $comment;
 
     public function __construct(array $data)
     {

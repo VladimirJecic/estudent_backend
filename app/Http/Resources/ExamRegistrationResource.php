@@ -18,6 +18,7 @@ class ExamRegistrationResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            "id"=> $this->id,
             'courseExam'=> new CourseExamResource($this->courseExam),
             'student'=>new UserResource($this->student),
             'signed_by' => $this->signedBy ? new UserResource($this->signedBy) : null,

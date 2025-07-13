@@ -1,6 +1,6 @@
 <?php
 
-namespace External\Reports\model;
+namespace App\Adapters\reports\model;
 use Illuminate\Contracts\View\View;
 use Illuminate\Support\Facades\View as ViewFacade; 
 use Maatwebsite\Excel\Facades\Excel;

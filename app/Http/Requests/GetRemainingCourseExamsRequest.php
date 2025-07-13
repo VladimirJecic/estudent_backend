@@ -13,7 +13,7 @@ class GetRemainingCourseExamsRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -32,5 +32,12 @@ class GetRemainingCourseExamsRequest extends FormRequest
     {
         $message = $validator->errors()->first(); 
         throw new BadRequestException($message);
+    }
+
+    public function validationData()
+    {
+        return array_merge($this->all(), [
+            'examPeriodId' => $this->route('examPeriodId'),
+        ]);
     }
 }

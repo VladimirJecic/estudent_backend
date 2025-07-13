@@ -61,7 +61,7 @@ class ExamPeriodSeeder extends Seeder
             [
                 'semester_id' => $summerSemester->id,
                 'dateRegisterStart' => '2025-06-23',
-                'dateRegisterEnd' => '2025-07-06',
+                'dateRegisterEnd' => '2025-09-06',
                 'dateStart' => '2025-07-06',
                 'dateEnd' => '2025-07-20',
                 'name' => 'jun-2025'

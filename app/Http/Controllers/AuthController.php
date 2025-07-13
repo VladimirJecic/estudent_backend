@@ -12,7 +12,7 @@ class AuthController extends BaseController
 
     //  /**
     //  * @OA\Post(
-    //  *     path="/register",
+    //  *     path="/estudent/api/register",
     //  *     tags={"Admin Routes"},
     //  *     summary="Register new user",
     //  *   @OA\Parameter(

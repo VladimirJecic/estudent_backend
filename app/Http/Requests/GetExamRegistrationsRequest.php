@@ -6,7 +6,7 @@ use App\Exceptions\BadRequestException;
 use App\Contracts\input\model\ExamRegistrationFilters;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
-class IndexExamRegistrationRequest extends FormRequest
+class GetExamRegistrationsRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -45,6 +45,7 @@ class IndexExamRegistrationRequest extends FormRequest
         return new ExamRegistrationFilters($this->validated());
     }
 
+    
 
     private function getStudentId(): ?int
     {
@@ -72,6 +73,13 @@ class IndexExamRegistrationRequest extends FormRequest
         $message = $validator->errors()->first(); 
         throw new BadRequestException($message);
     }
-
+    public function validationData()
+    {
+        return array_merge($this->all(), [
+            'excludePassed' => $this->route('excludePassed'),
+            'excludeFailed' => $this->route('excludeFailed'),
+            'studentId' => $this->route('studentId'),
+        ]);
+    }
 
 }

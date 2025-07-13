@@ -17,7 +17,7 @@ class ExamPeriodServiceImpl implements ExamPeriodService
         }
     }
 
-    
+
     private function active()
     {
         $currentDate = Carbon::now();
@@ -29,6 +29,15 @@ class ExamPeriodServiceImpl implements ExamPeriodService
     }
     private function all(){
          $examPeriods = ExamPeriod::with('exams')->get();
+        return $examPeriods;
+    }
+    public function registerable()
+    {
+        $currentDate = Carbon::now();
+        $examPeriods = ExamPeriod::with('exams')->where('dateRegisterStart', '<=', $currentDate)
+        ->where('dateRegisterEnd', '>=', $currentDate)
+        ->get();
+     
         return $examPeriods;
     }
 }

@@ -5,10 +5,10 @@ namespace App\Http\Controllers;
 use App\Contracts\input\model\ExamRegistrationFilters;
 use App\Http\Requests\GetNotGradedForStudentRequest;
 use App\Http\Resources\ExamRegistrationResource;
-use App\Http\Requests\StoreExamRegistrationRequest;
+use App\Http\Requests\PostExamRegistrationRequest;
 use App\Contracts\input\ExamRegistrationService;
 use App\Contracts\input\GetNotGradedExamRegistrations;
-use App\Http\Requests\IndexExamRegistrationRequest;
+use App\Http\Requests\GetExamRegistrationsRequest;
 use App\Http\Requests\UpdateExamRegistrationRequest;
 
 class ExamRegistrationController extends BaseController
@@ -46,6 +46,12 @@ class ExamRegistrationController extends BaseController
      *           type="string"
      *      )
      *   ),
+     *   @OA\Parameter(
+     *      name="studentId",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(type="integer", example=123)
+     *   ),
      *     @OA\Response(
      *         response=200,
      *         description="Exam registrations retrieved successfully",
@@ -53,7 +59,7 @@ class ExamRegistrationController extends BaseController
      *     ),
      * )
      */
-    public function index(IndexExamRegistrationRequest $request)
+    public function index(GetExamRegistrationsRequest $request)
     {
        $examRegistrationFilters = new ExamRegistrationFilters( $request->validated());
 
@@ -72,22 +78,11 @@ class ExamRegistrationController extends BaseController
      *     security={
      *              {"passport": {*}}
      *      },
-     *   @OA\Parameter(
-     *      name="course_exam_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="student_id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/ExamRegistrationStoreDTO")
+     *     ),
+     *
      *     @OA\Response(
      *         response=201,
      *         description="ExamRegistration stored successfully.",
@@ -106,11 +101,12 @@ class ExamRegistrationController extends BaseController
      * 
      * )
      */
-    public function store(StoreExamRegistrationRequest $request)
+    public function store(PostExamRegistrationRequest $request)
     {
         $dto = $request->toDto();
-        $this->examRegistrationService->saveExamRegistration($dto);    
-        return $this->sendResponse([], 'ExamRegistration stored successfully.', 201);
+        $examRegistration = $this->examRegistrationService->saveExamRegistration($dto);
+        $result['examRegistration'] = new ExamRegistrationResource($examRegistration);
+        return $this->sendResponse($result, 'ExamRegistration stored successfully.', 201);
     }
     
     /**
@@ -120,41 +116,29 @@ class ExamRegistrationController extends BaseController
      *     summary="Update existing exam registration",
      *     operationId="exam-registrations/update",
      *     security={{"passport": {*}}},
-
-    *     @OA\Parameter(
-    *         name="examRegistrationId",
-    *         in="path",
-    *         required=true,
-    *         description="ID of the exam registration to update",
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="mark",
-    *         in="query",
-    *         required=false,
-    *         @OA\Schema(type="integer")
-    *     ),
-    *     @OA\Parameter(
-    *         name="comment",
-    *         in="query",
-    *         required=false,
-    *         @OA\Schema(type="string")
-    *     ),
-    *     @OA\Parameter(
-    *         name="hasAttended",
-    *         in="query",
-    *         required=true,
-    *         @OA\Schema(type="boolean")
-    *     ),
-    *     @OA\Response(response=204, description="Updated successfully"),
-    *     @OA\Response(response=403, description="Error: Forbidden"),
-    *     @OA\Response(response=404, description="ExamRegistration not found")
-    * )
-    */
+     *
+     *     @OA\Parameter(
+     *         name="examRegistrationId",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the exam registration to update",
+     *         @OA\Schema(type="integer")
+     *     ),
+     * 
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(ref="#/components/schemas/ExamRegistrationUpdateDTO")
+     *     ),
+     *
+     *     @OA\Response(response=204, description="Updated successfully"),
+     *     @OA\Response(response=403, description="Error: Forbidden"),
+     *     @OA\Response(response=404, description="ExamRegistration not found")
+     * )
+     */
     public function update(UpdateExamRegistrationRequest $request, int $examRegistrationId)
     {
         $dto = $request->toDto();
-        $updatedExamRegistration = $this->examRegistrationService->updateExamRegistration( $examRegistrationId, $dto );
+        $this->examRegistrationService->updateExamRegistration( $examRegistrationId, $dto );
 
         return $this->sendResponse(code: 204);
     }
@@ -187,16 +171,16 @@ class ExamRegistrationController extends BaseController
         return $this->sendResponse(code: 204);
     }
 
-        /**
+    /**
      * @OA\Get(
-     *     path="/exam-registrations/notGraded/{student_id}",
+     *     path="/exam-registrations/notGraded",
      *     tags={"Common Routes"},
      *     summary="Retrieve not graded exam registrations only for logged in/passed student",
      *     security={
      *              {"passport": {*}}
      *      },
      *   @OA\Parameter(
-     *      name="student_id",
+     *      name="studentId",
      *      in="query",
      *      required=false,
      *      @OA\Schema(
@@ -215,13 +199,13 @@ class ExamRegistrationController extends BaseController
      *     ),
      * )
      */
-    public function getNotGradedForStudent(GetNotGradedForStudentRequest $request,int $studentId){
+    public function getNotGradedForStudent(GetNotGradedForStudentRequest $request){
+        $studentId = $request->getStudentId();
+        $notGradedRegistrations = $this->getNotGradedRegistrationsService->getAllForStudentId( $studentId );
 
-            $notGradedRegistrations = $this->getNotGradedRegistrationsService->getAllForStudentId( $studentId );
+        $result['examRegistrations'] = ExamRegistrationResource::collection($notGradedRegistrations);
 
-            $result['examRegistrations'] = ExamRegistrationResource::collection($notGradedRegistrations);
-
-            return $this->sendResponse($result, 'Not graded exam registrations retrieved successfully');
+        return $this->sendResponse($result, 'Not graded exam registrations retrieved successfully');
     }
      /**
      * @OA\Get(

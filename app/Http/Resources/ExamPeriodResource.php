@@ -12,8 +12,8 @@ use Illuminate\Http\Resources\Json\JsonResource;
  *     title="ExamPeriod",
  *     @OA\Property(property="id", type="integer", example=1),
  *     @OA\Property(property="name", type="string", example="June 2025"),
- *     @OA\Property(property="dateRegistrationStart", type="string", format="date", example="2025-05-01"),
- *     @OA\Property(property="dateRegistrationEnd", type="string", format="date", example="2025-05-31"),
+ *     @OA\Property(property="dateRegisterStart", type="string", format="date", example="2025-05-01"),
+ *     @OA\Property(property="dateRegisterEnd", type="string", format="date", example="2025-05-31"),
  *     @OA\Property(property="dateStart", type="string", format="date", example="2025-06-15"),
  *     @OA\Property(property="dateEnd", type="string", format="date", example="2025-06-20")
  * )
@@ -30,8 +30,8 @@ class ExamPeriodResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'dateRegistrationStart'=> $this->dateRegisterStart,
-            'dateRegistrationEnd'=> $this->dateRegisterEnd,
+            'dateRegisterStart'=> $this->dateRegisterStart,
+            'dateRegisterEnd'=> $this->dateRegisterEnd,
             'dateStart' => $this->dateStart,
             'dateEnd' => $this->dateEnd,
             'exams' => CourseExamResource::collection($this->whenLoaded('exams')),

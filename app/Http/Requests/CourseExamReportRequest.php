@@ -14,7 +14,7 @@ class CourseExamReportRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -29,6 +29,12 @@ class CourseExamReportRequest extends FormRequest
         ];
     }
 
+    public function validationData()
+    {
+        return array_merge($this->all(), [
+            'courseExamId' => $this->route('courseExamId'),
+        ]);
+    }
 
     public function failedValidation(Validator $validator)
     {

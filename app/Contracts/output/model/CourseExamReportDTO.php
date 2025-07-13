@@ -15,7 +15,7 @@ class CourseExamReportDTO
 
     public function __construct(CourseExam $courseExam)
     {
-        $this->courseExamName = $courseExam->course->name;
+        $this->courseExamName = $courseExam->courseInstance->course->name;
         $this->examPeriodName = $courseExam->examPeriod->name;
         $this->reportItemList = [];
         $this->attendancePercentage = "/";

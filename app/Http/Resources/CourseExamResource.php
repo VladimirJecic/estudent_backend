@@ -28,6 +28,7 @@ class CourseExamResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+            'id'=> $this->id,
             'examPeriod'=> $this->examPeriod ? new ExamPeriodResource($this->examPeriod): null,
             'course' => new CourseInstanceResource($this->courseInstance),
             'examDateTime'=>$this->examDateTime

@@ -22,7 +22,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
     public function getReportForCourseExam(int $courseExamId): BinaryFileResponse
     {
 
-        $courseExam = CourseExam::with('examRegistrations.student')
+        $courseExam = CourseExam::with(['courseInstance.course','examRegistrations.student'])
         ->where('id', $courseExamId)
         ->firstOrFail();
     /** @var \App\Models\CourseExam $courseExam */

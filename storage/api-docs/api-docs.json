@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8081/api/",
+            "url": "http://localhost:8081/estudent/api",
             "description": "Rest API Server"
         }
     ],
@@ -236,7 +236,7 @@
                     {
                         "name": "courseExamId",
                         "in": "path",
-                        "description": "ID of the Course",
+                        "description": "ID of the CourseExam to generate the report for, will include all exam registrations for that course exam",
                         "required": true,
                         "schema": {
                             "type": "integer",
@@ -342,6 +342,15 @@
                         "schema": {
                             "type": "string"
                         }
+                    },
+                    {
+                        "name": "studentId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 123
+                        }
                     }
                 ],
                 "responses": {
@@ -361,24 +370,16 @@
                 ],
                 "summary": "Store new exam registration",
                 "operationId": "exam-registrations/store",
-                "parameters": [
-                    {
-                        "name": "course_exam_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "student_id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExamRegistrationStoreDTO"
+                            }
                         }
                     }
-                ],
+                },
                 "responses": {
                     "201": {
                         "description": "ExamRegistration stored successfully."
@@ -397,58 +398,7 @@
                 ]
             }
         },
-        "/exam-registrations/notGraded": {
-            "get": {
-                "tags": [
-                    "Common Routes"
-                ],
-                "summary": "Retrieve not graded exam registrations only for logged in/passed student",
-                "operationId": "646f038049365a774c94adca10350066",
-                "parameters": [
-                    {
-                        "name": "student_id",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Not graded exam registrations retrieved successfully"
-                    },
-                    "404": {
-                        "description": "Student with id student_id not found"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            }
-        },
-        "/exam-registrations/notGraded/all": {
-            "get": {
-                "tags": [
-                    "Admin Routes"
-                ],
-                "summary": "Retrieve not graded exam registrations for all students",
-                "operationId": "575515c4d3f5fe326fd4c4a9bb9bd8b4",
-                "responses": {
-                    "200": {
-                        "description": "All not graded exam registrations retrieved successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            }
-        },
-        "/exam-registrations/{id}": {
+        "/exam-registrations/{examRegistrationId}": {
             "put": {
                 "tags": [
                     "Admin Routes"
@@ -457,39 +407,25 @@
                 "operationId": "exam-registrations/update",
                 "parameters": [
                     {
-                        "name": "id",
+                        "name": "examRegistrationId",
                         "in": "path",
                         "description": "ID of the exam registration to update",
                         "required": true,
                         "schema": {
                             "type": "integer"
                         }
-                    },
-                    {
-                        "name": "mark",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "comment",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "hasAttended",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "boolean"
-                        }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ExamRegistrationUpdateDTO"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "204": {
                         "description": "Updated successfully"
@@ -506,9 +442,7 @@
                         "passport": []
                     }
                 ]
-            }
-        },
-        "/exam-registrations/{examRegistrationId}": {
+            },
             "delete": {
                 "tags": [
                     "Common Routes"
@@ -543,10 +477,111 @@
                     }
                 ]
             }
+        },
+        "/exam-registrations/notGraded": {
+            "get": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Retrieve not graded exam registrations only for logged in/passed student",
+                "operationId": "693fe63e691594e74afb60f84c509cd3",
+                "parameters": [
+                    {
+                        "name": "studentId",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Not graded exam registrations retrieved successfully"
+                    },
+                    "404": {
+                        "description": "Student with id student_id not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/exam-registrations/notGraded/all": {
+            "get": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Retrieve not graded exam registrations for all students",
+                "operationId": "ac244c2410d81d6979d31f5ca244d8b3",
+                "responses": {
+                    "200": {
+                        "description": "All not graded exam registrations retrieved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
         }
     },
     "components": {
         "schemas": {
+            "ExamRegistrationStoreDTO": {
+                "required": [
+                    "courseExamId",
+                    "studentId",
+                    "hasAttended"
+                ],
+                "properties": {
+                    "courseExamId": {
+                        "description": "ID of the CourseExam",
+                        "type": "integer",
+                        "example": 12
+                    },
+                    "studentId": {
+                        "description": "ID of the Student",
+                        "type": "integer",
+                        "example": 34
+                    },
+                    "mark": {
+                        "description": "Mark to assign (optional, defaults to 5)",
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "hasAttended": {
+                        "description": "Indicates whether the student attended the exam",
+                        "type": "boolean",
+                        "example": true
+                    }
+                },
+                "type": "object"
+            },
+            "ExamRegistrationUpdateDTO": {
+                "required": [
+                    "hasAttended"
+                ],
+                "properties": {
+                    "mark": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "hasAttended": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "comment": {
+                        "type": "string",
+                        "example": ""
+                    }
+                },
+                "type": "object"
+            },
             "CourseExam": {
                 "title": "CourseExam",
                 "properties": {
@@ -607,12 +642,12 @@
                         "type": "string",
                         "example": "June 2025"
                     },
-                    "dateRegistrationStart": {
+                    "dateRegisterStart": {
                         "type": "string",
                         "format": "date",
                         "example": "2025-05-01"
                     },
-                    "dateRegistrationEnd": {
+                    "dateRegisterEnd": {
                         "type": "string",
                         "format": "date",
                         "example": "2025-05-31"

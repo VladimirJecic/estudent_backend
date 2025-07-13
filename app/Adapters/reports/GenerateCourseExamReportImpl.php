@@ -4,7 +4,7 @@ namespace App\Adapters\reports;
 
 use App\Contracts\output\GenerateCourseExamReport;
 use App\Contracts\output\model\CourseExamReportDTO;
-use External\Reports\model\ExcelTemplate;
+use App\Adapters\reports\model\ExcelTemplate;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 

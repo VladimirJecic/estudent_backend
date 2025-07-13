@@ -13,7 +13,7 @@ class UpdateExamRegistrationRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -24,13 +24,13 @@ class UpdateExamRegistrationRequest extends FormRequest
     public function rules()
     {
         return [
-            "id"=> "required|integer|exists:exam_registrations,id",
+            "examRegistrationId" => "required|integer|exists:exam_registrations,id",
             'mark' => 'nullable|integer',
             'comment' => 'nullable|string',
-            'hasAttended' => 'required|boolean',
+            'hasAttended' => 'nullable|boolean',
         ];
     }
-    public function toDTO()
+    public function toDTO(): ExamRegistrationUpdateDTO
     {
         return new ExamRegistrationUpdateDTO($this->validated());
     }
@@ -40,4 +40,11 @@ class UpdateExamRegistrationRequest extends FormRequest
         $message = $validator->errors()->first(); 
         throw new BadRequestException($message);
     }
+    public function validationData()
+    {
+        return array_merge($this->all(), [
+            'examRegistrationId' => $this->route('examRegistrationId'),
+        ]);
+    }
+    
 }

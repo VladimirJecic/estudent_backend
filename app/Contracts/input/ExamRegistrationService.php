@@ -12,5 +12,5 @@ interface ExamRegistrationService
     public function getAllExamRegistrationsWithFilters(ExamRegistrationFilters $filters): Collection;
     public function saveExamRegistration(ExamRegistrationStoreDTO $dto): ExamRegistration;
     public function updateExamRegistration(int $id, ExamRegistrationUpdateDTO $dto): ExamRegistration;
-    public function deleteExamRegistration(int $id): ExamRegistration;
+    public function deleteExamRegistration(int $id): bool;
 }
