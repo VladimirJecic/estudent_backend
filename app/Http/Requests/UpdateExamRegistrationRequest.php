@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Requests;
-use App\Contracts\input\model\ExamRegistrationUpdateDTO;
+use App\Contracts\input\model\UpdateExamRegistrationDTO;
 use Illuminate\Foundation\Http\FormRequest;
 use App\Exceptions\BadRequestException;
 use Illuminate\Contracts\Validation\Validator;
@@ -30,9 +30,9 @@ class UpdateExamRegistrationRequest extends FormRequest
             'hasAttended' => 'nullable|boolean',
         ];
     }
-    public function toDTO(): ExamRegistrationUpdateDTO
+    public function toDTO(): UpdateExamRegistrationDTO
     {
-        return new ExamRegistrationUpdateDTO($this->validated());
+        return new UpdateExamRegistrationDTO($this->validated());
     }
 
     public function failedValidation(Validator $validator)

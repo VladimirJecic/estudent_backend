@@ -11,7 +11,7 @@ namespace App\Contracts\input\model;
  *     @OA\Property(property="comment", type="string", example=""),
  * )
  */
-class ExamRegistrationUpdateDTO
+class UpdateExamRegistrationDTO
 {
     public int $mark;
     public bool $hasAttended;

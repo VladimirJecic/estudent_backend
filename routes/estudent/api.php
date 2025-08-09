@@ -22,15 +22,15 @@ Route::post('login', [AuthController::class, 'login']);
 Route::middleware('auth:api')->group(function(){
     Route::resource('exam-periods', ExamPeriodController::class)->only(['index']);
     Route::resource('exam-registrations', ExamRegistrationController::class)->only(['index','store','destroy']);
-    Route::get('course-exams/{examPeriodId}/registerable-course-exams', [CourseExamController::class,'getRegisterableCourseExams']);
-    Route::get('course-exams/{examPeriodId}/remaining-course-exams', [CourseExamController::class, 'getRemainingCourseExams']);
-    Route::get('exam-registrations/notGraded',[ExamRegistrationController::class,'getNotGradedForStudent']);
+    Route::get('course-exams/registerable-course-exams', [CourseExamController::class,'getRegisterableCourseExams']);
+    Route::get('course-exams/remaining-course-exams', [CourseExamController::class, 'getRemainingCourseExams']);
+    Route::get('exam-registrations/not-graded',[ExamRegistrationController::class,'getNotGradedForStudent']);
     Route::post('logout', [AuthController::class, 'logout']);
     
      Route::middleware('admin-auth')->group(function(){
          Route::get('course-exams', [CourseExamController::class,'index']);
          Route::get( "course-exam-reports/{courseExamId}", [CourseExamController::class,'getReportForCourseExam']);
-         Route::get('exam-registrations/notGraded/all',[ExamRegistrationController::class,'getAllNotGradedForAdmin']);
+         Route::get('exam-registrations/not-graded/all',[ExamRegistrationController::class,'getAllNotGradedForAdmin']);
          Route::put('exam-registrations/{examRegistrationId}', [ExamRegistrationController::class, 'update']);
      });
 

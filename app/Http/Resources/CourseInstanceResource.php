@@ -32,7 +32,6 @@ class CourseInstanceResource extends JsonResource
             'name' => $this->course->name,
             'semester' => (string) $this->semester,
             'espb' => $this->espb,
-            //'participants' => $this->participants ?? [],
         ];
     }
 }

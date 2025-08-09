@@ -9,8 +9,8 @@ use App\Exceptions\RegistrationNotInProgressException;
 use App\Models\CourseExam;
 use App\Models\ExamRegistration;
 use App\Contracts\input\ExamRegistrationService;
-use App\Contracts\input\model\ExamRegistrationStoreDTO;
-use App\Contracts\input\model\ExamRegistrationUpdateDTO;
+use App\Contracts\input\model\SubmitExamRegistrationDTO;
+use App\Contracts\input\model\UpdateExamRegistrationDTO;
 use Illuminate\Support\Collection;
 class ExamRegistrationServiceImpl implements ExamRegistrationService
 {
@@ -39,7 +39,7 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
         return $wantedRegistrations;
     }
 
-    public function saveExamRegistration(ExamRegistrationStoreDTO $dto): ExamRegistration
+    public function saveExamRegistration(SubmitExamRegistrationDTO $dto): ExamRegistration
     {
         $courseExam = CourseExam::with('examPeriod')->find($dto->courseExamId);
         $registerableExamPeriods = $this->examPeriodService->registerable();
@@ -57,14 +57,14 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
         return ExamRegistration::create([
             'course_exam_id' => $dto->courseExamId,
             'student_id'     => $dto->studentId,
-            'mark'           => $dto->mark,
-            'hasAttended'    => $dto->hasAttended,
+            'mark'           => 5,
+            'hasAttended'    => false,
         ]);
 
        
     }
 
-    public function updateExamRegistration(int $id, ExamRegistrationUpdateDTO $dto): ExamRegistration
+    public function updateExamRegistration(int $id, UpdateExamRegistrationDTO $dto): ExamRegistration
     {
         $examRegistration = ExamRegistration::find($id);
 

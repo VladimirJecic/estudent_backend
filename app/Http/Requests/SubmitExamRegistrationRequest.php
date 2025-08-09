@@ -2,14 +2,14 @@
 namespace App\Http\Requests;
 
 
-use App\Contracts\input\model\ExamRegistrationStoreDTO;
+use App\Contracts\input\model\SubmitExamRegistrationDTO;
 use App\Exceptions\UnauthorizedOperationException;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Validation\ValidationException;
 use App\Exceptions\BadRequestException;
 use Illuminate\Contracts\Validation\Validator;
-class PostExamRegistrationRequest extends FormRequest
+class SubmitExamRegistrationRequest extends FormRequest
 {
     public function authorize(): bool
     {
@@ -21,8 +21,6 @@ class PostExamRegistrationRequest extends FormRequest
         return [
             'courseExamId' => 'required|integer|exists:course_exams,id',
             'studentId'     => 'integer|exists:users,id',
-            'mark'          => 'nullable|integer',
-            'hasAttended'   => 'nullable|boolean',
         ];
     }
     public function validated($key = null, $default = null): array
@@ -36,9 +34,9 @@ class PostExamRegistrationRequest extends FormRequest
 
     return $data;
 }
-    public function toDto(): ExamRegistrationStoreDTO
+    public function toDto(): SubmitExamRegistrationDTO
     {
-        return new ExamRegistrationStoreDTO($this->validated());
+        return new SubmitExamRegistrationDTO($this->validated());
     }
 
     public function failedValidation(Validator $validator)

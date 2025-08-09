@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Contracts\input\model\ExamRegistrationFilters;
 use App\Http\Requests\GetNotGradedForStudentRequest;
 use App\Http\Resources\ExamRegistrationResource;
-use App\Http\Requests\PostExamRegistrationRequest;
+use App\Http\Requests\SubmitExamRegistrationRequest;
 use App\Contracts\input\ExamRegistrationService;
 use App\Contracts\input\GetNotGradedExamRegistrations;
 use App\Http\Requests\GetExamRegistrationsRequest;
@@ -101,7 +101,7 @@ class ExamRegistrationController extends BaseController
      * 
      * )
      */
-    public function store(PostExamRegistrationRequest $request)
+    public function store(SubmitExamRegistrationRequest $request)
     {
         $dto = $request->toDto();
         $examRegistration = $this->examRegistrationService->saveExamRegistration($dto);
@@ -173,7 +173,7 @@ class ExamRegistrationController extends BaseController
 
     /**
      * @OA\Get(
-     *     path="/exam-registrations/notGraded",
+     *     path="/exam-registrations/not-graded",
      *     tags={"Common Routes"},
      *     summary="Retrieve not graded exam registrations only for logged in/passed student",
      *     security={
@@ -209,7 +209,7 @@ class ExamRegistrationController extends BaseController
     }
      /**
      * @OA\Get(
-     *     path="/exam-registrations/notGraded/all",
+     *     path="/exam-registrations/not-graded/all",
      *     tags={"Admin Routes"},
      *     summary="Retrieve not graded exam registrations for all students",
      *     security={

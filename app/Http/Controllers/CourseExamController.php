@@ -108,30 +108,28 @@ class CourseExamController extends BaseController
 
      /**
      * @OA\Get(
-     *     path="/course-exams/{examPeriodId}/remaining-course-exams",
+     *     path="/course-exams/remaining-course-exams",
      *     tags={"Common Routes"},
-     *     summary="Get all remaining course exams for exam period",
+     *     summary="Get all remaining course exams for currently logged-in student in provided exam period",
      *     security={
      *              {"passport": {*}}
      *      },
-     *   @OA\Parameter(
-     *      name="examPeriodId",
-     *      in="path",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer",
-     *           example="5"
-     *      )
-     *   ),
+     *     @OA\Parameter(
+     *         name="for-exam-period-id",
+     *         in="query",
+     *         required=true,
+     *         description="Exam period ID",
+     *         @OA\Schema(type="integer", example=5)
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Remaining CourseExams retrieved successfully",
-     *    
      *     ),
      * )
      */
-    public function getRemainingCourseExams(GetRemainingCourseExamsRequest $request, $examPeriodId)
+    public function getRemainingCourseExams(GetRemainingCourseExamsRequest $request)
     {
+        $examPeriodId = $request->query('for-exam-period-id');
         $remainingCourseExams = $this->getRemainingCourseExamsService->getRemainingCourseExams($examPeriodId);
         $result['courseExams'] = CourseExamResource::collection($remainingCourseExams);
         return $this->sendResponse($result, 'Remaining CourseExams retrieved successfully');
@@ -139,30 +137,28 @@ class CourseExamController extends BaseController
 
      /**
      * @OA\Get(
-     *     path="/course-exams/{examPeriodId}/registerable-course-exams",
+     *     path="/course-exams/registerable-course-exams",
      *     tags={"Common Routes"},
-     *     summary="Get all course-exams for current user that he can currently register for",
+     *     summary="Get all course-exams for current user that he did not register for yet in provided exam period",
      *     security={
      *              {"passport": {*}}
      *      },
      *     @OA\Parameter(
-     *      name="examPeriodId",
-     *      in="path",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string",
-     *           example="5"
-     *      )
-     *   ),
+     *         name="for-exam-period-id",
+     *         in="query",
+     *         required=true,
+     *         description="Exam period ID",
+     *         @OA\Schema(type="integer", example=5)
+     *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="'Registerable CourseExams retrieved successfully",
-     *    
+     *         description="Registerable CourseExams retrieved successfully",
      *     ),
      * )
      */
-    public function getRegisterableCourseExams(GetRegisterableCourseExamsRequest $request, $examPeriodId)
+    public function getRegisterableCourseExams(GetRegisterableCourseExamsRequest $request)
     {
+        $examPeriodId = $request->query('for-exam-period-id');
         $registerableCourseExams = $this->getRegisterableCourseExamsService->getRegisterableCourseExams($examPeriodId);
         $result['courseExams'] = CourseExamResource::collection($registerableCourseExams);    
         return $this->sendResponse($result, 'Registerable CourseExams retrieved successfully');
