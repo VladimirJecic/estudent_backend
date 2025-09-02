@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Http\Controllers\BaseController;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -26,5 +27,17 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof \App\Exceptions\EstudentException) {
+            return (new BaseController())->sendError(
+                $exception->getTrace(),
+                $exception->getMessage(),
+                $exception->getStatusCode()
+            );
+        }
+
+        return parent::render($request, $exception);
     }
 }

@@ -5,8 +5,9 @@
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\CourseExam;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 
-class ExamRegistration extends CustomModel
+class ExamRegistration extends Model
 {
     use HasFactory;
 

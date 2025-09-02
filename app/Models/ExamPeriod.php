@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\CourseExam;
+use Illuminate\Database\Eloquent\Model;
 
-
-class ExamPeriod extends CustomModel
+class ExamPeriod extends Model
 {
     use HasFactory;
     protected $fillable = [

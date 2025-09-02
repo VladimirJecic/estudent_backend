@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Exceptions\BadRequestException;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -133,7 +134,7 @@ class AuthController extends BaseController
         ]);
 
         if($validator->fails()){
-            return $this->sendError('Validation error.',$validator->errors(),400);
+              throw new BadRequestException('Bad Request, unauthorized');
         }
         if(Auth::attempt([
             'indexNum'=>$request->indexNum,
@@ -148,7 +149,7 @@ class AuthController extends BaseController
 
                 return $this->sendResponse($result, "\nUser Login Successful!",200);
              }else{
-                return $this->sendError(['error'=>'Unathorized!'],'Unauthorised',401);
+                throw new BadRequestException('Bad Credentials, unauthorized');
              }
     }
      /**
@@ -169,7 +170,7 @@ class AuthController extends BaseController
     public function logout()
     {
         if(auth()->user()== null){
-            return $this->sendError(error_messages:'Error: You are not currently logged in',code:400);
+            throw new BadRequestException('Error: You are not currently logged in');
         }
         auth()->user()->tokens()->delete();
         return $this->sendResponse(message:'Success: You have logged out and the token was deleted');

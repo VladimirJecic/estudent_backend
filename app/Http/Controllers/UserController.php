@@ -5,11 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Carbon\Carbon;
 use App\Http\Resources\UserResource;
-use App\Http\Resources\CourseInstanceResource;
-use App\Http\Resources\ExamRegistrationResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
+use App\Exceptions\NotFoundException;
 
 class UserController extends BaseController
 {
@@ -37,7 +35,7 @@ class UserController extends BaseController
     {
         $user = User::find($id);
         if(is_null($user)){
-            return $this->sendError('user not found.');
+            throw new NotFoundException('User not found.');
         }
         return $this->sendResponse(new UserResource($user,courses:$user->courseIntances(),examRegistrations:$user->examRegistrations(),signedRegistrations: $user->signedRegistrations()),'user retrieved successfully');
     
@@ -52,7 +50,7 @@ class UserController extends BaseController
         
         $user = User::find($id);
         if (is_null($user)) {
-            return $this->sendError('User not found.');
+            throw new NotFoundException('User not found.');
         }
 
         // Update the fillable fields
@@ -78,10 +76,10 @@ class UserController extends BaseController
          $id = end($url_segments_array);
         $user = User::find($id);
         if(is_null($user)){
-            return $this->sendError('user not found.');
+            throw new NotFoundException('User not found.');
         }
         
         $user->delete();
-        return $this->sendResponse(message:'user deleted successfully');  
+        return $this->sendResponse(message:'User deleted successfully');
       }
 }

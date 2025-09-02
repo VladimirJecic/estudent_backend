@@ -8,23 +8,22 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
 class BaseController extends Controller
 {
     //
-    public function sendResponse($result=[],$message='',$code = 200){
+    public function sendResponse($data=[],$message='',$code = 200){
         $response = [
             'success'=> true,
-            'data'=>$result,
+            'data'=>$data,
             'message'=>$message
         ];
         return response()->json($response,$code);
         
     }
-    public function sendError($error=[],$error_messages='',$code = 404){
+    public function sendError($data=null,$error_message='',$code = 404){
         $response = [
             'success'=>false,
-            'message'=>$error
+            'data'=>$data ? $data : null,   
+            'message'=>$error_message
         ];
-        if(!empty($error_messages)){
-            $response['data']= $error_messages;
-        }
+      
         return response()->json($response,$code);
     }
 

@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\User;
 use App\Models\CourseExam;
+use Illuminate\Database\Eloquent\Model;
 
 
-
-class CourseInstance extends CustomModel
+class CourseInstance extends Model
 {
     use HasFactory;
 

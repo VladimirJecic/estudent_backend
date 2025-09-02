@@ -4,8 +4,9 @@ namespace App\Models;
 
 use App\Enums\SemesterSeason;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 
-class Semester extends CustomModel
+class Semester extends Model
 {
     use HasFactory;
 
