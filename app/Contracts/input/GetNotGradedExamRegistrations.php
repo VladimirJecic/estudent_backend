@@ -4,7 +4,7 @@ use Illuminate\Support\Collection;
 
 interface GetNotGradedExamRegistrations
 {
-    public function getAllForAdmin(): Collection;
+    public function getNotGradedExamRegistrations(): Collection;
 
-    public function getAllForStudentId(int $studentId): Collection;
+    public function getNotGradedExamRegistrationsForStudentId(int $studentId): Collection;
 }

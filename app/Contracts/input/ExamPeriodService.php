@@ -6,4 +6,6 @@ use App\Contracts\input\model\ExamRegistrationFilters;
 interface ExamPeriodService
 {
     public function getAllExamPeriods(bool $onlyActive): Collection;
+
+    public function active(): Collection;   
 }

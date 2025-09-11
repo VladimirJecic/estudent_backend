@@ -14,7 +14,9 @@ class Course extends Model
         'name',
         'espb',
     ];
-
+    protected $casts = [
+        'espb' => 'integer',
+    ];
     /**
      * Instances of this course across semesters.
      */

@@ -57,7 +57,6 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
         return ExamRegistration::create([
             'course_exam_id' => $dto->courseExamId,
             'student_id'     => $dto->studentId,
-            'mark'           => 5,
             'hasAttended'    => false,
         ]);
 

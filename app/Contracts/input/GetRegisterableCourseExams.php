@@ -4,6 +4,6 @@ use Illuminate\Support\Collection;
 
 interface GetRegisterableCourseExams
 {
-    public function getRegisterableCourseExams(int $examPeriodId): Collection;
+    public function getRegisterableCourseExams(): Collection;
 
 }

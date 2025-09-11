@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Collection;
 class GetNotGradedRegistrationsServiceImpl implements GetNotGradedExamRegistrations
 {
-    public function getAllForAdmin(): Collection
+    public function getNotGradedExamRegistrations(): Collection
     {
         $admin= auth()->user();
         $adminCourses = $admin->courseIntances()->pluck('id')->toArray();
@@ -24,7 +24,7 @@ class GetNotGradedRegistrationsServiceImpl implements GetNotGradedExamRegistrati
         ->get();
         return $examRegistrations;
     }
-    public function getAllForStudentId(int $studentId): Collection{
+    public function getNotGradedExamRegistrationsForStudentId(int $studentId): Collection{
         $student = User::find($studentId);
 
         $userRegistrations = ExamRegistration::with('student','courseExam.examPeriod','signedBy')->where('student_id', $student->id)->get();

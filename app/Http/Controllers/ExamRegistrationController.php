@@ -64,7 +64,7 @@ class ExamRegistrationController extends BaseController
        $examRegistrationFilters = new ExamRegistrationFilters( $request->validated());
 
         $examRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters( $examRegistrationFilters);
-        $result['examRegistrations'] = ExamRegistrationResource::collection($examRegistrations);
+        $result = ExamRegistrationResource::collection($examRegistrations);
 
         return $this->sendResponse($result, 'Exam registrations retrieved successfully');
     }
@@ -80,7 +80,7 @@ class ExamRegistrationController extends BaseController
      *      },
      *     @OA\RequestBody(
      *         required=true,
-     *         @OA\JsonContent(ref="#/components/schemas/ExamRegistrationStoreDTO")
+     *         @OA\JsonContent(ref="#/components/schemas/SubmitExamRegistrationDTO")
      *     ),
      *
      *     @OA\Response(
@@ -105,7 +105,7 @@ class ExamRegistrationController extends BaseController
     {
         $dto = $request->toDto();
         $examRegistration = $this->examRegistrationService->saveExamRegistration($dto);
-        $result['examRegistration'] = new ExamRegistrationResource($examRegistration);
+        $result = new ExamRegistrationResource($examRegistration);
         return $this->sendResponse($result, 'ExamRegistration stored successfully.', 201);
     }
     
@@ -201,9 +201,9 @@ class ExamRegistrationController extends BaseController
      */
     public function getNotGradedForStudent(GetNotGradedForStudentRequest $request){
         $studentId = $request->getStudentId();
-        $notGradedRegistrations = $this->getNotGradedRegistrationsService->getAllForStudentId( $studentId );
+        $notGradedRegistrations = $this->getNotGradedRegistrationsService->getNotGradedExamRegistrationsForStudentId( $studentId );
 
-        $result['examRegistrations'] = ExamRegistrationResource::collection($notGradedRegistrations);
+        $result= ExamRegistrationResource::collection($notGradedRegistrations);
 
         return $this->sendResponse($result, 'Not graded exam registrations retrieved successfully');
     }
@@ -224,8 +224,8 @@ class ExamRegistrationController extends BaseController
      */
     public function getAllNotGradedForAdmin(){
         
-            $examRegistrations = $this->getNotGradedRegistrationsService->getAllForAdmin();
-            $result['examRegistrations'] = ExamRegistrationResource::collection($examRegistrations);
+            $examRegistrations = $this->getNotGradedRegistrationsService->getNotGradedExamRegistrations();
+            $result = ExamRegistrationResource::collection($examRegistrations);
             return $this->sendResponse($result, 'All not graded exam registrations retrieved successfully');
     }
 

@@ -131,36 +131,28 @@ class CourseExamController extends BaseController
     {
         $examPeriodId = $request->query('for-exam-period-id');
         $remainingCourseExams = $this->getRemainingCourseExamsService->getRemainingCourseExams($examPeriodId);
-        $result['courseExams'] = CourseExamResource::collection($remainingCourseExams);
+        $result = CourseExamResource::collection($remainingCourseExams);
         return $this->sendResponse($result, 'Remaining CourseExams retrieved successfully');
     }
 
-     /**
+    /**
      * @OA\Get(
      *     path="/course-exams/registerable-course-exams",
      *     tags={"Common Routes"},
-     *     summary="Get all course-exams for current user that he did not register for yet in provided exam period",
+     *     summary="Get all course-exams for current user that he did not register for yet in any active exam period",
      *     security={
      *              {"passport": {*}}
      *      },
-     *     @OA\Parameter(
-     *         name="for-exam-period-id",
-     *         in="query",
-     *         required=true,
-     *         description="Exam period ID",
-     *         @OA\Schema(type="integer", example=5)
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Registerable CourseExams retrieved successfully",
      *     ),
      * )
      */
-    public function getRegisterableCourseExams(GetRegisterableCourseExamsRequest $request)
+    public function getRegisterableCourseExams()
     {
-        $examPeriodId = $request->query('for-exam-period-id');
-        $registerableCourseExams = $this->getRegisterableCourseExamsService->getRegisterableCourseExams($examPeriodId);
-        $result['courseExams'] = CourseExamResource::collection($registerableCourseExams);    
+        $registerableCourseExams = $this->getRegisterableCourseExamsService->getRegisterableCourseExams();
+        $result = CourseExamResource::collection($registerableCourseExams);    
         return $this->sendResponse($result, 'Registerable CourseExams retrieved successfully');
     }
 

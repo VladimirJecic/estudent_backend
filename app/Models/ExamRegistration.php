@@ -22,7 +22,7 @@ class ExamRegistration extends Model
 
     protected $attributes = [
         'hasAttended' => false,
-        'mark' => 5,
+        'mark' => null,
         'comment' => '',
         'signed_by_id' => null,
     ];

@@ -13,9 +13,7 @@
     "paths": {
         "/login": {
             "post": {
-                "tags": [
-                    "Common Routes"
-                ],
+                "tags": ["Common Routes"],
                 "summary": "User login",
                 "operationId": "2dd578ff7aba2721293dac66833b27d1",
                 "requestBody": {
@@ -23,14 +21,11 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "required": [
-                                    "indexNum",
-                                    "password"
-                                ],
+                                "required": ["indexNum", "password"],
                                 "properties": {
                                     "indexNum": {
                                         "type": "string",
-                                        "example": "2023/0000"
+                                        "example": "2023/2222"
                                     },
                                     "password": {
                                         "type": "string",
@@ -54,9 +49,7 @@
         },
         "/logout": {
             "post": {
-                "tags": [
-                    "Common Routes"
-                ],
+                "tags": ["Common Routes"],
                 "summary": "Logouts user, by deleting its token",
                 "operationId": "68a6108af04af5e3bc1ea68a6c6f1299",
                 "responses": {
@@ -71,9 +64,7 @@
         },
         "/course-exams": {
             "get": {
-                "tags": [
-                    "Admin Routes"
-                ],
+                "tags": ["Admin Routes"],
                 "summary": "Get paginated course exams with filters",
                 "operationId": "getCourseExams",
                 "parameters": [
@@ -165,21 +156,20 @@
                 ]
             }
         },
-        "/course-exams/{examPeriodId}/remaining-course-exams": {
+        "/course-exams/remaining-course-exams": {
             "get": {
-                "tags": [
-                    "Common Routes"
-                ],
-                "summary": "Get all remaining course exams for exam period",
-                "operationId": "1451cad87b41bb71ab6774d909019c46",
+                "tags": ["Common Routes"],
+                "summary": "Get all remaining course exams for currently logged-in student in provided exam period",
+                "operationId": "c6bfec0fb059d1dd0d07c7133b89cb5f",
                 "parameters": [
                     {
-                        "name": "examPeriodId",
-                        "in": "path",
+                        "name": "for-exam-period-id",
+                        "in": "query",
+                        "description": "Exam period ID",
                         "required": true,
                         "schema": {
                             "type": "integer",
-                            "example": "5"
+                            "example": 5
                         }
                     }
                 ],
@@ -195,27 +185,14 @@
                 ]
             }
         },
-        "/course-exams/{examPeriodId}/registerable-course-exams": {
+        "/course-exams/registerable-course-exams": {
             "get": {
-                "tags": [
-                    "Common Routes"
-                ],
-                "summary": "Get all course-exams for current user that he can currently register for",
-                "operationId": "ae918365dc2b5dd7a07ef802adbd2d15",
-                "parameters": [
-                    {
-                        "name": "examPeriodId",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "string",
-                            "example": "5"
-                        }
-                    }
-                ],
+                "tags": ["Common Routes"],
+                "summary": "Get all course-exams for current user that he did not register for yet in any active exam period",
+                "operationId": "a0f0c0beddd775b1ec66bcdfbdbc60ff",
                 "responses": {
                     "200": {
-                        "description": "'Registerable CourseExams retrieved successfully"
+                        "description": "Registerable CourseExams retrieved successfully"
                     }
                 },
                 "security": [
@@ -227,9 +204,7 @@
         },
         "/course-exam-reports/{courseExamId}": {
             "get": {
-                "tags": [
-                    "Admin Routes"
-                ],
+                "tags": ["Admin Routes"],
                 "summary": "Download Excel report for a course exam identified by courseExamId",
                 "operationId": "getCourseExamReport",
                 "parameters": [
@@ -292,9 +267,7 @@
         },
         "/exam-periods": {
             "get": {
-                "tags": [
-                    "Common Routes"
-                ],
+                "tags": ["Common Routes"],
                 "summary": "Retrieve only currently active or all exam periods",
                 "operationId": "bc30c0b9b7c202e4df857951c1e9022b",
                 "parameters": [
@@ -321,9 +294,7 @@
         },
         "/exam-registrations": {
             "get": {
-                "tags": [
-                    "Common Routes"
-                ],
+                "tags": ["Common Routes"],
                 "summary": "Retrieve exam registrations",
                 "operationId": "exam-registrations/index",
                 "parameters": [
@@ -365,9 +336,7 @@
                 ]
             },
             "post": {
-                "tags": [
-                    "Common Routes"
-                ],
+                "tags": ["Common Routes"],
                 "summary": "Store new exam registration",
                 "operationId": "exam-registrations/store",
                 "requestBody": {
@@ -375,7 +344,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ExamRegistrationStoreDTO"
+                                "$ref": "#/components/schemas/SubmitExamRegistrationDTO"
                             }
                         }
                     }
@@ -400,9 +369,7 @@
         },
         "/exam-registrations/{examRegistrationId}": {
             "put": {
-                "tags": [
-                    "Admin Routes"
-                ],
+                "tags": ["Admin Routes"],
                 "summary": "Update existing exam registration",
                 "operationId": "exam-registrations/update",
                 "parameters": [
@@ -444,9 +411,7 @@
                 ]
             },
             "delete": {
-                "tags": [
-                    "Common Routes"
-                ],
+                "tags": ["Common Routes"],
                 "summary": "Delete existing exam registration",
                 "operationId": "exam-registrations/destroy",
                 "parameters": [
@@ -478,13 +443,11 @@
                 ]
             }
         },
-        "/exam-registrations/notGraded": {
+        "/exam-registrations/not-graded": {
             "get": {
-                "tags": [
-                    "Common Routes"
-                ],
+                "tags": ["Common Routes"],
                 "summary": "Retrieve not graded exam registrations only for logged in/passed student",
-                "operationId": "693fe63e691594e74afb60f84c509cd3",
+                "operationId": "ab0b64e80d99320635581146113cadb7",
                 "parameters": [
                     {
                         "name": "studentId",
@@ -510,13 +473,11 @@
                 ]
             }
         },
-        "/exam-registrations/notGraded/all": {
+        "/exam-registrations/not-graded/all": {
             "get": {
-                "tags": [
-                    "Admin Routes"
-                ],
+                "tags": ["Admin Routes"],
                 "summary": "Retrieve not graded exam registrations for all students",
-                "operationId": "ac244c2410d81d6979d31f5ca244d8b3",
+                "operationId": "600051d4b1752207b2f8a9eca9cf7fb7",
                 "responses": {
                     "200": {
                         "description": "All not graded exam registrations retrieved successfully"
@@ -532,12 +493,8 @@
     },
     "components": {
         "schemas": {
-            "ExamRegistrationStoreDTO": {
-                "required": [
-                    "courseExamId",
-                    "studentId",
-                    "hasAttended"
-                ],
+            "SubmitExamRegistrationDTO": {
+                "required": ["courseExamId", "studentId", "hasAttended"],
                 "properties": {
                     "courseExamId": {
                         "description": "ID of the CourseExam",
@@ -548,24 +505,12 @@
                         "description": "ID of the Student",
                         "type": "integer",
                         "example": 34
-                    },
-                    "mark": {
-                        "description": "Mark to assign (optional, defaults to 5)",
-                        "type": "integer",
-                        "example": 5
-                    },
-                    "hasAttended": {
-                        "description": "Indicates whether the student attended the exam",
-                        "type": "boolean",
-                        "example": true
                     }
                 },
                 "type": "object"
             },
             "ExamRegistrationUpdateDTO": {
-                "required": [
-                    "hasAttended"
-                ],
+                "required": ["hasAttended"],
                 "properties": {
                     "mark": {
                         "type": "integer",
@@ -688,10 +633,7 @@
     ],
     "security": [
         {
-            "oauth2_security_example": [
-                "read",
-                "write"
-            ],
+            "oauth2_security_example": ["read", "write"],
             "passport": []
         }
     ]

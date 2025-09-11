@@ -24,7 +24,7 @@ class GetRemainingCourseExamsRequest extends FormRequest
     public function rules(): array
     {
         return [
-            "examPeriodId" => "required|exists:exam_periods,id"
+            "for-exam-period-id" => "required|exists:exam_periods,id"
         ];
     }
 
@@ -36,8 +36,6 @@ class GetRemainingCourseExamsRequest extends FormRequest
 
     public function validationData()
     {
-        return array_merge($this->all(), [
-            'examPeriodId' => $this->route('examPeriodId'),
-        ]);
+        return $this->all();
     }
 }
