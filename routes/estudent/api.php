@@ -30,7 +30,7 @@ Route::middleware('auth:api')->group(function(){
     
     Route::prefix('admin')->middleware('admin-auth')->group(function(){
         Route::get('exam-registrations', [ExamRegistrationController::class, 'getExamRegistrationsWithFilters']);
-        Route::get('course-exams', [CourseExamController::class,'getCourseExams']);
+        Route::get('course-exams', [CourseExamController::class,'getCourseExamsWithFilters']);
         Route::get('course-exam-reports/{courseExamId}', [CourseExamController::class,'getReportForCourseExam']);
         Route::put('exam-registrations/{examRegistrationId}', [ExamRegistrationController::class, 'updateExamRegistration']);
     });

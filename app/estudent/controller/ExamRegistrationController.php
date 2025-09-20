@@ -22,26 +22,56 @@ class ExamRegistrationController extends BaseController
         $this->getNotGradedRegistrationsService = $getNotGradedRegistrationsService;
     }
     /**
-     * @OA\Get(
-     *     path="/exam-registrations",
-     *     tags={"Common Routes"},
+    * @OA\Get(
+    *     path="/admin/exam-registrations",
+     *     tags={"Admin Routes"},
      *     summary="Retrieve exam registrations",
      *     operationId="exam-registrations/index",
      *     security={
      *              {"passport": {*}}
      *      },
-     *     @OA\RequestBody(
+     *     @OA\Parameter(
+     *         name="search-text",
+     *         in="query",
      *         required=false,
-     *         @OA\JsonContent(ref="#/components/schemas/ExamRegistrationFiltersDTO")
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page-size",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="include-not-graded",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Parameter(
+     *         name="include-failed",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Parameter(
+     *         name="include-passed",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Exam registrations retrieved successfully",
-     *    
-     *     ),
+     *         description="Paginated list of exam registrations"
+     *     )
      * )
-     */
-    // GET /exam-registrations
+    */
     public function getExamRegistrationsWithFilters(GetExamRegistrationsRequest $request)
     {
         $examRegistrationFilters = $request->toDto();
@@ -52,26 +82,64 @@ class ExamRegistrationController extends BaseController
             'total-elements' => $paginatedExamRegistrations->total(),
         ]);
     }
-        /**
+    /**
      * Retrieve exam registrations for the authenticated student, applying filters but forcing student_id to user->id
      *
      * @OA\Get(
-     *     path="/exam-registrations/student",
+     *     path="/exam-registrations",
      *     tags={"Common Routes"},
      *     summary="Retrieve exam registrations for the authenticated student",
      *     security={
      *         {"passport": {*}}
      *     },
-     *     @OA\RequestBody(
+     *     @OA\Parameter(
+     *         name="search-text",
+     *         in="query",
      *         required=false,
-     *         @OA\JsonContent(ref="#/components/schemas/ExamRegistrationFiltersDTO")
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="page-size",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="include-not-graded",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Parameter(
+     *         name="include-failed",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Parameter(
+     *         name="include-passed",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="boolean")
+     *     ),
+     *     @OA\Parameter(
+     *         name="student-id",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Exam registrations retrieved successfully",
-     *     ),
+     *         description="Paginated list of exam registrations"
+     *     )
      * )
-     */
+    */
     public function getExamRegistrationsWithFiltersForStudent(GetExamRegistrationsRequest $request)
     {
         $examRegistrationFilters = $request->toDto();
@@ -120,8 +188,8 @@ class ExamRegistrationController extends BaseController
         return $this->createResponse($result, 'Not graded exam registrations retrieved successfully');
     }
      /**
-     * @OA\Get(
-     *     path="/exam-registrations/not-graded/all",
+    * @OA\Get(
+    *     path="/admin/exam-registrations/not-graded/all",
      *     tags={"Admin Routes"},
      *     summary="Retrieve not graded exam registrations for all students",
      *     security={
@@ -182,8 +250,8 @@ class ExamRegistrationController extends BaseController
     }
     
     /**
-     * @OA\Put(
-     *     path="/exam-registrations/{examRegistrationId}",
+    * @OA\Put(
+    *     path="/admin/exam-registrations/{examRegistrationId}",
      *     tags={"Admin Routes"},
      *     summary="Update existing exam registration",
      *     operationId="exam-registrations/update",

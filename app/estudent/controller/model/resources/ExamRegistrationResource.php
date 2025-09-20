@@ -1,4 +1,9 @@
 <?php
+ namespace App\estudent\controller\model\resources;
+ use Illuminate\Http\Request;
+ use Illuminate\Http\Resources\Json\JsonResource;
+ use App\estudent\controller\model\resources\CourseExamResource;
+ use App\estudent\controller\model\resources\UserResource;
 /**
  * @OA\Schema(
  *     schema="ExamRegistration",
@@ -14,12 +19,6 @@
  * )
  */
 
-namespace App\estudent\controller\model\resources;
-
-use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
-use App\estudent\controller\model\resources\CourseExamResource;
-use App\estudent\controller\model\resources\UserResource;
 
 class ExamRegistrationResource extends JsonResource
 {

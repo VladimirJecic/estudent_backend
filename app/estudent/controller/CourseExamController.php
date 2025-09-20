@@ -33,33 +33,55 @@ class CourseExamController extends BaseController
 
     /**
      * @OA\Get(
-     *     path="/course-exams",
+     *     path="/admin/course-exams",
      *     summary="Get paginated course exams with filters",
      *     operationId="getCourseExams",
      *     tags={"Admin Routes"},
      *     security={
      *             {"passport": {*}}
      *      },
-     *     @OA\RequestBody(
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
      *         required=false,
-     *         @OA\JsonContent(ref="#/components/schemas/CourseExamFiltersDTO")
+     *         description="Page number",
+     *         @OA\Schema(type="integer", example=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="page-size",
+     *         in="query",
+     *         required=false,
+     *         description="Page size",
+     *         @OA\Schema(type="integer", example=10)
+     *     ),
+     *     @OA\Parameter(
+     *         name="course-name",
+     *         in="query",
+     *         required=false,
+     *         description="Course name",
+     *         @OA\Schema(type="string", example="matematika")
+     *     ),
+     *     @OA\Parameter(
+     *         name="date-from",
+     *         in="query",
+     *         required=false,
+     *         description="Start date (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date", example="2025-06-01")
+     *     ),
+     *     @OA\Parameter(
+     *         name="date-to",
+     *         in="query",
+     *         required=false,
+     *         description="End date (YYYY-MM-DD)",
+     *         @OA\Schema(type="string", format="date", example="2025-06-30")
      *     ),
      *     @OA\Response(
      *         response=200,
-     *         description="Paginated list of course exams",
-     *         @OA\JsonContent(
-     *             @OA\Property(
-     *                 property="content",
-     *                 type="array",
-     *                 @OA\Items(ref="#/components/schemas/CourseExam")
-     *             ),
-     *             @OA\Property(property="total-pages", type="integer", example=5),
-     *             @OA\Property(property="total-elements", type="integer", example=47)
-     *         )
+     *         description="Paginated list of course exams"
      *     )
      * )
     */
-    public function index(Request $request)
+    public function getCourseExamsWithFilters(Request $request)
     {
         $courseExamFilters = new CourseExamFilters($request->all());
 
@@ -125,7 +147,7 @@ class CourseExamController extends BaseController
 
     /**
      * @OA\Get(
-     *     path="/course-exam-reports/{courseExamId}",
+     *     path="/admin/course-exam-reports/{courseExamId}",
      *     tags={"Admin Routes"},
      *     summary="Download Excel report for a course exam identified by courseExamId",
      *     operationId="getCourseExamReport",

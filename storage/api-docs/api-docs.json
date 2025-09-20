@@ -17,7 +17,7 @@
                     "Common Routes"
                 ],
                 "summary": "User login",
-                "operationId": "2dd578ff7aba2721293dac66833b27d1",
+                "operationId": "db796f6b9fcaafe72fe9d75abce190c4",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -58,7 +58,7 @@
                     "Common Routes"
                 ],
                 "summary": "Logouts user, by deleting its token",
-                "operationId": "68a6108af04af5e3bc1ea68a6c6f1299",
+                "operationId": "80771e416bab6ac96bc4fc16d25e1776",
                 "responses": {
                     "200": {
                         "description": "Success: You have logged out and the token was deleted"
@@ -69,49 +69,70 @@
                 }
             }
         },
-        "/course-exams": {
+        "/admin/course-exams": {
             "get": {
                 "tags": [
                     "Admin Routes"
                 ],
                 "summary": "Get paginated course exams with filters",
                 "operationId": "getCourseExams",
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CourseExamFiltersDTO"
-                            }
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "page-size",
+                        "in": "query",
+                        "description": "Page size",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "course-name",
+                        "in": "query",
+                        "description": "Course name",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "matematika"
+                        }
+                    },
+                    {
+                        "name": "date-from",
+                        "in": "query",
+                        "description": "Start date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-06-01"
+                        }
+                    },
+                    {
+                        "name": "date-to",
+                        "in": "query",
+                        "description": "End date (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-06-30"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
-                        "description": "Paginated list of course exams",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "content": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/CourseExam"
-                                            }
-                                        },
-                                        "total-pages": {
-                                            "type": "integer",
-                                            "example": 5
-                                        },
-                                        "total-elements": {
-                                            "type": "integer",
-                                            "example": 47
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "Paginated list of course exams"
                     }
                 },
                 "security": [
@@ -127,7 +148,7 @@
                     "Common Routes"
                 ],
                 "summary": "Get all remaining course exams for currently logged-in student in provided exam period",
-                "operationId": "c6bfec0fb059d1dd0d07c7133b89cb5f",
+                "operationId": "df4897fe0c3f550f3dbdae949e049cf4",
                 "parameters": [
                     {
                         "name": "for-exam-period-id",
@@ -158,7 +179,7 @@
                     "Common Routes"
                 ],
                 "summary": "Get all course-exams for current user that he did not register for yet in any active exam period",
-                "operationId": "a0f0c0beddd775b1ec66bcdfbdbc60ff",
+                "operationId": "3940c257d6ac396c5ceafc669b750125",
                 "responses": {
                     "200": {
                         "description": "Registerable CourseExams retrieved successfully"
@@ -171,7 +192,7 @@
                 ]
             }
         },
-        "/course-exam-reports/{courseExamId}": {
+        "/admin/course-exam-reports/{courseExamId}": {
             "get": {
                 "tags": [
                     "Admin Routes"
@@ -216,7 +237,7 @@
                     "Common Routes"
                 ],
                 "summary": "Retrieve only currently active or all exam periods",
-                "operationId": "186c665c6b4c191a6d2c438c808110e7",
+                "operationId": "6c7faa2a1b720878a4fda96f685f8215",
                 "parameters": [
                     {
                         "name": "only-active",
@@ -239,26 +260,144 @@
                 ]
             }
         },
+        "/admin/exam-registrations": {
+            "get": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Retrieve exam registrations",
+                "operationId": "exam-registrations/index",
+                "parameters": [
+                    {
+                        "name": "search-text",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page-size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "include-not-graded",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "include-failed",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "include-passed",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of exam registrations"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/exam-registrations": {
             "get": {
                 "tags": [
                     "Common Routes"
                 ],
-                "summary": "Retrieve exam registrations",
-                "operationId": "exam-registrations/index",
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ExamRegistrationFiltersDTO"
-                            }
+                "summary": "Retrieve exam registrations for the authenticated student",
+                "description": "Retrieve exam registrations for the authenticated student, applying filters but forcing student_id to user->id",
+                "operationId": "4ff77c650c54644fd5babe2421bbba25",
+                "parameters": [
+                    {
+                        "name": "search-text",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page-size",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "include-not-graded",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "include-failed",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "include-passed",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "boolean"
+                        }
+                    },
+                    {
+                        "name": "student-id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
                         }
                     }
-                },
+                ],
                 "responses": {
                     "200": {
-                        "description": "Exam registrations retrieved successfully"
+                        "description": "Paginated list of exam registrations"
                     }
                 },
                 "security": [
@@ -301,43 +440,13 @@
                 ]
             }
         },
-        "/exam-registrations/student": {
-            "get": {
-                "tags": [
-                    "Common Routes"
-                ],
-                "summary": "Retrieve exam registrations for the authenticated student",
-                "description": "Retrieve exam registrations for the authenticated student, applying filters but forcing student_id to user->id",
-                "operationId": "488fd754c9c0d8e9538e4f116668bf36",
-                "requestBody": {
-                    "required": false,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/ExamRegistrationFiltersDTO"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Exam registrations retrieved successfully"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            }
-        },
         "/exam-registrations/not-graded": {
             "get": {
                 "tags": [
                     "Common Routes"
                 ],
                 "summary": "Retrieve not graded exam registrations only for logged in/passed student",
-                "operationId": "ab0b64e80d99320635581146113cadb7",
+                "operationId": "eed12e73eac8790216e6d3ad8920df41",
                 "parameters": [
                     {
                         "name": "student-id",
@@ -363,13 +472,13 @@
                 ]
             }
         },
-        "/exam-registrations/not-graded/all": {
+        "/admin/exam-registrations/not-graded/all": {
             "get": {
                 "tags": [
                     "Admin Routes"
                 ],
                 "summary": "Retrieve not graded exam registrations for all students",
-                "operationId": "600051d4b1752207b2f8a9eca9cf7fb7",
+                "operationId": "431ffab5bea7603de475d05d7ce3c8d9",
                 "responses": {
                     "200": {
                         "description": "All not graded exam registrations retrieved successfully"
@@ -382,7 +491,7 @@
                 ]
             }
         },
-        "/exam-registrations/{examRegistrationId}": {
+        "/admin/exam-registrations/{examRegistrationId}": {
             "put": {
                 "tags": [
                     "Admin Routes"
@@ -426,7 +535,9 @@
                         "passport": []
                     }
                 ]
-            },
+            }
+        },
+        "/exam-registrations/{examRegistrationId}": {
             "delete": {
                 "tags": [
                     "Common Routes"
@@ -465,6 +576,167 @@
     },
     "components": {
         "schemas": {
+            "CourseExam": {
+                "title": "CourseExam",
+                "properties": {
+                    "examPeriod": {
+                        "$ref": "#/components/schemas/ExamPeriod"
+                    },
+                    "course": {
+                        "$ref": "#/components/schemas/CourseInstance"
+                    },
+                    "examDateTime": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-06-20T10:00:00"
+                    },
+                    "hall": {
+                        "type": "string",
+                        "example": "A1"
+                    }
+                },
+                "type": "object"
+            },
+            "CourseInstance": {
+                "title": "CourseInstance",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Matematika"
+                    },
+                    "semester": {
+                        "type": "integer",
+                        "example": 2
+                    },
+                    "espb": {
+                        "type": "integer",
+                        "example": 6
+                    },
+                    "participants": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    }
+                },
+                "type": "object"
+            },
+            "ExamPeriod": {
+                "title": "ExamPeriod",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "June 2025"
+                    },
+                    "dateRegisterStart": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-05-01"
+                    },
+                    "dateRegisterEnd": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-05-31"
+                    },
+                    "dateStart": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-06-15"
+                    },
+                    "dateEnd": {
+                        "type": "string",
+                        "format": "date",
+                        "example": "2025-06-20"
+                    }
+                },
+                "type": "object"
+            },
+            "ExamRegistration": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "courseExam": {
+                        "$ref": "#/components/schemas/CourseExam"
+                    },
+                    "student": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "signedBy": {
+                        "$ref": "#/components/schemas/User"
+                    },
+                    "mark": {
+                        "type": "integer",
+                        "example": 5
+                    },
+                    "hasAttended": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "comment": {
+                        "type": "string",
+                        "example": ""
+                    },
+                    "updatedAt": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-09-12T12:00:00"
+                    }
+                },
+                "type": "object"
+            },
+            "User": {
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "indexNum": {
+                        "type": "string",
+                        "example": "2020/0012"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "John Doe"
+                    },
+                    "email": {
+                        "type": "string",
+                        "example": "john.doe@example.com"
+                    },
+                    "role": {
+                        "type": "string",
+                        "example": "student"
+                    },
+                    "courses": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "examRegistrations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    },
+                    "signedRegistrations": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    }
+                },
+                "type": "object"
+            },
             "CourseExamFiltersDTO": {
                 "properties": {
                     "page": {
@@ -560,89 +832,6 @@
                     "comment": {
                         "type": "string",
                         "example": ""
-                    }
-                },
-                "type": "object"
-            },
-            "CourseExam": {
-                "title": "CourseExam",
-                "properties": {
-                    "examPeriod": {
-                        "$ref": "#/components/schemas/ExamPeriod"
-                    },
-                    "course": {
-                        "$ref": "#/components/schemas/CourseInstance"
-                    },
-                    "examDateTime": {
-                        "type": "string",
-                        "format": "date-time",
-                        "example": "2025-06-20T10:00:00"
-                    },
-                    "hall": {
-                        "type": "string",
-                        "example": "A1"
-                    }
-                },
-                "type": "object"
-            },
-            "CourseInstance": {
-                "title": "CourseInstance",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 5
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "Matematika"
-                    },
-                    "semester": {
-                        "type": "integer",
-                        "example": 2
-                    },
-                    "espb": {
-                        "type": "integer",
-                        "example": 6
-                    },
-                    "participants": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    }
-                },
-                "type": "object"
-            },
-            "ExamPeriod": {
-                "title": "ExamPeriod",
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "name": {
-                        "type": "string",
-                        "example": "June 2025"
-                    },
-                    "dateRegisterStart": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2025-05-01"
-                    },
-                    "dateRegisterEnd": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2025-05-31"
-                    },
-                    "dateStart": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2025-06-15"
-                    },
-                    "dateEnd": {
-                        "type": "string",
-                        "format": "date",
-                        "example": "2025-06-20"
                     }
                 },
                 "type": "object"
