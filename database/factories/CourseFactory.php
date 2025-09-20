@@ -3,10 +3,10 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Semester;
+use App\estudent\domain\model\Semester;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CourseInstance>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\estudent\domain\model\CourseInstance>
  */
 class CourseFactory extends Factory
 {

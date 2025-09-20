@@ -1,7 +1,7 @@
 <?php
 
 namespace Database\Seeders;
-use App\Models\User;
+use App\estudent\domain\model\User;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;

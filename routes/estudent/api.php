@@ -1,10 +1,10 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\ExamPeriodController;
-use App\Http\Controllers\ExamRegistrationController;
-use App\Http\Controllers\CourseExamController;
+use App\estudent\controller\AuthController;
+use App\estudent\controller\ExamPeriodController;
+use App\estudent\controller\ExamRegistrationController;
+use App\estudent\controller\CourseExamController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,19 +20,20 @@ Route::post('login', [AuthController::class, 'login']);
 
 
 Route::middleware('auth:api')->group(function(){
-    Route::resource('exam-periods', ExamPeriodController::class)->only(['index']);
-    Route::resource('exam-registrations', ExamRegistrationController::class)->only(['index','store','destroy']);
+    Route::get('exam-periods', [ExamPeriodController::class, 'getExamPeriods']);
+    Route::get('exam-registrations', [ExamRegistrationController::class, 'getExamRegistrationsWithFiltersForStudent']);
+    Route::post('exam-registrations', [ExamRegistrationController::class, 'createExamRegistration']);
+    Route::delete('exam-registrations/{examRegistrationId}', [ExamRegistrationController::class, 'deleteExamRegistration']);
     Route::get('course-exams/registerable-course-exams', [CourseExamController::class,'getRegisterableCourseExams']);
     Route::get('course-exams/remaining-course-exams', [CourseExamController::class, 'getRemainingCourseExams']);
-    Route::get('exam-registrations/not-graded',[ExamRegistrationController::class,'getNotGradedForStudent']);
     Route::post('logout', [AuthController::class, 'logout']);
     
-     Route::middleware('admin-auth')->group(function(){
-         Route::get('course-exams', [CourseExamController::class,'index']);
-         Route::get( "course-exam-reports/{courseExamId}", [CourseExamController::class,'getReportForCourseExam']);
-         Route::get('exam-registrations/not-graded/all',[ExamRegistrationController::class,'getAllNotGradedForAdmin']);
-         Route::put('exam-registrations/{examRegistrationId}', [ExamRegistrationController::class, 'update']);
-     });
+    Route::prefix('admin')->middleware('admin-auth')->group(function(){
+        Route::get('exam-registrations', [ExamRegistrationController::class, 'getExamRegistrationsWithFilters']);
+        Route::get('course-exams', [CourseExamController::class,'getCourseExams']);
+        Route::get('course-exam-reports/{courseExamId}', [CourseExamController::class,'getReportForCourseExam']);
+        Route::put('exam-registrations/{examRegistrationId}', [ExamRegistrationController::class, 'updateExamRegistration']);
+    });
 
  });
 

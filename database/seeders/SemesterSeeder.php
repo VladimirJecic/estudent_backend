@@ -2,8 +2,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Semester;
-use App\Enums\SemesterSeason;
+use App\estudent\domain\model\Semester;
+use App\estudent\domain\model\enums\SemesterSeason;
 
 class SemesterSeeder extends Seeder
 {

@@ -1,13 +1,13 @@
 <?php
 namespace Database\Factories;
 
-use App\Models\User;
+use App\estudent\domain\model\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 namespace Database\Factories;
 
-use App\Models\User;
-use App\Models\CourseExam;
+use App\estudent\domain\model\User;
+use App\estudent\domain\model\CourseExam;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 

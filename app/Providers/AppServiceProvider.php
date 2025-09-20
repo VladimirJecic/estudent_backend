@@ -1,25 +1,25 @@
 <?php
 
 namespace App\Providers;
-use App\Contracts\input\CourseExamService;
-use App\Contracts\input\ExamPeriodService;
-use App\Contracts\input\ExamRegistrationService;
-use App\Contracts\input\GetRegisterableCourseExams;
-use App\Contracts\input\GetRemainingCourseExams;
-use App\Contracts\input\GetReportForCourseExam;
-use App\Contracts\output\GenerateCourseExamReport;
-use App\Adapters\reports\GenerateCourseExamReportImpl;
-use App\Models\Course;
-use App\Models\CourseExam;
-use App\Services\ExamRegistrationServiceImpl;
-use App\Services\GetNotGradedRegistrationsServiceImpl;
-use App\Services\GetRegisterableCourseExamsImpl;
-use App\Services\GetRemainingCourseExamsImpl;
-use App\Contracts\input\GetNotGradedExamRegistrations;
-use App\Services\GetReportForCourseExamImpl;
+use App\estudent\domain\ports\input\CourseExamService;
+use App\estudent\domain\ports\input\ExamPeriodService;
+use App\estudent\domain\ports\input\ExamRegistrationService;
+use App\estudent\domain\ports\input\GetRegisterableCourseExams;
+use App\estudent\domain\ports\input\GetRemainingCourseExams;
+use App\estudent\domain\ports\input\GetReportForCourseExam;
+use App\estudent\domain\ports\output\GenerateCourseExamReport;
+use App\estudent\adapters\reports\GenerateCourseExamReportImpl;
+use App\estudent\domain\model\Course;
+use App\estudent\domain\model\CourseExam;
+use App\estudent\domain\useCases\ExamRegistrationServiceImpl;
+use App\estudent\domain\useCases\GetNotGradedRegistrationsServiceImpl;
+use App\estudent\domain\useCases\GetRegisterableCourseExamsImpl;
+use App\estudent\domain\useCases\GetRemainingCourseExamsImpl;
+use App\estudent\domain\ports\input\GetNotGradedExamRegistrations;
+use App\estudent\domain\useCases\GetReportForCourseExamImpl;
 use Illuminate\Support\ServiceProvider;
-use App\Services\ExamPeriodServiceImpl;
-use App\Services\CourseExamServiceImpl;
+use App\estudent\domain\useCases\ExamPeriodServiceImpl;
+use App\estudent\domain\useCases\CourseExamServiceImpl;
 
 class AppServiceProvider extends ServiceProvider
 {

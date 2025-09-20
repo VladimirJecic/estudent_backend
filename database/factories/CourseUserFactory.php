@@ -1,12 +1,12 @@
 <?php
 
 namespace Database\Factories;
-use App\Models\User;
-use App\Models\CourseInstance;
+use App\estudent\domain\model\User;
+use App\estudent\domain\model\CourseInstance;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\CourseUser>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\estudent\domain\model\CourseUser>
  */
 class CourseUserFactory extends Factory
 {

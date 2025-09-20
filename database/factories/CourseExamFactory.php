@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 
-use App\Models\CourseInstance;
-use App\Models\ExamPeriod;
+use App\estudent\domain\model\CourseInstance;
+use App\estudent\domain\model\ExamPeriod;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Eloquent\Model;
 

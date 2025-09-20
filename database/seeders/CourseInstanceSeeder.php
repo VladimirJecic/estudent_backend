@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 use Illuminate\Database\Seeder;
-use App\Models\Course;
-use App\Models\CourseInstance;
-use App\Models\Semester;
-use App\Enums\SemesterSeason;
+use App\estudent\domain\model\Course;
+use App\estudent\domain\model\CourseInstance;
+use App\estudent\domain\model\Semester;
+use App\estudent\domain\model\enums\SemesterSeason;
 
 class CourseInstanceSeeder extends Seeder
 {

@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 use Illuminate\Database\Seeder;
-use App\Models\CourseUser;
+use App\estudent\domain\model\CourseUser;
 use Database\Factories\CourseUserFactory;
-use App\Models\User;
-use App\Models\CourseInstance;
+use App\estudent\domain\model\User;
+use App\estudent\domain\model\CourseInstance;
 
 class CourseUserSeeder extends Seeder
 {

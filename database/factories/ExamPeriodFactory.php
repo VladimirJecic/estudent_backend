@@ -2,8 +2,8 @@
 
 namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Semester;
-use App\Enums\SemesterSeason;
+use App\estudent\domain\model\Semester;
+use App\estudent\domain\model\enums\SemesterSeason;
 
 class ExamPeriodFactory extends Factory
 {

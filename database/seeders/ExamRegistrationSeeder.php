@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 use Illuminate\Database\Seeder;
-use App\Models\ExamRegistration;
+use App\estudent\domain\model\ExamRegistration;
 use Database\Factories\ExamRegistrationFactory;
 
 class ExamRegistrationSeeder extends Seeder
