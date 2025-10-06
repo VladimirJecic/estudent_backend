@@ -7,6 +7,7 @@ use App\estudent\domain\model\enums\SemesterSeason;
 
 class ExamPeriodFactory extends Factory
 {
+    protected $model = \App\estudent\domain\model\ExamPeriod::class;
     
     protected $examPeriods = [];
 

@@ -1,6 +1,8 @@
 <?php
 
-    namespace App\estudent\domain\model;
+namespace App\estudent\domain\model;
+
+use Database\Factories\ExamRegistrationFactory;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\estudent\domain\model\CourseExam;
@@ -10,6 +12,11 @@ use Illuminate\Database\Eloquent\Model;
 class ExamRegistration extends Model
 {
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return ExamRegistrationFactory::new();
+    }
 
     protected $fillable = [
         'course_exam_id',

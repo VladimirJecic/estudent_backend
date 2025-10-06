@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ExamRegistrationFactory extends Factory
 {
+    protected $model = \App\estudent\domain\model\ExamRegistration::class;
     public static $registrations = [];
 
     public function definition(): array

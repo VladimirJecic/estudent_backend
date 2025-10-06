@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  */
 class CourseUserFactory extends Factory
 {
+    protected $model = \App\estudent\domain\model\CourseUser::class;
     /**
      * Define the model's default state.
      *

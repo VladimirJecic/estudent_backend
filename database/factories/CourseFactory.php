@@ -10,6 +10,7 @@ use App\estudent\domain\model\Semester;
  */
 class CourseFactory extends Factory
 {
+    protected $model = \App\estudent\domain\model\Course::class;
     protected $exams = [ 'Matematika1',
                     'Matematika2', 
                     'Informacioni Sistemi i Tehnologije',

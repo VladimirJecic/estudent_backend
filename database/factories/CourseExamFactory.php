@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CourseExamFactory extends Factory
 {
+    protected $model = \App\estudent\domain\model\CourseExam::class;
     protected $courseExamAssociations = [];
     /**
      * Define the model's default state.

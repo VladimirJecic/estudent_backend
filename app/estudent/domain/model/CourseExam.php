@@ -2,6 +2,8 @@
 
 namespace App\estudent\domain\model;
 
+use Database\Factories\CourseExamFactory;
+
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\estudent\domain\model\CourseInstance;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +13,11 @@ use App\estudent\domain\model\ExamRegistration;
 class CourseExam extends Model
 {   
     use HasFactory;
+
+    protected static function newFactory()
+    {
+        return CourseExamFactory::new();
+    }
     protected $fillable = [
         'course_instance_id',
         'exam_period_id',

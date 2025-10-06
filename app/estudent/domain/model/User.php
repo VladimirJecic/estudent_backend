@@ -8,12 +8,16 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\estudent\domain\model\CourseInstance;
 use App\estudent\domain\model\ExamRegistration;
-
+use Database\Factories\UserFactory;
 
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    protected static function newFactory()
+    {
+        return UserFactory::new();
+    }
     /**
      * The attributes that are mass assignable.
      *

@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\estudent\domain\model\User;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 
@@ -17,6 +18,7 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
+     protected $model = User::class; 
     public function definition(): array
     {
         return [
