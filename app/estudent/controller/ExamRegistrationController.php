@@ -14,12 +14,11 @@ use App\estudent\controller\model\requests\UpdateExamRegistrationRequest;
 class ExamRegistrationController extends BaseController
 {
     private  readonly ExamRegistrationService $examRegistrationService;
-    private  readonly GetNotGradedExamRegistrations $getNotGradedRegistrationsService;
+    //private  readonly GetNotGradedExamRegistrations $getNotGradedRegistrationsService;
 
-    public function __construct(ExamRegistrationService $examRegistrationService,GetNotGradedExamRegistrations $getNotGradedRegistrationsService)
+    public function __construct(ExamRegistrationService $examRegistrationService)
     {
         $this->examRegistrationService = $examRegistrationService;
-        $this->getNotGradedRegistrationsService = $getNotGradedRegistrationsService;
     }
     /**
     * @OA\Get(
@@ -72,7 +71,7 @@ class ExamRegistrationController extends BaseController
      *     )
      * )
     */
-    public function getExamRegistrationsWithFilters(GetExamRegistrationsRequest $request)
+    public function getExamRegistrationsWithFiltersForAdmin(GetExamRegistrationsRequest $request)
     {
         $examRegistrationFilters = $request->toDto();
         $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
@@ -151,64 +150,8 @@ class ExamRegistrationController extends BaseController
             'total-elements' => $paginatedExamRegistrations->total(),
         ]);
     }
-        /**
-     * @OA\Get(
-     *     path="/exam-registrations/not-graded",
-     *     tags={"Common Routes"},
-     *     summary="Retrieve not graded exam registrations only for logged in/passed student",
-     *     security={
-     *              {"passport": {*}}
-     *      },
-    *   @OA\Parameter(
-    *      name="student-id",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="integer"
-     *      )
-     *   ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="Not graded exam registrations retrieved successfully",
-     *    
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Student with id student_id not found",
-     *    
-     *     ),
-     * )
-     */
-    public function getNotGradedForStudent(GetNotGradedForStudentRequest $request){
-        $studentId = $request->getStudentId();
-        $notGradedRegistrations = $this->getNotGradedRegistrationsService->getNotGradedExamRegistrationsForStudentId( $studentId );
-
-        $result= ExamRegistrationResource::collection($notGradedRegistrations);
-
-        return $this->createResponse($result, 'Not graded exam registrations retrieved successfully');
-    }
-     /**
-    * @OA\Get(
-    *     path="/admin/exam-registrations/not-graded/all",
-     *     tags={"Admin Routes"},
-     *     summary="Retrieve not graded exam registrations for all students",
-     *     security={
-     *              {"passport": {*}}
-     *      },
-     *     @OA\Response(
-     *         response=200,
-     *         description="All not graded exam registrations retrieved successfully",
-     *    
-     *     ),
-     * )
-     */
-    public function getAllNotGradedForAdmin(){
-        
-            $examRegistrations = $this->getNotGradedRegistrationsService->getNotGradedExamRegistrations();
-            $result = ExamRegistrationResource::collection($examRegistrations);
-            return $this->createResponse($result, 'All not graded exam registrations retrieved successfully');
-    }
-     /**
+ 
+    /**
      * @OA\Post(
      *     path="/exam-registrations",
      *     tags={"Common Routes"},
@@ -240,7 +183,6 @@ class ExamRegistrationController extends BaseController
      * 
      * )
      */
-    // POST /exam-registrations
     public function createExamRegistration(SubmitExamRegistrationRequest $request)
     {
         $dto = $request->toDto();
@@ -275,20 +217,13 @@ class ExamRegistrationController extends BaseController
      *     @OA\Response(response=404, description="ExamRegistration not found")
      * )
      */
-    // PUT /exam-registrations/{examRegistrationId}
     public function updateExamRegistration(UpdateExamRegistrationRequest $request, int $examRegistrationId)
     {
         $dto = $request->toDto();
         $this->examRegistrationService->updateExamRegistration($examRegistrationId, $dto);
         return $this->createResponse(code: 204);
     }
-
-
-
-
-
-
-        /**
+    /**
      * @OA\Delete(
      *     path="/exam-registrations/{examRegistrationId}",
      *     tags={"Common Routes"},
@@ -308,7 +243,6 @@ class ExamRegistrationController extends BaseController
     *     @OA\Response(response=404, description="ExamRegistration not found")
     * )
     */
-    // DELETE /exam-registrations/{examRegistrationId}
     public function deleteExamRegistration(int $examRegistrationId)
     {
         $this->examRegistrationService->deleteExamRegistration($examRegistrationId);

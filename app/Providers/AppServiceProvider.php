@@ -29,7 +29,6 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(ExamRegistrationService::class, ExamRegistrationServiceImpl::class);
-        $this->app->bind(GetNotGradedExamRegistrations::class, GetNotGradedRegistrationsServiceImpl::class);
         $this->app->bind(ExamPeriodService::class,ExamPeriodServiceImpl::class);
         $this->app->bind(CourseExamService::class, CourseExamServiceImpl::class);
         $this->app->bind(GetReportForCourseExam::class, GetReportForCourseExamImpl::class);

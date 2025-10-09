@@ -6,7 +6,7 @@
     },
     "servers": [
         {
-            "url": "http://localhost:8081/estudent/api",
+            "url": "http://localhost:8001/estudent/api",
             "description": "Rest API Server"
         }
     ],
@@ -431,57 +431,6 @@
                     },
                     "409": {
                         "description": "ExamRegistration for provided course_id:x, and exam_period_id:x and student_id:x already exist"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            }
-        },
-        "/exam-registrations/not-graded": {
-            "get": {
-                "tags": [
-                    "Common Routes"
-                ],
-                "summary": "Retrieve not graded exam registrations only for logged in/passed student",
-                "operationId": "eed12e73eac8790216e6d3ad8920df41",
-                "parameters": [
-                    {
-                        "name": "student-id",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Not graded exam registrations retrieved successfully"
-                    },
-                    "404": {
-                        "description": "Student with id student_id not found"
-                    }
-                },
-                "security": [
-                    {
-                        "passport": []
-                    }
-                ]
-            }
-        },
-        "/admin/exam-registrations/not-graded/all": {
-            "get": {
-                "tags": [
-                    "Admin Routes"
-                ],
-                "summary": "Retrieve not graded exam registrations for all students",
-                "operationId": "431ffab5bea7603de475d05d7ce3c8d9",
-                "responses": {
-                    "200": {
-                        "description": "All not graded exam registrations retrieved successfully"
                     }
                 },
                 "security": [

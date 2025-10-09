@@ -15,7 +15,7 @@ use App\estudent\controller\CourseExamController;
 | be assigned to the "api" middleware group. Make something great!
 |
 *php artisan l5-swagger:generate
-/* swagger URL: http://localhost:8081/estudent/swagger-ui/index.html*/
+/* swagger URL: http://localhost:8001/estudent/swagger-ui/index.html */
 Route::post('login', [AuthController::class, 'login']);
 
 
@@ -29,7 +29,7 @@ Route::middleware('auth:api')->group(function(){
     Route::post('logout', [AuthController::class, 'logout']);
     
     Route::prefix('admin')->middleware('admin-auth')->group(function(){
-        Route::get('exam-registrations', [ExamRegistrationController::class, 'getExamRegistrationsWithFilters']);
+        Route::get('exam-registrations', [ExamRegistrationController::class, 'getExamRegistrationsWithFiltersForAdmin']);
         Route::get('course-exams', [CourseExamController::class,'getCourseExamsWithFilters']);
         Route::get('course-exam-reports/{courseExamId}', [CourseExamController::class,'getReportForCourseExam']);
         Route::put('exam-registrations/{examRegistrationId}', [ExamRegistrationController::class, 'updateExamRegistration']);
