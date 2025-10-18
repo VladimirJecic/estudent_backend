@@ -32,7 +32,7 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
     {
         $courseExam = CourseExam::with('examPeriod')->find($dto->courseExamId);
         $registerableExamPeriods = $this->examPeriodService->registerable();
-        if (!$registerableExamPeriods->contains($courseExam->examPeriod())) {
+        if (!$registerableExamPeriods->contains($courseExam->examPeriod)) {
             throw new RegistrationNotInProgressException('Exam registration is not in progress for this exam period.');
         }
         $exists = ExamRegistration::where([
