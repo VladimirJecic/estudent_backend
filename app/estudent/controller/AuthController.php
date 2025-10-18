@@ -4,7 +4,7 @@ namespace App\estudent\controller;
 use App\estudent\domain\exceptions\BadRequestException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Validator;
+use Illuminate\Support\Facades\Validator;
 class AuthController extends BaseController
 {
 
@@ -17,7 +17,7 @@ class AuthController extends BaseController
  *         required=true,
  *         @OA\JsonContent(
  *             required={"indexNum", "password"},
- *             @OA\Property(property="indexNum", type="string", example="2023/2222"),
+ *             @OA\Property(property="indexNum", type="string", example="2023/0891"),
  *             @OA\Property(property="password", type="string", example="test")
  *         )
  *     ),

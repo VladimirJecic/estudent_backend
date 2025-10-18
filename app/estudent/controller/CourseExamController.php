@@ -87,7 +87,7 @@ class CourseExamController extends BaseController
 
         $paginatedCourseExams = $this->courseExamService->getAllCourseExamsWithFilters($courseExamFilters);
 
-        return response()->json([
+        return  $this->createResponse([
             'content' => CourseExamResource::collection($paginatedCourseExams->items()),
             'totalPages' => $paginatedCourseExams->lastPage(),
             'totalElements' => $paginatedCourseExams->total(),

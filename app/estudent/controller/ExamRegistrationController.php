@@ -75,7 +75,7 @@ class ExamRegistrationController extends BaseController
     {
         $examRegistrationFilters = $request->toDto();
         $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
-        return response()->json([
+        return $this->createResponse([
             'content' => ExamRegistrationResource::collection($paginatedExamRegistrations->items()),
             'total-pages' => $paginatedExamRegistrations->lastPage(),
             'total-elements' => $paginatedExamRegistrations->total(),
@@ -144,7 +144,7 @@ class ExamRegistrationController extends BaseController
         $examRegistrationFilters = $request->toDto();
         $examRegistrationFilters->studentId = auth()->id();
         $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
-        return response()->json([
+        return $this->createResponse([
             'content' => ExamRegistrationResource::collection($paginatedExamRegistrations->items()),
             'total-pages' => $paginatedExamRegistrations->lastPage(),
             'total-elements' => $paginatedExamRegistrations->total(),

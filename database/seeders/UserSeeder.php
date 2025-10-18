@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
         $user->name = 'admin';
         $user->email = 'test@example.com';
         $user->indexNum = '2023/0000';
-        $user->password = Hash::make('test');
+        $user->password = Hash::make('password');
         $user->role = 'admin';
         $user->save();
         User::factory()->count(10)->create();
