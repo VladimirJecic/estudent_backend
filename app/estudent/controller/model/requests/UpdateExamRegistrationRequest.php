@@ -8,10 +8,10 @@ class UpdateExamRegistrationRequest extends EStudentRequest
     public function rules()
     {
         return [
-            "exam-registration-id" => "required|integer|exists:exam_registrations,id",
+            "examRegistrationId" => "required|integer|exists:exam_registrations,id",
             'mark' => 'nullable|integer',
             'comment' => 'nullable|string',
-            'has-attended' => 'nullable|boolean',
+            'hasAttended' => 'nullable|boolean',
         ];
     }
     public function toDTO(): UpdateExamRegistrationDTO

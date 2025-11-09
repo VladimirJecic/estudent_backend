@@ -16,7 +16,8 @@ abstract class EStudentRequest extends FormRequest
 
     public function validationData()
     {
-        return $this->all();
+       
+        return array_merge($this->all(), $this->route()->parameters());
     }
 
     public function failedValidation(Validator $validator)

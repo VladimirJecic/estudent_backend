@@ -30,21 +30,26 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
     $courseExamReportDTO->reportItemList = array_map(fn(ExamRegistration $examRegistration)=> new CourseExamReportItemDTO($examRegistration)
     ,$courseExam->examRegistrations->all());
 
-   if(count( $courseExamReportDTO->reportItemList) == 0)
-    {
-      throw new NotFoundException('There are no registrations for this course exam.');
-    }
+  //  if(count( $courseExamReportDTO->reportItemList) == 0)
+  //   {
+  //     throw new NotFoundException('There are no registrations for this course exam.');
+  //   }
     $registrations = $courseExam->examRegistrations;
     $total = $registrations->count();
     $registrationsHasAttended = $registrations->filter(fn ($r) => $r->hasAttended)->count();
 
+    if($total == 0){
+        $courseExamReportDTO->attendancePercentage = 0.0;
+        $courseExamReportDTO->averageScore = 0.0;
+       
+    }
+    else{
+      $courseExamReportDTO->attendancePercentage = number_format((doubleval($registrationsHasAttended) / $total) * 100, 2);
+      $courseExamReportDTO->averageScore =number_format( $registrations
+      ->filter(fn ($r) => $r->hasAttended && $r->mark > 5)
+      ->avg('mark') ?? 0.0,2) ;
 
-    $courseExamReportDTO->attendancePercentage = number_format((doubleval($registrationsHasAttended) / $total) * 100, 2);
-   
-    $courseExamReportDTO->averageScore =number_format( $registrations
-    ->filter(fn ($r) => $r->hasAttended && $r->mark > 5)
-    ->avg('mark') ?? 0.0,2) ;
-
+    }
     $report = $this->excelGeneratorService->generateCourseExamReport($courseExamReportDTO);
     return $report;
 

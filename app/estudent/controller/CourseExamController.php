@@ -153,11 +153,11 @@ class CourseExamController extends BaseController
      *     operationId="getCourseExamReport",
      *     security={{"passport": {}}},
     *     @OA\Parameter(
-    *         name="course-exam-id",
+    *         name="courseExamId",
     *         in="path",
     *         required=true,
     *         description="ID of the CourseExam to generate the report for, will include all exam registrations for that course exam",
-    *         @OA\Schema(type="integer", example=1)
+    *         @OA\Schema(type="integer", example=18)
     *     ),
     * 
     *     @OA\Response(

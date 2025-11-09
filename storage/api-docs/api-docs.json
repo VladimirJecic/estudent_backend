@@ -30,7 +30,7 @@
                                 "properties": {
                                     "indexNum": {
                                         "type": "string",
-                                        "example": "2023/2222"
+                                        "example": "2023/0891"
                                     },
                                     "password": {
                                         "type": "string",
@@ -201,13 +201,13 @@
                 "operationId": "getCourseExamReport",
                 "parameters": [
                     {
-                        "name": "course-exam-id",
+                        "name": "courseExamId",
                         "in": "path",
                         "description": "ID of the CourseExam to generate the report for, will include all exam registrations for that course exam",
                         "required": true,
                         "schema": {
                             "type": "integer",
-                            "example": 1
+                            "example": 18
                         }
                     }
                 ],

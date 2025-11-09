@@ -13,7 +13,7 @@ class CourseExamReportRequest extends EStudentRequest
     public function rules(): array
     {
         return [
-            "course-exam-id"=> "required|integer|exists:course_exams,id",
+            "courseExamId"=> "required|integer|exists:course_exams,id",
         ];
     }
 }

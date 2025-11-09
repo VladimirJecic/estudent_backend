@@ -77,8 +77,8 @@ class ExamRegistrationController extends BaseController
         $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
         return $this->createResponse([
             'content' => ExamRegistrationResource::collection($paginatedExamRegistrations->items()),
-            'total-pages' => $paginatedExamRegistrations->lastPage(),
-            'total-elements' => $paginatedExamRegistrations->total(),
+            'totalPages' => $paginatedExamRegistrations->lastPage(),
+            'totalElements' => $paginatedExamRegistrations->total(),
         ]);
     }
     /**
