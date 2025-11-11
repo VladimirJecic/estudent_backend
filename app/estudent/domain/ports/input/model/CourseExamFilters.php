@@ -17,7 +17,7 @@ class CourseExamFilters
 {
     public int $page;
     public int $pageSize;
-    public ?string $courseName;
+    public ?string $searchText;
 
     public ?string $dateFrom;
 
@@ -27,7 +27,7 @@ class CourseExamFilters
     {
        $this->page = $data["page"] ?? 1;
        $this->pageSize = $data["page-size"] ?? 10;
-       $this->courseName = $data["course-name"] ?? null;
+       $this->searchText = $data["search-text"] ?? null;
        $this->dateFrom = isset($data['date-from']) ? Carbon::parse($data['date-from'])->toDateString() : null;
        $this->dateTo = isset($data['date-to']) ? Carbon::parse($data['date-to'])->toDateString() : null;
     }

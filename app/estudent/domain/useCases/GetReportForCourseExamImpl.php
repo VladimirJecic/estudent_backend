@@ -1,7 +1,7 @@
 <?php
  namespace App\estudent\domain\useCases;
  use App\estudent\domain\ports\input\GetReportForCourseExam;
-use App\estudent\domain\exceptions\NotFoundException;
+use App\estudent\domain\exceptions\ExamRegistrationNotFoundException;
 use Illuminate\Database\Eloquent\Collection;
 use App\estudent\domain\model\CourseExam;
 use App\estudent\domain\model\ExamRegistration;
@@ -30,10 +30,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
     $courseExamReportDTO->reportItemList = array_map(fn(ExamRegistration $examRegistration)=> new CourseExamReportItemDTO($examRegistration)
     ,$courseExam->examRegistrations->all());
 
-  //  if(count( $courseExamReportDTO->reportItemList) == 0)
-  //   {
-  //     throw new NotFoundException('There are no registrations for this course exam.');
-  //   }
     $registrations = $courseExam->examRegistrations;
     $total = $registrations->count();
     $registrationsHasAttended = $registrations->filter(fn ($r) => $r->hasAttended)->count();

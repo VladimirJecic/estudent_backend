@@ -2,12 +2,10 @@
 
 namespace App\estudent\controller;
 
-use App\estudent\domain\ports\input\model\ExamRegistrationFilters;
-use App\estudent\controller\model\requests\GetNotGradedForStudentRequest;
+use App\estudent\controller\model\requests\DeleteExamRegistrationRequest;
 use App\estudent\controller\model\resources\ExamRegistrationResource;
 use App\estudent\controller\model\requests\SubmitExamRegistrationRequest;
 use App\estudent\domain\ports\input\ExamRegistrationService;
-use App\estudent\domain\ports\input\GetNotGradedExamRegistrations;
 use App\estudent\controller\model\requests\GetExamRegistrationsRequest;
 use App\estudent\controller\model\requests\UpdateExamRegistrationRequest;
 
@@ -200,7 +198,7 @@ class ExamRegistrationController extends BaseController
      *     security={{"passport": {*}}},
      *
     *     @OA\Parameter(
-    *         name="exam-registration-id",
+    *         name="examRegistrationId",
      *         in="path",
      *         required=true,
      *         description="ID of the exam registration to update",
@@ -232,7 +230,7 @@ class ExamRegistrationController extends BaseController
      *     security={{"passport": {*}}},
 
     *     @OA\Parameter(
-    *         name="exam-registration-id",
+    *         name="examRegistrationId",
     *         in="path",
     *         required=true,
     *         description="ID of the exam registration to delete",
@@ -243,7 +241,7 @@ class ExamRegistrationController extends BaseController
     *     @OA\Response(response=404, description="ExamRegistration not found")
     * )
     */
-    public function deleteExamRegistration(int $examRegistrationId)
+    public function deleteExamRegistration(DeleteExamRegistrationRequest $request, int $examRegistrationId  )
     {
         $this->examRegistrationService->deleteExamRegistration($examRegistrationId);
         return $this->createResponse(code: 204);

@@ -55,7 +55,7 @@ class CourseExamController extends BaseController
      *         @OA\Schema(type="integer", example=10)
      *     ),
      *     @OA\Parameter(
-     *         name="course-name",
+     *         name="search-text",
      *         in="query",
      *         required=false,
      *         description="Course name",

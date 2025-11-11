@@ -3,7 +3,7 @@ namespace App\estudent\domain\useCases;
 
 use App\estudent\domain\ports\input\model\ExamRegistrationFilters;
 use App\estudent\domain\exceptions\BadRequestException;
-use App\estudent\domain\exceptions\NotFoundException;
+use App\estudent\domain\exceptions\ExamRegistrationNotFoundException;
 use App\estudent\domain\exceptions\UnauthorizedOperationException;
 use App\estudent\domain\exceptions\RegistrationNotInProgressException;
 use App\estudent\domain\model\CourseExam;
@@ -55,11 +55,6 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
     public function updateExamRegistration(int $id, UpdateExamRegistrationDTO $dto): ExamRegistration
     {
         $examRegistration = ExamRegistration::find($id);
-
-        if (!$examRegistration) {
-            throw new NotFoundException('ExamRegistration with ID ' . $id . ' not found.');
-        }
-
         $user = auth()->user();
         $examRegistration->mark = $dto->mark;
         $examRegistration->comment = $dto->comment;
@@ -71,11 +66,8 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
 
     public function deleteExamRegistration(int $id): bool
     {
-        $registration = ExamRegistration::find($id);
-        if (!$registration) {
-            throw new NotFoundException('ExamRegistration with ID ' . $id . ' not found.');
-        }
         $user = auth()->user();
+        $registration = ExamRegistration::find($id);
         if ($user->role === 'student' && $registration->student_id != $user->id) {
             throw new UnauthorizedOperationException('Forbidden: You can only delete your own exam registrations.');
         }

@@ -12,10 +12,15 @@ class CourseExamServiceImpl implements CourseExamService
         $query = CourseExam::with(['courseInstance', 'examPeriod']);
 
         // Filters
-        if ($courseExamFilters->courseName) {
-            $courseName = $courseExamFilters->courseName;
-            $query->whereHas('courseInstance.course', function ($q) use ($courseName) {
-                $q->where('name', 'like', '%' . $courseName . '%');
+        if ($courseExamFilters->searchText) {
+            $searchText = $courseExamFilters->searchText;
+            $query->where(function ($q) use ($searchText) {
+                $q->whereHas('courseInstance.course', function ($courseQ) use ($searchText) {
+                    $courseQ->where('name', 'like', '%' . $searchText . '%');
+                })
+                ->orWhereHas('examPeriod', function ($periodQ) use ($searchText) {
+                    $periodQ->where('name', 'like', '%' . $searchText . '%');
+                });
             });
         }
 
