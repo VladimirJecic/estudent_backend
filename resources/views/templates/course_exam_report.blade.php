@@ -8,6 +8,7 @@
         <tr style="background-color: #d9ead3; font-weight: bold; border: 1px solid #000;">
             <th style="border: 1px solid #000; width: 25%;">Broj indeksa</th>
             <th style="border: 1px solid #000; width: 40%;">Ime</th>
+            <th style="border: 1px solid #000; width: 15%;">Prisustvovao</th>
             <th style="border: 1px solid #000; width: 15%;">Ocena</th>
         </tr>
     </thead>
@@ -16,6 +17,7 @@
             <tr>
                 <td style="border: 1px solid #000;">{{ $reportItemDTO->studentIndexNum }}</td>
                 <td style="border: 1px solid #000;">{{ $reportItemDTO->studentName }}</td>
+                <td style="border: 1px solid #000; text-align: center;">{{ $reportItemDTO->hasAttended ? 'Da' : 'Ne' }}</td>
                 <td style="border: 1px solid #000; text-align: center;">{{ $reportItemDTO->mark }}</td>
             </tr>
         @endforeach
@@ -23,8 +25,9 @@
     <tfoot>
         <tr style="background-color: #f9f9f9; font-weight: bold;">
             <td style="border: 1px solid #000;"></td>
-            <td style="border: 1px solid #000;">Prosečna ocena: {{ $reportDTO->averageScore }}</td>
+            <td style="border: 1px solid #000;"></td>
             <td style="border: 1px solid #000;">Izlaznost: {{ $reportDTO->attendancePercentage }}%</td>
+            <td style="border: 1px solid #000;">Prosečna ocena: {{ $reportDTO->averageScore }}</td>
         </tr>
     </tfoot>
 </table>

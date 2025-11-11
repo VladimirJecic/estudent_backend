@@ -18,7 +18,7 @@ class GenerateCourseExamReportImpl implements GenerateCourseExamReport
         $model = [
             'reportDTO' => $reportDTO,
         ];
-        $download =  $excelTemplate->process($model, $fileName,3);
+        $download =  $excelTemplate->process($model, $fileName,4);
         return $download;
         
       

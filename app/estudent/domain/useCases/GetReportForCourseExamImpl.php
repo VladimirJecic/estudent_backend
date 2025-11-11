@@ -46,7 +46,7 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
     else{
       $courseExamReportDTO->attendancePercentage = number_format((doubleval($registrationsHasAttended) / $total) * 100, 2);
       $courseExamReportDTO->averageScore =number_format( $registrations
-      ->filter(fn ($r) => $r->hasAttended && $r->mark > 5)
+      ->filter(fn ($r) => $r->hasAttended)
       ->avg('mark') ?? 0.0,2) ;
 
     }
