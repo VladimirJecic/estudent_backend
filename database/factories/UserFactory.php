@@ -22,12 +22,12 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'indexNum'=> $this->faker->regexify('2023/[0-9]{4}'),
+            'indexNum'=> $this->faker->regexify('2025/[0-9]{4}'),
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'role' => 'student',
             'email_verified_at' => now(),
-            'password' => Hash::make('test'),
+            'password' => Hash::make('password'), 
             'remember_token' => Str::random(10),
         ];
     }

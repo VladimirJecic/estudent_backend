@@ -18,5 +18,13 @@ class SemesterSeeder extends Seeder
             'academic_year' => '2024/2025',
             'season' => SemesterSeason::Summer,
         ]);
+        Semester::firstOrCreate([
+            'academic_year' => '2025/2026',
+            'season' => SemesterSeason::Winter,
+        ]);
+        Semester::firstOrCreate([
+            'academic_year' => '2025/2026',
+            'season' => SemesterSeason::Summer,
+        ]);
     }
 }

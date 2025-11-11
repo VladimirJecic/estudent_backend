@@ -12,6 +12,7 @@ class CourseExamSeeder extends Seeder
      */
     public function run(): void
     {
-         CourseExam::factory()->count(20)->create();
+        // Total course exams: 21 (winter 2024/2025) + 70 (summer 2024/2025) + 21 (winter 2025/2026) = 112
+        CourseExam::factory()->count(112)->create();
     }
 }

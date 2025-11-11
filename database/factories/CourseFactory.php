@@ -25,7 +25,7 @@ class CourseFactory extends Factory
                     'Strukture Podataka i Algoritmi',
                     'Internet Tehnologije',
                     'Projektovanje Softvera',
-                    'Projektovanje Informacionih Sistema'];
+                   ];
     /**
      * Define the model's default state.
      *

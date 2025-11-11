@@ -12,18 +12,21 @@ class ExamPeriod extends Model
 {
     use HasFactory;
 
-    protected static function newFactory()
-    {
-        return ExamPeriodFactory::new();
-    }
     protected $fillable = [
         'id',
+        'semester_id',
         'dateRegisterStart',
         'dateRegisterEnd',
         'dateStart',
         'dateEnd',
         'name',
     ];
+    
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class, 'semester_id', 'id');
+    }
+    
     public function exams()
     {
         return $this->hasMany(CourseExam::class, 'exam_period_id','id');
