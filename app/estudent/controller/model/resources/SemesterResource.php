@@ -24,7 +24,7 @@ class SemesterResource extends JsonResource
             'id' => $this->id,
             'academic_year' => $this->academic_year,
             'season' => $this->season->name,
-            'title' => (string) $this,
+            'title' => (string) $this->resource,
         ];
     }
 }
