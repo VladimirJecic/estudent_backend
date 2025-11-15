@@ -30,11 +30,11 @@
                                 "properties": {
                                     "indexNum": {
                                         "type": "string",
-                                        "example": "2023/0891"
+                                        "example": "2025/0000"
                                     },
                                     "password": {
                                         "type": "string",
-                                        "example": "test"
+                                        "example": "password"
                                     }
                                 },
                                 "type": "object"
@@ -69,6 +69,67 @@
                 }
             }
         },
+        "/admin/course-instances": {
+            "get": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Get paginated course instances with filters",
+                "operationId": "getCourseInstances",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "page-size",
+                        "in": "query",
+                        "description": "Page size",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 10
+                        }
+                    },
+                    {
+                        "name": "search-text",
+                        "in": "query",
+                        "description": "Search by course name or semester year",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "matematika"
+                        }
+                    },
+                    {
+                        "name": "semester-id",
+                        "in": "query",
+                        "description": "Filter by semester ID",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of course instances"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/admin/course-exams": {
             "get": {
                 "tags": [
@@ -98,7 +159,7 @@
                         }
                     },
                     {
-                        "name": "course-name",
+                        "name": "search-text",
                         "in": "query",
                         "description": "Course name",
                         "required": false,
@@ -449,7 +510,7 @@
                 "operationId": "exam-registrations/update",
                 "parameters": [
                     {
-                        "name": "exam-registration-id",
+                        "name": "examRegistrationId",
                         "in": "path",
                         "description": "ID of the exam registration to update",
                         "required": true,
@@ -495,7 +556,7 @@
                 "operationId": "exam-registrations/destroy",
                 "parameters": [
                     {
-                        "name": "exam-registration-id",
+                        "name": "examRegistrationId",
                         "in": "path",
                         "description": "ID of the exam registration to delete",
                         "required": true,
@@ -513,6 +574,25 @@
                     },
                     "404": {
                         "description": "ExamRegistration not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/admin/semesters": {
+            "get": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Get all semesters",
+                "operationId": "getSemesters",
+                "responses": {
+                    "200": {
+                        "description": "List of all semesters"
                     }
                 },
                 "security": [
@@ -643,6 +723,20 @@
                 },
                 "type": "object"
             },
+            "Semester": {
+                "title": "Semester",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "title": {
+                        "type": "string",
+                        "example": "2024/2025 Letnji"
+                    }
+                },
+                "type": "object"
+            },
             "User": {
                 "properties": {
                     "id": {
@@ -709,6 +803,27 @@
                         "type": "string",
                         "format": "date",
                         "example": "2025-06-30"
+                    }
+                },
+                "type": "object"
+            },
+            "CourseInstanceFiltersDTO": {
+                "properties": {
+                    "page": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "page-size": {
+                        "type": "integer",
+                        "example": 10
+                    },
+                    "search-text": {
+                        "type": "string",
+                        "example": "matematika"
+                    },
+                    "semester-id": {
+                        "type": "integer",
+                        "example": 1
                     }
                 },
                 "type": "object"

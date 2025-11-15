@@ -17,8 +17,8 @@ class AuthController extends BaseController
  *         required=true,
  *         @OA\JsonContent(
  *             required={"indexNum", "password"},
- *             @OA\Property(property="indexNum", type="string", example="2023/0891"),
- *             @OA\Property(property="password", type="string", example="test")
+ *             @OA\Property(property="indexNum", type="string", example="2025/0000"),
+ *             @OA\Property(property="password", type="string", example="password")
  *         )
  *     ),
  *     @OA\Response(

@@ -5,6 +5,8 @@ use App\estudent\controller\AuthController;
 use App\estudent\controller\ExamPeriodController;
 use App\estudent\controller\ExamRegistrationController;
 use App\estudent\controller\CourseExamController;
+use App\estudent\controller\CourseController;
+use App\estudent\controller\SemesterController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -32,6 +34,8 @@ Route::middleware('auth:api')->group(function(){
         Route::get('exam-registrations', [ExamRegistrationController::class, 'getExamRegistrationsWithFiltersForAdmin']);
         Route::get('course-exams', [CourseExamController::class,'getCourseExamsWithFilters']);
         Route::get('course-exam-reports/{courseExamId}', [CourseExamController::class,'getReportForCourseExam']);
+        Route::get('course-instances', [CourseController::class, 'getCourseInstancesWithFilters']);
+        Route::get('semesters', [SemesterController::class, 'getSemesters']);
         Route::put('exam-registrations/{examRegistrationId}', [ExamRegistrationController::class, 'updateExamRegistration']);
     });
 
