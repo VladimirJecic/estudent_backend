@@ -130,6 +130,47 @@
                 ]
             }
         },
+        "/admin/course-report-data/{courseInstanceId}": {
+            "get": {
+                "tags": [
+                    "Admin Routes"
+                ],
+                "summary": "Get statistics report data for a course instance",
+                "operationId": "getCourseInstanceReportData",
+                "parameters": [
+                    {
+                        "name": "courseInstanceId",
+                        "in": "path",
+                        "description": "ID of the course instance to generate report data for",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 5
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Course instance statistics report data",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CourseSemesterReportDTO"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Course instance not found"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
         "/admin/course-exams": {
             "get": {
                 "tags": [
@@ -638,8 +679,7 @@
                         "example": "Matematika"
                     },
                     "semester": {
-                        "type": "integer",
-                        "example": 2
+                        "$ref": "#/components/schemas/Semester"
                     },
                     "espb": {
                         "type": "integer",
@@ -729,6 +769,14 @@
                     "id": {
                         "type": "integer",
                         "example": 1
+                    },
+                    "year": {
+                        "type": "string",
+                        "example": "2024/2025"
+                    },
+                    "season": {
+                        "type": "string",
+                        "example": "Letnji"
                     },
                     "title": {
                         "type": "string",
@@ -824,6 +872,59 @@
                     "semester-id": {
                         "type": "integer",
                         "example": 1
+                    }
+                },
+                "type": "object"
+            },
+            "CourseSemesterReportDTO": {
+                "properties": {
+                    "title": {
+                        "type": "string",
+                        "example": "Matematika - 2024/2025 Zimski"
+                    },
+                    "attendanceSeries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExamPeriodMetricPointDTO"
+                        }
+                    },
+                    "passageSeries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExamPeriodMetricPointDTO"
+                        }
+                    },
+                    "averageGradesSeries": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/ExamPeriodMetricPointDTO"
+                        }
+                    },
+                    "enrolledCount": {
+                        "type": "integer",
+                        "example": 120
+                    },
+                    "passedCount": {
+                        "type": "integer",
+                        "example": 95
+                    }
+                },
+                "type": "object"
+            },
+            "ExamPeriodMetricPointDTO": {
+                "properties": {
+                    "examPeriodId": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "examPeriodName": {
+                        "type": "string",
+                        "example": "Februar-2025"
+                    },
+                    "value": {
+                        "type": "number",
+                        "format": "float",
+                        "example": 85.5
                     }
                 },
                 "type": "object"

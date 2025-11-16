@@ -35,6 +35,7 @@ Route::middleware('auth:api')->group(function(){
         Route::get('course-exams', [CourseExamController::class,'getCourseExamsWithFilters']);
         Route::get('course-exam-reports/{courseExamId}', [CourseExamController::class,'getReportForCourseExam']);
         Route::get('course-instances', [CourseController::class, 'getCourseInstancesWithFilters']);
+        Route::get('course-report-data/{courseInstanceId}', [CourseController::class, 'getReportDataForCourseInstance']);
         Route::get('semesters', [SemesterController::class, 'getSemesters']);
         Route::put('exam-registrations/{examRegistrationId}', [ExamRegistrationController::class, 'updateExamRegistration']);
     });

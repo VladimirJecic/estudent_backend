@@ -2,6 +2,7 @@
 namespace App\estudent\controller;
 
 use App\estudent\domain\ports\input\CourseInstanceService;
+use App\estudent\domain\ports\input\GetReportDataForCourseInstance;
 use App\estudent\domain\ports\input\model\CourseInstanceFilters;
 use App\estudent\controller\model\resources\CourseInstanceResource;
 use Illuminate\Http\Request;
@@ -9,10 +10,14 @@ use Illuminate\Http\Request;
 class CourseController extends BaseController
 {
     private readonly CourseInstanceService $courseInstanceService;
+    private readonly GetReportDataForCourseInstance $getReportDataForCourseInstanceService;
 
-    public function __construct(CourseInstanceService $courseInstanceService)
-    {
+    public function __construct(
+        CourseInstanceService $courseInstanceService,
+        GetReportDataForCourseInstance $getReportDataForCourseInstanceService
+    ) {
         $this->courseInstanceService = $courseInstanceService;
+        $this->getReportDataForCourseInstanceService = $getReportDataForCourseInstanceService;
     }
 
     /**
@@ -67,5 +72,36 @@ class CourseController extends BaseController
             'totalPages' => $paginatedCourseInstances->lastPage(),
             'totalElements' => $paginatedCourseInstances->total(),
         ]);
+    }
+
+    /**
+     * @OA\Get(
+     *     path="/admin/course-report-data/{courseInstanceId}",
+     *     tags={"Admin Routes"},
+     *     summary="Get statistics report data for a course instance",
+     *     operationId="getCourseInstanceReportData",
+     *     security={{"passport": {}}},
+     *     @OA\Parameter(
+     *         name="courseInstanceId",
+     *         in="path",
+     *         required=true,
+     *         description="ID of the course instance to generate report data for",
+     *         @OA\Schema(type="integer", example=5)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Course instance statistics report data",
+     *         @OA\JsonContent(ref="#/components/schemas/CourseSemesterReportDTO")
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Course instance not found"
+     *     )
+     * )
+     */
+    public function getReportDataForCourseInstance(int $courseInstanceId)
+    {
+        $report = $this->getReportDataForCourseInstanceService->getReportDataForCourseInstance($courseInstanceId);
+        return $this->createResponse($report);
     }
 }

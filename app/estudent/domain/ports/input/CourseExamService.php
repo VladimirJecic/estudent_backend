@@ -6,4 +6,8 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 interface CourseExamService
 {
     public function getAllCourseExamsWithFilters(CourseExamFilters $filters): LengthAwarePaginator;
+    
+    public function calculateAttendancePercentage(int $courseExamId): float;
+    
+    public function calculateAverageScore(int $courseExamId): float;
 }

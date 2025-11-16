@@ -1,22 +1,23 @@
 <?php
  namespace App\estudent\domain\useCases;
  use App\estudent\domain\ports\input\GetReportForCourseExam;
-use App\estudent\domain\exceptions\ExamRegistrationNotFoundException;
-use Illuminate\Database\Eloquent\Collection;
 use App\estudent\domain\model\CourseExam;
 use App\estudent\domain\model\ExamRegistration;
 use App\estudent\domain\ports\output\model\CourseExamReportDTO;
 use App\estudent\domain\ports\output\model\CourseExamReportItemDTO;
 use App\estudent\domain\ports\output\GenerateCourseExamReport;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use App\estudent\domain\ports\input\CourseExamService;
 
  class GetReportForCourseExamImpl implements GetReportForCourseExam{
 
     private readonly GenerateCourseExamReport $excelGeneratorService;
+    private readonly CourseExamService $courseExamService;
 
-    public function __construct(GenerateCourseExamReport $excelGeneratorService)
+    public function __construct(GenerateCourseExamReport $excelGeneratorService, CourseExamService $courseExamService)
     {
         $this->excelGeneratorService = $excelGeneratorService;
+        $this->courseExamService = $courseExamService;
     }
 
     public function getReportForCourseExam(int $courseExamId): BinaryFileResponse
@@ -30,22 +31,8 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
     $courseExamReportDTO->reportItemList = array_map(fn(ExamRegistration $examRegistration)=> new CourseExamReportItemDTO($examRegistration)
     ,$courseExam->examRegistrations->all());
 
-    $registrations = $courseExam->examRegistrations;
-    $total = $registrations->count();
-    $registrationsHasAttended = $registrations->filter(fn ($r) => $r->hasAttended)->count();
-
-    if($total == 0){
-        $courseExamReportDTO->attendancePercentage = 0.0;
-        $courseExamReportDTO->averageScore = 0.0;
-       
-    }
-    else{
-      $courseExamReportDTO->attendancePercentage = number_format((doubleval($registrationsHasAttended) / $total) * 100, 2);
-      $courseExamReportDTO->averageScore =number_format( $registrations
-      ->filter(fn ($r) => $r->hasAttended)
-      ->avg('mark') ?? 0.0,2) ;
-
-    }
+    $courseExamReportDTO->attendancePercentage = $this->courseExamService->calculateAttendancePercentage($courseExamId);
+    $courseExamReportDTO->averageScore = $this->courseExamService->calculateAverageScore($courseExamId);
     $report = $this->excelGeneratorService->generateCourseExamReport($courseExamReportDTO);
     return $report;
 
