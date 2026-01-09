@@ -3,8 +3,9 @@
 namespace App\estudent\controller;
 
 use App\estudent\controller\model\resources\ExamPeriodResource;
+use App\estudent\controller\model\requests\GetExamPeriodsRequest;
 use App\estudent\domain\ports\input\ExamPeriodService;
-use Illuminate\Http\Request;
+
 class ExamPeriodController extends BaseController
 {
 
@@ -39,10 +40,10 @@ class ExamPeriodController extends BaseController
      *     ),
      * )
      */
-    public function getExamPeriods(Request $request)
+    public function getExamPeriodsWithFilters(GetExamPeriodsRequest $request)
     {
-        $onlyActive = filter_var($request->query('onlyActive', false), FILTER_VALIDATE_BOOLEAN);
-        $examPeriods = $this->examPeriodService->getAllExamPeriods($onlyActive);
+        $examPeriodFilters = $request->toDto();
+        $examPeriods = $this->examPeriodService->getAllExamPeriodsWithFilters($examPeriodFilters);
         return $this->createResponse(ExamPeriodResource::collection($examPeriods),
         'Exam periods retrieved successfully');
     }

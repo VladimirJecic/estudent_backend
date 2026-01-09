@@ -8,6 +8,7 @@ use App\estudent\domain\exceptions\UnauthorizedOperationException;
 use App\estudent\domain\exceptions\RegistrationNotInProgressException;
 use App\estudent\domain\model\CourseExam;
 use App\estudent\domain\model\ExamRegistration;
+use Carbon\Carbon;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use App\estudent\domain\ports\input\ExamRegistrationService;
 use App\estudent\domain\ports\input\model\SubmitExamRegistrationDTO;
@@ -54,7 +55,11 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
 
     public function updateExamRegistration(int $id, UpdateExamRegistrationDTO $dto): ExamRegistration
     {
+        
         $examRegistration = ExamRegistration::find($id);
+        if ($dto->mark == null || $dto->mark < 5 || $dto->mark > 10) {
+            throw new  BadRequestException('Invalid mark value.');
+        }
         $user = auth()->user();
         $examRegistration->mark = $dto->mark;
         $examRegistration->comment = $dto->comment;
@@ -82,6 +87,23 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
     {
         if ($examRegistrationFilters->studentId) {
             $query->where('student_id', $examRegistrationFilters->studentId);
+        }
+
+        if ($examRegistrationFilters->courseExamId) {
+            $query->where('course_exam_id', $examRegistrationFilters->courseExamId);
+        }
+
+        if ($examRegistrationFilters->examPeriodId) {
+            $query->whereHas('courseExam', function($q) use ($examRegistrationFilters) {
+                $q->where('exam_period_id', $examRegistrationFilters->examPeriodId);
+            });
+        }
+
+        if ($examRegistrationFilters->includeCurrent) {
+            $currentDate = Carbon::now();
+            $query->whereHas('courseExam.examPeriod', function($q) use ($currentDate) {
+                $q->where('dateEnd', '>=', $currentDate);
+            });
         }
 
         $marks = [];

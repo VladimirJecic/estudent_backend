@@ -2,12 +2,22 @@
 namespace App\estudent\domain\useCases;
 
 use App\estudent\domain\ports\input\CourseExamService;
+use App\estudent\domain\ports\input\ExamPeriodService;
 use App\estudent\domain\model\CourseExam;
+use App\estudent\domain\model\ExamRegistration;
+use App\estudent\domain\model\ExamPeriod;
 use App\estudent\domain\ports\input\model\CourseExamFilters;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 
 class CourseExamServiceImpl implements CourseExamService
 {
+    private readonly ExamPeriodService $examPeriodService;
+
+    public function __construct(ExamPeriodService $examPeriodService)
+    {
+        $this->examPeriodService = $examPeriodService;
+    }
     public function calculateAttendancePercentageForRegistrations($registrations): float
     {
         $total = $registrations->count();
@@ -78,5 +88,58 @@ class CourseExamServiceImpl implements CourseExamService
         }
         
         return round($attendedRegistrations->avg('mark') ?? 0.0, 2);
+    }
+
+    public function getRemainingCourseExams(int $examPeriodId): Collection
+    {
+        $examPeriod = ExamPeriod::with('exams.courseInstance')->findOrFail($examPeriodId);
+        
+        $student = auth()->user();
+        
+        $enrolledCourses = $student->courseInstances()->pluck('id')->toArray();
+
+        $courseExams_where_enrolled = $examPeriod->exams()->get()->reject(fn ($courseExam)=>
+            !in_array($courseExam->courseInstance->id,$enrolledCourses)
+        );
+
+        $examAttempts = ExamRegistration::with('student','courseExam.courseInstance')
+        ->where('student_id', $student->id)->get();
+
+        $successfulAttempts = $examAttempts->count() > 0 ? $examAttempts->whereBetween('mark', 
+        [6, 10])->pluck('courseExam.courseInstance.course_id')->toArray() : [];
+
+        $courseExams_remaining =  $courseExams_where_enrolled->reject(fn ($courseExam) => 
+            in_array($courseExam->courseInstance->course_id, $successfulAttempts)
+        );
+        return $courseExams_remaining;
+    }
+
+    public function getRegisterableCourseExams(): Collection
+    {
+        $student = auth()->user();
+        $activeExamPeriods = $this->examPeriodService->active();
+        if ($activeExamPeriods->isEmpty()) {
+            return collect();
+        }
+
+        $allRemainingCourseExams = collect();
+        foreach ($activeExamPeriods as $examPeriod) {
+            $remaining = $this->getRemainingCourseExams($examPeriod->id);
+            $allRemainingCourseExams = $allRemainingCourseExams->merge($remaining);
+        }
+
+        // Get all exam registrations for the student in any active exam period
+        $activeExamPeriodIds = $activeExamPeriods->pluck('id')->toArray();
+        $examRegistrationsForActivePeriods = ExamRegistration::where('student_id', $student->id)
+            ->whereHas('courseExam.examPeriod', function ($query) use ($activeExamPeriodIds) {
+                $query->whereIn('id', $activeExamPeriodIds);
+            })->get();
+
+        $registeredIds = $examRegistrationsForActivePeriods->pluck('course_exam_id')->toArray();
+        $registerableCourseExams = $allRemainingCourseExams->reject(
+            fn ($courseExam) => in_array($courseExam->id, $registeredIds)
+        );
+
+        return $registerableCourseExams;
     }
 }

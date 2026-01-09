@@ -11,7 +11,10 @@ namespace App\estudent\domain\ports\input\model;
  *     @OA\Property(property="include-not-graded", type="boolean", example=false),
  *     @OA\Property(property="include-failed", type="boolean", example=false),
  *     @OA\Property(property="include-passed", type="boolean", example=false),
- *     @OA\Property(property="student-id", type="integer", example=123)
+ *     @OA\Property(property="include-current", type="boolean", example=false),
+ *     @OA\Property(property="student-id", type="integer", example=123),
+ *     @OA\Property(property="exam-period-id", type="integer", example=1),
+ *     @OA\Property(property="course-exam-id", type="integer", example=1)
  * )
  */
 class ExamRegistrationFilters
@@ -22,7 +25,10 @@ class ExamRegistrationFilters
     public bool $includeNotGraded;
     public bool $includeFailed;
     public bool $includePassed;
+    public bool $includeCurrent;
     public ?int $studentId;
+    public ?int $examPeriodId;
+    public ?int $courseExamId;
 
     public function __construct(array $data)
     {
@@ -32,6 +38,9 @@ class ExamRegistrationFilters
         $this->includeNotGraded = $data["include-not-graded"] ?? false;
         $this->includeFailed = $data["include-failed"] ?? false;
         $this->includePassed = $data["include-passed"] ?? false;
+        $this->includeCurrent = $data["include-current"] ?? false;
         $this->studentId = $data["student-id"] ?? null;
+        $this->examPeriodId = $data["exam-period-id"] ?? null;
+        $this->courseExamId = $data["course-exam-id"] ?? null;
     }
 }

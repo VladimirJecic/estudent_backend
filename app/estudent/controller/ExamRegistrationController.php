@@ -8,6 +8,7 @@ use App\estudent\controller\model\requests\SubmitExamRegistrationRequest;
 use App\estudent\domain\ports\input\ExamRegistrationService;
 use App\estudent\controller\model\requests\GetExamRegistrationsRequest;
 use App\estudent\controller\model\requests\UpdateExamRegistrationRequest;
+use PhpOffice\PhpSpreadsheet\Calculation\Financial\TreasuryBill;
 
 class ExamRegistrationController extends BaseController
 {
@@ -63,6 +64,18 @@ class ExamRegistrationController extends BaseController
      *         required=false,
      *         @OA\Schema(type="boolean")
      *     ),
+     *     @OA\Parameter(
+     *         name="exam-period-id",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="course-exam-id",
+     *         in="query",
+     *         required=false,
+     *         @OA\Schema(type="integer")
+     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Paginated list of exam registrations"
@@ -79,75 +92,147 @@ class ExamRegistrationController extends BaseController
             'totalElements' => $paginatedExamRegistrations->total(),
         ]);
     }
-    /**
-     * Retrieve exam registrations for the authenticated student, applying filters but forcing student_id to user->id
+        /**
+     * Retrieve only passed exam registrations for the authenticated student
      *
      * @OA\Get(
-     *     path="/exam-registrations",
+     *     path="/exam-registrations/passed",
      *     tags={"Common Routes"},
-     *     summary="Retrieve exam registrations for the authenticated student",
+     *     summary="Retrieve only passed exam registrations for the authenticated student",
      *     security={
      *         {"passport": {*}}
      *     },
-     *     @OA\Parameter(
-     *         name="search-text",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="string")
-     *     ),
-     *     @OA\Parameter(
-     *         name="page",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="page-size",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Parameter(
-     *         name="include-not-graded",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="boolean")
-     *     ),
-     *     @OA\Parameter(
-     *         name="include-failed",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="boolean")
-     *     ),
-     *     @OA\Parameter(
-     *         name="include-passed",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="boolean")
-     *     ),
-     *     @OA\Parameter(
-     *         name="student-id",
-     *         in="query",
-     *         required=false,
-     *         @OA\Schema(type="integer")
-     *     ),
      *     @OA\Response(
      *         response=200,
      *         description="Paginated list of exam registrations"
      *     )
      * )
     */
-    public function getExamRegistrationsWithFiltersForStudent(GetExamRegistrationsRequest $request)
+    public function getPassedExamRegistrationsForStudent(GetExamRegistrationsRequest $request)
     {
         $examRegistrationFilters = $request->toDto();
         $examRegistrationFilters->studentId = auth()->id();
+        $examRegistrationFilters->includePassed = true;
+        $examRegistrationFilters->page = 1;
+        $examRegistrationFilters->pageSize = PHP_INT_MAX;
         $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
-        return $this->createResponse([
-            'content' => ExamRegistrationResource::collection($paginatedExamRegistrations->items()),
-            'total-pages' => $paginatedExamRegistrations->lastPage(),
-            'total-elements' => $paginatedExamRegistrations->total(),
-        ]);
+        return $this->createResponse(
+           ExamRegistrationResource::collection($paginatedExamRegistrations->items())
+        );
     }
+     /**
+     * Retrieve only current exam registrations for the authenticated student
+     *
+     * @OA\Get(
+     *     path="/exam-registrations/current",
+     *     tags={"Common Routes"},
+     *     summary="Retrieve only current exam registrations for the authenticated student",
+     *     security={
+     *         {"passport": {*}}
+     *     },
+     *     @OA\Response(
+     *         response=200,
+     *         description="Paginated list of exam registrations"
+     *     )
+     * )
+    */
+    public function getCurrentExamRegistrationsForStudent(GetExamRegistrationsRequest $request)
+    {
+        $examRegistrationFilters = $request->toDto();
+        $examRegistrationFilters->studentId = auth()->id();
+        $examRegistrationFilters->includeCurrent = true;
+        $examRegistrationFilters->includePassed = true;
+        $examRegistrationFilters->includeFailed = true;
+        $examRegistrationFilters->includeNotGraded = true;
+        $examRegistrationFilters->page = 1;
+        $examRegistrationFilters->pageSize = PHP_INT_MAX;
+        $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
+        return $this->createResponse(
+           ExamRegistrationResource::collection($paginatedExamRegistrations->items())
+        );
+    }
+    
+    // /**
+    //  * Retrieve exam registrations for the authenticated student
+    //  *
+    //  * @OA\Get(
+    //  *     path="/exam-registrations",
+    //  *     tags={"Common Routes"},
+    //  *     summary="Retrieve exam registrations for the authenticated student",
+    //  *     security={
+    //  *         {"passport": {*}}
+    //  *     },
+    //  *     @OA\Parameter(
+    //  *         name="search-text",
+    //  *         in="query",
+    //  *         required=false,
+    //  *         @OA\Schema(type="string")
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="page",
+    //  *         in="query",
+    //  *         required=false,
+    //  *         @OA\Schema(type="integer")
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="page-size",
+    //  *         in="query",
+    //  *         required=false,
+    //  *         @OA\Schema(type="integer")
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="include-not-graded",
+    //  *         in="query",
+    //  *         required=false,
+    //  *         @OA\Schema(type="boolean")
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="include-failed",
+    //  *         in="query",
+    //  *         required=false,
+    //  *         @OA\Schema(type="boolean")
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="include-passed",
+    //  *         in="query",
+    //  *         required=false,
+    //  *         @OA\Schema(type="boolean")
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="student-id",
+    //  *         in="query",
+    //  *         required=false,
+    //  *         @OA\Schema(type="integer")
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="exam-period-id",
+    //  *         in="query",
+    //  *         required=false,
+    //  *         @OA\Schema(type="integer")
+    //  *     ),
+    //  *     @OA\Parameter(
+    //  *         name="course-exam-id",
+    //  *         in="query",
+    //  *         required=false,
+    //  *         @OA\Schema(type="integer")
+    //  *     ),
+    //  *     @OA\Response(
+    //  *         response=200,
+    //  *         description="Paginated list of exam registrations"
+    //  *     )
+    //  * )
+    // */
+    // public function getExamRegistrationsWithFiltersForStudent(GetExamRegistrationsRequest $request)
+    // {
+    //     $examRegistrationFilters = $request->toDto();
+    //     $examRegistrationFilters->studentId = auth()->id();
+    //     $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
+    //     return $this->createResponse([
+    //         'content' => ExamRegistrationResource::collection($paginatedExamRegistrations->items()),
+    //         'total-pages' => $paginatedExamRegistrations->lastPage(),
+    //         'total-elements' => $paginatedExamRegistrations->total(),
+    //     ]);
+    // }
  
     /**
      * @OA\Post(

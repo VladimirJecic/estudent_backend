@@ -2,15 +2,16 @@
 namespace App\estudent\domain\useCases;
 
 use App\estudent\domain\ports\input\ExamPeriodService;
+use App\estudent\domain\ports\input\model\ExamPeriodFilters;
 use App\estudent\domain\model\ExamPeriod;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
 class ExamPeriodServiceImpl implements ExamPeriodService
 {
-    public function getAllExamPeriods(bool $onlyActive):Collection
+    public function getAllExamPeriodsWithFilters(ExamPeriodFilters $examPeriodFilters): Collection
     {
-        if($onlyActive)
+        if($examPeriodFilters->onlyActive)
             return  $this->active();
         else{
             return $this->all();

@@ -6,28 +6,19 @@ use App\estudent\domain\ports\input\model\CourseExamFilters;
 use App\estudent\controller\model\requests\GetRemainingCourseExamsRequest;
 use Illuminate\Http\Request;
 use App\estudent\controller\model\resources\CourseExamResource;
-use App\estudent\domain\ports\input\GetRegisterableCourseExams;
-use App\estudent\domain\ports\input\GetRemainingCourseExams;
 use App\estudent\domain\ports\input\CourseExamService;
 use App\estudent\controller\model\requests\CourseExamReportRequest;
 
 class CourseExamController extends BaseController
 {
     private readonly CourseExamService $courseExamService;
-    private readonly GetRegisterableCourseExams $getRegisterableCourseExamsService;
-
-    private readonly GetRemainingCourseExams $getRemainingCourseExamsService;
 
     private readonly GetReportForCourseExam $getReportForCourseExamService;
     public function __construct(
         CourseExamService  $courseExamService,
-        GetRegisterableCourseExams $getRegisterableCourseExamsService,
-        GetRemainingCourseExams $getRemainingCourseExamsService,
         GetReportForCourseExam $getReportForCourseExam)
     {
         $this->courseExamService = $courseExamService;
-        $this->getRegisterableCourseExamsService = $getRegisterableCourseExamsService;
-        $this->getRemainingCourseExamsService = $getRemainingCourseExamsService;
         $this->getReportForCourseExamService = $getReportForCourseExam;
     }
 
@@ -119,7 +110,7 @@ class CourseExamController extends BaseController
     public function getRemainingCourseExams(GetRemainingCourseExamsRequest $request)
     {
         $examPeriodId = $request->query('for-exam-period-id');
-        $remainingCourseExams = $this->getRemainingCourseExamsService->getRemainingCourseExams($examPeriodId);
+        $remainingCourseExams = $this->courseExamService->getRemainingCourseExams($examPeriodId);
         $result = CourseExamResource::collection($remainingCourseExams);
         return $this->createResponse($result, 'Remaining CourseExams retrieved successfully');
     }
@@ -140,7 +131,7 @@ class CourseExamController extends BaseController
      */
     public function getRegisterableCourseExams()
     {
-        $registerableCourseExams = $this->getRegisterableCourseExamsService->getRegisterableCourseExams();
+        $registerableCourseExams = $this->courseExamService->getRegisterableCourseExams();
         $result = CourseExamResource::collection($registerableCourseExams);    
         return $this->createResponse($result, 'Registerable CourseExams retrieved successfully');
     }
