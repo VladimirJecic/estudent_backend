@@ -3,7 +3,7 @@ namespace App\estudent\domain\useCases;
 
 use App\estudent\domain\ports\input\model\ExamRegistrationFilters;
 use App\estudent\domain\exceptions\BadRequestException;
-use App\estudent\domain\exceptions\ExamRegistrationNotFoundException;
+use App\estudent\domain\exceptions\RegistrationAlreadyExistsException;
 use App\estudent\domain\exceptions\UnauthorizedOperationException;
 use App\estudent\domain\exceptions\RegistrationNotInProgressException;
 use App\estudent\domain\model\CourseExam;
@@ -42,7 +42,7 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
         ])->exists();
 
         if ($exists) {
-            throw new  BadRequestException('Exam_registration already exists for this student and course_exam.');
+            throw new  RegistrationAlreadyExistsException('Exam registration already exists for this student and course_exam.');
         }
         return ExamRegistration::create([
             'course_exam_id' => $dto->courseExamId,

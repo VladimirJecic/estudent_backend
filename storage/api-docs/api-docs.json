@@ -339,7 +339,7 @@
                     "Common Routes"
                 ],
                 "summary": "Retrieve only currently active or all exam periods",
-                "operationId": "6c7faa2a1b720878a4fda96f685f8215",
+                "operationId": "214cb847a19938e6f5eb5956022f31a8",
                 "parameters": [
                     {
                         "name": "only-active",
@@ -417,6 +417,22 @@
                         "schema": {
                             "type": "boolean"
                         }
+                    },
+                    {
+                        "name": "exam-period-id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "course-exam-id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
                     }
                 ],
                 "responses": {
@@ -431,72 +447,14 @@
                 ]
             }
         },
-        "/exam-registrations": {
+        "/exam-registrations/passed": {
             "get": {
                 "tags": [
                     "Common Routes"
                 ],
-                "summary": "Retrieve exam registrations for the authenticated student",
-                "description": "Retrieve exam registrations for the authenticated student, applying filters but forcing student_id to user->id",
-                "operationId": "4ff77c650c54644fd5babe2421bbba25",
-                "parameters": [
-                    {
-                        "name": "search-text",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "page-size",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "include-not-graded",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "include-failed",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "include-passed",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "boolean"
-                        }
-                    },
-                    {
-                        "name": "student-id",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "summary": "Retrieve only passed exam registrations for the authenticated student",
+                "description": "Retrieve only passed exam registrations for the authenticated student",
+                "operationId": "372b2729f3ea0e420c51dcbe91953612",
                 "responses": {
                     "200": {
                         "description": "Paginated list of exam registrations"
@@ -507,7 +465,29 @@
                         "passport": []
                     }
                 ]
-            },
+            }
+        },
+        "/exam-registrations/current": {
+            "get": {
+                "tags": [
+                    "Common Routes"
+                ],
+                "summary": "Retrieve only current exam registrations for the authenticated student",
+                "description": "Retrieve only current exam registrations for the authenticated student",
+                "operationId": "e12dd7e7aa67ddba9e18a8fce91cc7b1",
+                "responses": {
+                    "200": {
+                        "description": "Paginated list of exam registrations"
+                    }
+                },
+                "security": [
+                    {
+                        "passport": []
+                    }
+                ]
+            }
+        },
+        "/exam-registrations": {
             "post": {
                 "tags": [
                     "Common Routes"
@@ -911,6 +891,15 @@
                 },
                 "type": "object"
             },
+            "ExamPeriodFiltersDTO": {
+                "properties": {
+                    "only-active": {
+                        "type": "boolean",
+                        "example": false
+                    }
+                },
+                "type": "object"
+            },
             "ExamPeriodMetricPointDTO": {
                 "properties": {
                     "examPeriodId": {
@@ -955,9 +944,21 @@
                         "type": "boolean",
                         "example": false
                     },
+                    "include-current": {
+                        "type": "boolean",
+                        "example": false
+                    },
                     "student-id": {
                         "type": "integer",
                         "example": 123
+                    },
+                    "exam-period-id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "course-exam-id": {
+                        "type": "integer",
+                        "example": 1
                     }
                 },
                 "type": "object"

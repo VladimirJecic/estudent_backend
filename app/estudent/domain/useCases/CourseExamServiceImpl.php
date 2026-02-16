@@ -3,20 +3,24 @@ namespace App\estudent\domain\useCases;
 
 use App\estudent\domain\ports\input\CourseExamService;
 use App\estudent\domain\ports\input\ExamPeriodService;
+use App\estudent\domain\ports\input\ExamRegistrationService;
 use App\estudent\domain\model\CourseExam;
 use App\estudent\domain\model\ExamRegistration;
 use App\estudent\domain\model\ExamPeriod;
 use App\estudent\domain\ports\input\model\CourseExamFilters;
+use App\estudent\domain\ports\input\model\ExamRegistrationFilters;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class CourseExamServiceImpl implements CourseExamService
 {
     private readonly ExamPeriodService $examPeriodService;
+    private readonly ExamRegistrationService $examRegistrationService;
 
-    public function __construct(ExamPeriodService $examPeriodService)
+    public function __construct(ExamPeriodService $examPeriodService, ExamRegistrationService $examRegistrationService)
     {
         $this->examPeriodService = $examPeriodService;
+        $this->examRegistrationService = $examRegistrationService;
     }
     public function calculateAttendancePercentageForRegistrations($registrations): float
     {
@@ -127,17 +131,28 @@ class CourseExamServiceImpl implements CourseExamService
             $remaining = $this->getRemainingCourseExams($examPeriod->id);
             $allRemainingCourseExams = $allRemainingCourseExams->merge($remaining);
         }
+       
+        // $activeExamPeriodIds = $activeExamPeriods->pluck('id')->toArray();
+        // $examRegistrationsForActivePeriods = ExamRegistration::where('student_id', $student->id)
+        //     ->whereHas('courseExam.examPeriod', function ($query) use ($activeExamPeriodIds) {
+        //         $query->whereIn('id', $activeExamPeriodIds);
+        //     })->get();
+        $examRegistrationFilters = new ExamRegistrationFilters([]);
+        $examRegistrationFilters->studentId = $student->id;
+        $examRegistrationFilters->includeCurrent = true;
+        $examRegistrationFilters->includePassed = true;
+        $examRegistrationFilters->includeFailed = true;
+        $examRegistrationFilters->includeNotGraded = true;
+        $examRegistrationFilters->page = 1;
+        $examRegistrationFilters->pageSize = PHP_INT_MAX;
 
-        // Get all exam registrations for the student in any active exam period
-        $activeExamPeriodIds = $activeExamPeriods->pluck('id')->toArray();
-        $examRegistrationsForActivePeriods = ExamRegistration::where('student_id', $student->id)
-            ->whereHas('courseExam.examPeriod', function ($query) use ($activeExamPeriodIds) {
-                $query->whereIn('id', $activeExamPeriodIds);
-            })->get();
-
-        $registeredIds = $examRegistrationsForActivePeriods->pluck('course_exam_id')->toArray();
+        $paginatedExamRegistrations = $this->examRegistrationService
+            ->getAllExamRegistrationsWithFilters($examRegistrationFilters);
+        $currentExamRegistrationsIds = collect($paginatedExamRegistrations->items())
+            ->pluck('course_exam_id')
+            ->toArray();
         $registerableCourseExams = $allRemainingCourseExams->reject(
-            fn ($courseExam) => in_array($courseExam->id, $registeredIds)
+            fn ($courseExam) => in_array($courseExam->id, $currentExamRegistrationsIds)
         );
 
         return $registerableCourseExams;

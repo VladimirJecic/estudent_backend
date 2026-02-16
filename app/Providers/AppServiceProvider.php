@@ -15,7 +15,7 @@ use App\estudent\domain\useCases\CourseInstanceServiceImpl;
 use App\estudent\domain\useCases\ExamRegistrationServiceImpl;
 use App\estudent\domain\useCases\GetNotGradedRegistrationsServiceImpl;
 use App\estudent\domain\ports\input\GetNotGradedExamRegistrations;
-use App\estudent\domain\useCases\GetReportForCourseExamImpl;
+use App\estudent\domain\useCases\GetExcelReportForCourseExam;
 use App\estudent\domain\useCases\GetReportDataForCourseInstanceImpl;
 use Illuminate\Support\ServiceProvider;
 use App\estudent\domain\useCases\ExamPeriodServiceImpl;
@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ExamPeriodService::class,ExamPeriodServiceImpl::class);
         $this->app->bind(CourseExamService::class, CourseExamServiceImpl::class);
         $this->app->bind(CourseInstanceService::class, CourseInstanceServiceImpl::class);
-        $this->app->bind(GetReportForCourseExam::class, GetReportForCourseExamImpl::class);
+        $this->app->bind(GetReportForCourseExam::class, GetExcelReportForCourseExam::class);
         $this->app->bind(GetReportDataForCourseInstance::class, GetReportDataForCourseInstanceImpl::class);
         $this->app->bind(GenerateCourseExamReport::class, GenerateCourseExamReportImpl::class);
     }

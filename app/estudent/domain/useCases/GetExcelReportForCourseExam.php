@@ -9,7 +9,7 @@ use App\estudent\domain\ports\output\GenerateCourseExamReport;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\estudent\domain\ports\input\CourseExamService;
 
- class GetReportForCourseExamImpl implements GetReportForCourseExam{
+ class GetExcelReportForCourseExam implements GetReportForCourseExam{
 
     private readonly GenerateCourseExamReport $excelGeneratorService;
     private readonly CourseExamService $courseExamService;
@@ -28,7 +28,8 @@ use App\estudent\domain\ports\input\CourseExamService;
         ->firstOrFail();
     /** @var \App\estudent\domain\model\CourseExam $courseExam */
     $courseExamReportDTO = new CourseExamReportDTO($courseExam);
-    $courseExamReportDTO->reportItemList = array_map(fn(ExamRegistration $examRegistration)=> new CourseExamReportItemDTO($examRegistration)
+    $courseExamReportDTO->reportItemList = array_map(fn(ExamRegistration $examRegistration)=>
+     new CourseExamReportItemDTO($examRegistration)
     ,$courseExam->examRegistrations->all());
 
     $courseExamReportDTO->attendancePercentage = $this->courseExamService->calculateAttendancePercentage($courseExamId);
