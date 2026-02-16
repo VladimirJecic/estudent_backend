@@ -132,11 +132,6 @@ class CourseExamServiceImpl implements CourseExamService
             $allRemainingCourseExams = $allRemainingCourseExams->merge($remaining);
         }
        
-        // $activeExamPeriodIds = $activeExamPeriods->pluck('id')->toArray();
-        // $examRegistrationsForActivePeriods = ExamRegistration::where('student_id', $student->id)
-        //     ->whereHas('courseExam.examPeriod', function ($query) use ($activeExamPeriodIds) {
-        //         $query->whereIn('id', $activeExamPeriodIds);
-        //     })->get();
         $examRegistrationFilters = new ExamRegistrationFilters([]);
         $examRegistrationFilters->studentId = $student->id;
         $examRegistrationFilters->includeCurrent = true;
