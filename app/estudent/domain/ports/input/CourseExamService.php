@@ -6,7 +6,7 @@ use Illuminate\Support\Collection;
 
 interface CourseExamService
 {
-    public function getAllCourseExamsWithFilters(CourseExamFilters $filters): LengthAwarePaginator;
+    public function getCourseExamsByFilters(CourseExamFilters $filters): LengthAwarePaginator;
     
     public function calculateAttendancePercentage(int $courseExamId): float;
     

@@ -4,23 +4,29 @@ namespace App\estudent\domain\useCases;
 use App\estudent\domain\ports\input\CourseExamService;
 use App\estudent\domain\ports\input\ExamPeriodService;
 use App\estudent\domain\ports\input\ExamRegistrationService;
+use App\estudent\domain\ports\input\GetReportForCourseExam;
 use App\estudent\domain\model\CourseExam;
 use App\estudent\domain\model\ExamRegistration;
 use App\estudent\domain\model\ExamPeriod;
 use App\estudent\domain\ports\input\model\CourseExamFilters;
-use App\estudent\domain\ports\input\model\ExamRegistrationFilters;
+use App\estudent\domain\ports\output\GenerateCourseExamReport;
+use App\estudent\domain\ports\output\model\CourseExamReportDTO;
+use App\estudent\domain\ports\output\model\CourseExamReportItemDTO;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
-class CourseExamServiceImpl implements CourseExamService
+class CourseExamServiceImpl implements CourseExamService, GetReportForCourseExam
 {
     private readonly ExamPeriodService $examPeriodService;
     private readonly ExamRegistrationService $examRegistrationService;
+    private readonly GenerateCourseExamReport $excelGeneratorService;
 
-    public function __construct(ExamPeriodService $examPeriodService, ExamRegistrationService $examRegistrationService)
+    public function __construct(ExamPeriodService $examPeriodService, ExamRegistrationService $examRegistrationService, GenerateCourseExamReport $excelGeneratorService)
     {
         $this->examPeriodService = $examPeriodService;
         $this->examRegistrationService = $examRegistrationService;
+        $this->excelGeneratorService = $excelGeneratorService;
     }
     public function calculateAttendancePercentageForRegistrations($registrations): float
     {
@@ -37,33 +43,11 @@ class CourseExamServiceImpl implements CourseExamService
         if ($attended->isEmpty()) return 0.0;
         return round($attended->avg('mark'), 2);
     }
-    public function getAllCourseExamsWithFilters(CourseExamFilters $courseExamFilters):LengthAwarePaginator
+    public function getCourseExamsByFilters(CourseExamFilters $courseExamFilters):LengthAwarePaginator
     {
         $query = CourseExam::with(['courseInstance', 'examPeriod']);
-
-        // Filters
-        if ($courseExamFilters->searchText) {
-            $searchText = $courseExamFilters->searchText;
-            $query->where(function ($q) use ($searchText) {
-                $q->whereHas('courseInstance.course', function ($courseQ) use ($searchText) {
-                    $courseQ->where('name', 'like', '%' . $searchText . '%');
-                })
-                ->orWhereHas('examPeriod', function ($periodQ) use ($searchText) {
-                    $periodQ->where('name', 'like', '%' . $searchText . '%');
-                });
-            });
-        }
-
-        if ($courseExamFilters->dateFrom) {
-            $query->whereDate('examDateTime', '>=', $courseExamFilters->dateFrom);
-        }
-        
-        if ($courseExamFilters->dateTo) {
-            $query->whereDate('examDateTime', '<=', $courseExamFilters->dateTo);
-        }
-
+        $this->applyCourseExamFilters($query, $courseExamFilters);
         $query->orderBy('examDateTime', 'desc');
-
         return $query->paginate(perPage: $courseExamFilters->pageSize, page: $courseExamFilters->page);
     }
 
@@ -131,19 +115,9 @@ class CourseExamServiceImpl implements CourseExamService
             $remaining = $this->getRemainingCourseExams($examPeriod->id);
             $allRemainingCourseExams = $allRemainingCourseExams->merge($remaining);
         }
-       
-        $examRegistrationFilters = new ExamRegistrationFilters([]);
-        $examRegistrationFilters->studentId = $student->id;
-        $examRegistrationFilters->includeCurrent = true;
-        $examRegistrationFilters->includePassed = true;
-        $examRegistrationFilters->includeFailed = true;
-        $examRegistrationFilters->includeNotGraded = true;
-        $examRegistrationFilters->page = 1;
-        $examRegistrationFilters->pageSize = PHP_INT_MAX;
 
-        $paginatedExamRegistrations = $this->examRegistrationService
-            ->getAllExamRegistrationsWithFilters($examRegistrationFilters);
-        $currentExamRegistrationsIds = collect($paginatedExamRegistrations->items())
+        $currentExamRegistrations = $this->examRegistrationService->getCurrentExamRegistrations();
+        $currentExamRegistrationsIds = collect($currentExamRegistrations->items())
             ->pluck('course_exam_id')
             ->toArray();
         $registerableCourseExams = $allRemainingCourseExams->reject(
@@ -151,5 +125,49 @@ class CourseExamServiceImpl implements CourseExamService
         );
 
         return $registerableCourseExams;
+    }
+
+    public function getReportForCourseExam(int $courseExamId): BinaryFileResponse
+    {
+        $courseExam = CourseExam::with(['courseInstance.course','examRegistrations.student'])
+            ->where('id', $courseExamId)
+            ->firstOrFail();
+
+        $courseExamReportDTO = new CourseExamReportDTO($courseExam);
+        $courseExamReportDTO->reportItemList = array_map(
+            fn(ExamRegistration $examRegistration) => new CourseExamReportItemDTO($examRegistration),
+            $courseExam->examRegistrations->all()
+        );
+
+        $courseExamReportDTO->attendancePercentage = $this->calculateAttendancePercentage($courseExamId);
+        $courseExamReportDTO->averageScore = $this->calculateAverageScore($courseExamId);
+        
+        return $this->excelGeneratorService->generateCourseExamReport($courseExamReportDTO);
+    }
+
+    /**
+     * Applies filters to the CourseExam query based on the given filters object.
+     */
+    private function applyCourseExamFilters($query, CourseExamFilters $courseExamFilters): void
+    {
+        if ($courseExamFilters->searchText) {
+            $searchText = $courseExamFilters->searchText;
+            $query->where(function ($q) use ($searchText) {
+                $q->whereHas('courseInstance.course', function ($courseQ) use ($searchText) {
+                    $courseQ->where('name', 'like', '%' . $searchText . '%');
+                })
+                ->orWhereHas('examPeriod', function ($periodQ) use ($searchText) {
+                    $periodQ->where('name', 'like', '%' . $searchText . '%');
+                });
+            });
+        }
+
+        if ($courseExamFilters->dateFrom) {
+            $query->whereDate('examDateTime', '>=', $courseExamFilters->dateFrom);
+        }
+        
+        if ($courseExamFilters->dateTo) {
+            $query->whereDate('examDateTime', '<=', $courseExamFilters->dateTo);
+        }
     }
 }

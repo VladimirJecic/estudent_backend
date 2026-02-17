@@ -21,12 +21,26 @@ class ExamRegistrationServiceImpl implements ExamRegistrationService
     {
         $this->examPeriodService = $examPeriodService;   
     }
-    public function getAllExamRegistrationsWithFilters(ExamRegistrationFilters $examRegistrationFilters): LengthAwarePaginator
+    public function getAllExamRegistrationsByFilters(ExamRegistrationFilters $examRegistrationFilters): LengthAwarePaginator
     {
         $query = ExamRegistration::with(['student', 'courseExam', 'signedBy']);
         $this->applyExamRegistrationFilters($query, $examRegistrationFilters);
         $query->orderBy('updated_at', 'desc');
         return $query->paginate(perPage: $examRegistrationFilters->pageSize, page: $examRegistrationFilters->page);
+    }
+
+    public function getCurrentExamRegistrations(): LengthAwarePaginator
+    {
+        $examRegistrationFilters = new ExamRegistrationFilters();
+        $examRegistrationFilters->studentId = auth()->id();
+        $examRegistrationFilters->includeCurrent = true;
+        $examRegistrationFilters->includePassed = true;
+        $examRegistrationFilters->includeFailed = true;
+        $examRegistrationFilters->includeNotGraded = true;
+        $examRegistrationFilters->page = 1;
+        $examRegistrationFilters->pageSize = PHP_INT_MAX;
+        
+        return $this->getAllExamRegistrationsByFilters($examRegistrationFilters);
     }
 
     public function createExamRegistration(SubmitExamRegistrationDTO $dto): ExamRegistration

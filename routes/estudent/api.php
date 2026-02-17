@@ -25,8 +25,8 @@ Route::middleware('auth:api')->group(function(){
     Route::post('logout', [AuthController::class, 'logout']);
     
     Route::prefix('admin')->middleware('admin-auth')->group(function(){
-        Route::get('exam-registrations', [ExamRegistrationController::class, 'getExamRegistrationsWithFiltersForAdmin']);
-        Route::get('course-exams', [CourseExamController::class,'getCourseExamsWithFilters']);
+        Route::get('exam-registrations', [ExamRegistrationController::class, 'getExamRegistrationsByFiltersForAdmin']);
+        Route::get('course-exams', [CourseExamController::class,'getCourseExamsByFilters']);
         Route::get('course-exam-reports/{courseExamId}', [CourseExamController::class,'getReportForCourseExam']);
         Route::get('course-instances', [CourseController::class, 'getCourseInstancesWithFilters']);
         Route::get('course-report-data/{courseInstanceId}', [CourseController::class, 'getReportDataForCourseInstance']);

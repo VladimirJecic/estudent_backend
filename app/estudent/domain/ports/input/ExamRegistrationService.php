@@ -10,7 +10,8 @@ use App\estudent\domain\ports\input\model\ExamRegistrationFilters;
 
 interface ExamRegistrationService
 {
-    public function getAllExamRegistrationsWithFilters(ExamRegistrationFilters $filters): LengthAwarePaginator;
+    public function getAllExamRegistrationsByFilters(ExamRegistrationFilters $filters): LengthAwarePaginator;
+    public function getCurrentExamRegistrations(): LengthAwarePaginator;
     public function createExamRegistration(SubmitExamRegistrationDTO $dto): ExamRegistration;
     public function updateExamRegistration(int $id, UpdateExamRegistrationDTO $dto): ExamRegistration;
     public function deleteExamRegistration(int $id): bool;

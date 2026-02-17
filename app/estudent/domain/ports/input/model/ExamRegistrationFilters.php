@@ -30,7 +30,7 @@ class ExamRegistrationFilters
     public ?int $examPeriodId;
     public ?int $courseExamId;
 
-    public function __construct(array $data)
+    public function __construct(array $data = null)
     {
         $this->page = $data["page"] ?? 1;
         $this->pageSize = $data["page-size"] ?? 10;

@@ -13,13 +13,13 @@ class CourseExamController extends BaseController
 {
     private readonly CourseExamService $courseExamService;
 
-    private readonly GetReportForCourseExam $getReportForCourseExamService;
+    private readonly GetReportForCourseExam $courseExamReportService;
     public function __construct(
         CourseExamService  $courseExamService,
         GetReportForCourseExam $getReportForCourseExam)
     {
         $this->courseExamService = $courseExamService;
-        $this->getReportForCourseExamService = $getReportForCourseExam;
+        $this->courseExamReportService = $getReportForCourseExam;
     }
 
     /**
@@ -72,11 +72,11 @@ class CourseExamController extends BaseController
      *     )
      * )
     */
-    public function getCourseExamsWithFilters(Request $request)
+    public function getCourseExamsByFilters(Request $request)
     {
         $courseExamFilters = new CourseExamFilters($request->all());
 
-        $paginatedCourseExams = $this->courseExamService->getAllCourseExamsWithFilters($courseExamFilters);
+        $paginatedCourseExams = $this->courseExamService->getCourseExamsByFilters($courseExamFilters);
 
         return  $this->createResponse([
             'content' => CourseExamResource::collection($paginatedCourseExams->items()),
@@ -163,7 +163,7 @@ class CourseExamController extends BaseController
     */
 public function getReportForCourseExam(CourseExamReportRequest $request, int $courseExamId)
 {
-    $report = $this->getReportForCourseExamService->getReportForCourseExam($courseExamId);
+    $report = $this->courseExamReportService->getReportForCourseExam($courseExamId);
     return $report;
 }
 

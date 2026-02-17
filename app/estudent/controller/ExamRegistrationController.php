@@ -82,10 +82,10 @@ class ExamRegistrationController extends BaseController
      *     )
      * )
     */
-    public function getExamRegistrationsWithFiltersForAdmin(GetExamRegistrationsRequest $request)
+    public function getExamRegistrationsByFiltersForAdmin(GetExamRegistrationsRequest $request)
     {
         $examRegistrationFilters = $request->toDto();
-        $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
+        $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsByFilters($examRegistrationFilters);
         return $this->createResponse([
             'content' => ExamRegistrationResource::collection($paginatedExamRegistrations->items()),
             'totalPages' => $paginatedExamRegistrations->lastPage(),
@@ -115,7 +115,7 @@ class ExamRegistrationController extends BaseController
         $examRegistrationFilters->includePassed = true;
         $examRegistrationFilters->page = 1;
         $examRegistrationFilters->pageSize = PHP_INT_MAX;
-        $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
+        $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsByFilters($examRegistrationFilters);
         return $this->createResponse(
            ExamRegistrationResource::collection($paginatedExamRegistrations->items())
         );
@@ -138,15 +138,8 @@ class ExamRegistrationController extends BaseController
     */
     public function getCurrentExamRegistrationsForStudent(GetExamRegistrationsRequest $request)
     {
-        $examRegistrationFilters = $request->toDto();
-        $examRegistrationFilters->studentId = auth()->id();
-        $examRegistrationFilters->includeCurrent = true;
-        $examRegistrationFilters->includePassed = true;
-        $examRegistrationFilters->includeFailed = true;
-        $examRegistrationFilters->includeNotGraded = true;
-        $examRegistrationFilters->page = 1;
-        $examRegistrationFilters->pageSize = PHP_INT_MAX;
-        $paginatedExamRegistrations = $this->examRegistrationService->getAllExamRegistrationsWithFilters($examRegistrationFilters);
+
+        $paginatedExamRegistrations = $this->examRegistrationService->getCurrentExamRegistrations();
         return $this->createResponse(
            ExamRegistrationResource::collection($paginatedExamRegistrations->items())
         );
